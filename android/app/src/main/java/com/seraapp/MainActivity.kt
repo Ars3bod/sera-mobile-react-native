@@ -1,4 +1,4 @@
-package com.seraapp
+package sa.gov.sera.mobile
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
