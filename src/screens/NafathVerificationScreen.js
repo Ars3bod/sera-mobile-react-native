@@ -103,37 +103,39 @@ export default function NafathVerificationScreen({route, navigation}) {
 
   const openNafathApp = async () => {
     try {
-      // Prepare translations for the deep link service
-      const translations = {
-        title: t('nafathVerification.appNotInstalledTitle'),
-        message: t('nafathVerification.appNotInstalledMessage'),
-        cancel: t('nafathVerification.cancel'),
-        download: t('nafathVerification.download'),
-        errorTitle: t('nafathVerification.errorTitle'),
-        errorMessage: t('nafathVerification.errorMessage'),
-      };
-
-      // Optional: Pass transaction data to Nafath app if supported
+      // Navigate directly to Nafath app with transaction data
       const params = {
         transId: transId,
         random: random,
         nationalId: nationalId,
       };
 
-      // Use the deep link service to handle app launching
-      const result = await DeepLinkService.openNafathApp({
-        showAlerts: true,
+      // Use the deep link service to open Nafath app directly (no alerts)
+      await DeepLinkService.openNafathApp({
+        showAlerts: false,
         params: params,
-        translations: translations,
       });
-
-      console.log('Deep link result:', result);
     } catch (error) {
       console.error('Error opening Nafath app:', error);
+      // Simple fallback - just log the error without showing alerts
+    }
+  };
+
+  // Add debug function to test all Nafath app launch methods
+  const debugNafathApp = async () => {
+    console.log('🔍 Starting Nafath app debug...');
+    try {
+      const results = await DeepLinkService.debugNafathApp();
+      console.log('Debug results:', results);
+
+      // Show simple alert with results
       Alert.alert(
-        t('nafathVerification.errorTitle'),
-        t('nafathVerification.errorMessage'),
+        'Debug Results',
+        `Platform: ${results.platform}\nPackage Check: ${results.packageCheck}\nCheck console for detailed logs`,
       );
+    } catch (error) {
+      console.error('Debug error:', error);
+      Alert.alert('Debug Error', error.message);
     }
   };
 
@@ -182,6 +184,15 @@ export default function NafathVerificationScreen({route, navigation}) {
       <TouchableOpacity onPress={openNafathApp} style={styles.openBtn}>
         <Text style={styles.buttonText}>{t('nafathVerification.openApp')}</Text>
       </TouchableOpacity>
+
+      {/* Debug button - remove this in production */}
+      {__DEV__ && (
+        <TouchableOpacity
+          onPress={debugNafathApp}
+          style={[styles.openBtn, {backgroundColor: '#orange', marginTop: 10}]}>
+          <Text style={styles.buttonText}>Debug Nafath App</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
