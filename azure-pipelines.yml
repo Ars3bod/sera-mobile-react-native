@@ -1,0 +1,249 @@
+# Azure DevOps Pipeline for SERA React Native App
+# This pipeline builds both Android APK and iOS IPA
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    exclude:
+      - README.md
+      - docs/*
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+
+variables:
+  - name: nodeVersion
+    value: '18.x'
+  - name: reactNativeVersion
+    value: '0.79.2'
+  - name: buildConfiguration
+    value: 'Release'
+  - name: outputDirectory
+    value: '$(Agent.BuildDirectory)/output'
+
+stages:
+  - stage: Build
+    displayName: 'Build Stage'
+    jobs:
+      # Android Build Job
+      - job: BuildAndroid
+        displayName: 'Build Android APK'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+            fetchDepth: 1
+
+          - task: NodeTool@0
+            displayName: 'Install Node.js'
+            inputs:
+              versionSpec: '$(nodeVersion)'
+
+          - task: Cache@2
+            displayName: 'Cache Node Modules'
+            inputs:
+              key: 'npm | "$(Agent.OS)" | package-lock.json'
+              restoreKeys: |
+                npm | "$(Agent.OS)"
+                npm
+              path: '$(System.DefaultWorkingDirectory)/node_modules'
+
+          - script: |
+              npm ci --legacy-peer-deps
+            displayName: 'Install Dependencies'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+          - script: |
+              npx react-native info
+            displayName: 'React Native Info'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+          - task: Cache@2
+            displayName: 'Cache Gradle'
+            inputs:
+              key: 'gradle | "$(Agent.OS)" | android/gradle/wrapper/gradle-wrapper.properties'
+              restoreKeys: |
+                gradle | "$(Agent.OS)"
+                gradle
+              path: '$(System.DefaultWorkingDirectory)/android/.gradle'
+
+          - script: |
+              cd android
+              chmod +x gradlew
+              ./gradlew clean
+            displayName: 'Clean Android Build'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+          - script: |
+              cd android
+              ./gradlew assembleRelease --no-daemon --stacktrace
+            displayName: 'Build Android Release APK'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+          - script: |
+              mkdir -p $(outputDirectory)
+              cp android/app/build/outputs/apk/release/app-release.apk $(outputDirectory)/sera-app-release.apk
+              cp android/app/build/outputs/apk/release/app-release.apk $(outputDirectory)/sera-app-$(Build.BuildNumber).apk
+            displayName: 'Copy APK to Output Directory'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Android APK'
+            inputs:
+              pathToPublish: '$(outputDirectory)'
+              artifactName: 'android-apk'
+              publishLocation: 'Container'
+
+      # iOS Build Job (requires macOS agent)
+      - job: BuildiOS
+        displayName: 'Build iOS IPA'
+        pool:
+          vmImage: 'macOS-latest'
+        steps:
+          - checkout: self
+            fetchDepth: 1
+
+          - task: NodeTool@0
+            displayName: 'Install Node.js'
+            inputs:
+              versionSpec: '$(nodeVersion)'
+
+          - task: Cache@2
+            displayName: 'Cache Node Modules'
+            inputs:
+              key: 'npm | "$(Agent.OS)" | package-lock.json'
+              restoreKeys: |
+                npm | "$(Agent.OS)"
+                npm
+              path: '$(System.DefaultWorkingDirectory)/node_modules'
+
+          - script: |
+              npm ci --legacy-peer-deps
+            displayName: 'Install Dependencies'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+          - task: Cache@2
+            displayName: 'Cache CocoaPods'
+            inputs:
+              key: 'pods | "$(Agent.OS)" | ios/Podfile.lock'
+              restoreKeys: |
+                pods | "$(Agent.OS)"
+                pods
+              path: '$(System.DefaultWorkingDirectory)/ios/Pods'
+
+          - script: |
+              cd ios
+              pod install --repo-update
+            displayName: 'Install iOS Dependencies'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+          - task: Xcode@5
+            displayName: 'Build iOS App'
+            inputs:
+              actions: 'clean build archive'
+              configuration: '$(buildConfiguration)'
+              sdk: 'iphoneos'
+              xcWorkspacePath: 'ios/seraApp.xcworkspace'
+              scheme: 'seraApp'
+              packageApp: true
+              exportPath: '$(outputDirectory)'
+              archivePath: '$(outputDirectory)/seraApp.xcarchive'
+              exportOptions: 'plist'
+              exportOptionsPlist: 'ios/ExportOptions.plist'
+              signingOption: 'nosign'
+
+          - script: |
+              mkdir -p $(outputDirectory)
+              if [ -f "$(outputDirectory)/seraApp.ipa" ]; then
+                cp "$(outputDirectory)/seraApp.ipa" "$(outputDirectory)/sera-app-$(Build.BuildNumber).ipa"
+              fi
+            displayName: 'Copy IPA to Output Directory'
+            condition: succeededOrFailed()
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish iOS IPA'
+            inputs:
+              pathToPublish: '$(outputDirectory)'
+              artifactName: 'ios-ipa'
+              publishLocation: 'Container'
+            condition: succeededOrFailed()
+
+  # Test Stage (Optional)
+  - stage: Test
+    displayName: 'Test Stage'
+    dependsOn: []
+    jobs:
+      - job: RunTests
+        displayName: 'Run Unit Tests'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: self
+            fetchDepth: 1
+
+          - task: NodeTool@0
+            displayName: 'Install Node.js'
+            inputs:
+              versionSpec: '$(nodeVersion)'
+
+          - script: |
+              npm ci --legacy-peer-deps
+            displayName: 'Install Dependencies'
+
+          - script: |
+              npm run test -- --coverage --watchAll=false
+            displayName: 'Run Unit Tests'
+            continueOnError: true
+
+          - task: PublishCodeCoverageResults@1
+            displayName: 'Publish Code Coverage'
+            inputs:
+              codeCoverageTool: 'Cobertura'
+              summaryFileLocation: 'coverage/cobertura-coverage.xml'
+            condition: succeededOrFailed()
+
+  # Deploy Stage (Optional)
+  - stage: Deploy
+    displayName: 'Deploy Stage'
+    dependsOn:
+      - Build
+      - Test
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: DeployToAppCenter
+        displayName: 'Deploy to App Center'
+        environment: 'Production'
+        pool:
+          vmImage: 'ubuntu-latest'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: android-apk
+
+                - download: current
+                  artifact: ios-ipa
+
+                - script: |
+                    echo "APK files:"
+                    ls -la $(Pipeline.Workspace)/android-apk/
+                    echo "IPA files:"
+                    ls -la $(Pipeline.Workspace)/ios-ipa/
+                  displayName: 'List Build Artifacts'
+
+                # Add App Center deployment tasks here
+                # - task: AppCenterDistribute@3
+                #   displayName: 'Deploy Android to App Center'
+                #   inputs:
+                #     serverEndpoint: 'App Center'
+                #     appSlug: 'your-org/sera-android'
+                #     appFile: '$(Pipeline.Workspace)/android-apk/sera-app-release.apk'
+                #     releaseNotesOption: 'input'
+                #     releaseNotesInput: 'Automated build from Azure DevOps'

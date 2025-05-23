@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {useTranslation} from 'react-i18next';
+import {LocalLanguage24Regular} from '@fluentui/react-native-icons';
 
 const logo = require('../assets/images/sera_logo.png');
 
@@ -21,10 +22,7 @@ export default function LoginScreen({navigation}) {
       <View style={styles.innerContainer}>
         {/* Language Switcher */}
         <TouchableOpacity style={styles.langSwitcher} onPress={toggleLanguage}>
-          <Image
-            source={require('../assets/images/sera_logo.png')}
-            style={styles.langIcon}
-          />
+          <LocalLanguage24Regular style={styles.langIcon} />
           <Text style={styles.langText}>
             {isArabic ? 'English' : 'العربية'}
           </Text>
@@ -73,6 +71,7 @@ const styles = StyleSheet.create({
   langIcon: {
     width: 24,
     height: 24,
+    color: '#006341',
     marginRight: 6,
   },
   langText: {

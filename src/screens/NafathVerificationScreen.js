@@ -4,6 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {pollNafathStatus, loginNafath} from '../services/nafathService';
 import StyleManager from '../styles/StyleManager';
 import {LoadingSpinner} from '../animations';
+import DeepLinkService from '../services/deepLinkService';
 
 export default function NafathVerificationScreen({route, navigation}) {
   const {t} = useTranslation();
@@ -100,12 +101,40 @@ export default function NafathVerificationScreen({route, navigation}) {
     }
   };
 
-  const openNafathApp = () => {
-    // TODO: Implement deep link to Nafath app if available
-    Alert.alert(
-      t('nafathVerification.openAppTitle'),
-      t('nafathVerification.openAppMessage'),
-    );
+  const openNafathApp = async () => {
+    try {
+      // Prepare translations for the deep link service
+      const translations = {
+        title: t('nafathVerification.appNotInstalledTitle'),
+        message: t('nafathVerification.appNotInstalledMessage'),
+        cancel: t('nafathVerification.cancel'),
+        download: t('nafathVerification.download'),
+        errorTitle: t('nafathVerification.errorTitle'),
+        errorMessage: t('nafathVerification.errorMessage'),
+      };
+
+      // Optional: Pass transaction data to Nafath app if supported
+      const params = {
+        transId: transId,
+        random: random,
+        nationalId: nationalId,
+      };
+
+      // Use the deep link service to handle app launching
+      const result = await DeepLinkService.openNafathApp({
+        showAlerts: true,
+        params: params,
+        translations: translations,
+      });
+
+      console.log('Deep link result:', result);
+    } catch (error) {
+      console.error('Error opening Nafath app:', error);
+      Alert.alert(
+        t('nafathVerification.errorTitle'),
+        t('nafathVerification.errorMessage'),
+      );
+    }
   };
 
   return (

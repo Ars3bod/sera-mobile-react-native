@@ -301,7 +301,9 @@ class StyleManager {
         marginBottom: this.spacing.xxl,
       },
       mainCardIcon: {
-        fontSize: this.typography.sizes.massive,
+        width: 48,
+        height: 48,
+        color: this.colors.primary,
         marginBottom: this.spacing.sm,
       },
       mainCardText: {
@@ -310,7 +312,9 @@ class StyleManager {
         fontWeight: this.typography.weights.bold,
       },
       infoCardIcon: {
-        fontSize: this.typography.sizes.huge,
+        width: 32,
+        height: 32,
+        color: this.colors.primary,
         marginLeft: this.spacing.base,
         marginRight: this.spacing.base,
       },
@@ -322,7 +326,8 @@ class StyleManager {
         textAlign: 'right',
       },
       navIcon: {
-        fontSize: this.typography.sizes.xxxl,
+        width: 24,
+        height: 24,
         color: this.colors.primary,
         marginBottom: 2,
       },

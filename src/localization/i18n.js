@@ -29,6 +29,14 @@ const resources = {
         openAppTitle: 'Open Nafath App',
         openAppMessage: 'This would open the Nafath app.',
         openApp: 'Open Nafath App',
+        appNotInstalledTitle: 'Nafath App Not Installed',
+        appNotInstalledMessage:
+          'Nafath app is not installed on your device. Would you like to download it from the store?',
+        cancel: 'Cancel',
+        download: 'Download',
+        errorTitle: 'Error',
+        errorMessage:
+          'An error occurred while trying to open Nafath app. Please try again.',
       },
       home: {
         header: 'Saudi Electricity Regulatory Authority',
@@ -85,6 +93,14 @@ const resources = {
         openAppTitle: 'فتح تطبيق نفاذ',
         openAppMessage: 'سيتم فتح تطبيق نفاذ.',
         openApp: 'فتح تطبيق نفاذ',
+        appNotInstalledTitle: 'تطبيق نفاذ غير مثبت',
+        appNotInstalledMessage:
+          'تطبيق نفاذ غير مثبت على جهازك. هل تريد تنزيله من متجر التطبيقات؟',
+        cancel: 'إلغاء',
+        download: 'تنزيل',
+        errorTitle: 'خطأ',
+        errorMessage:
+          'حدث خطأ أثناء محاولة تشغيل تطبيق نفاذ. يرجى المحاولة مرة أخرى.',
       },
       home: {
         header: 'الهيئة السعودية لتنظيم الكهرباء',

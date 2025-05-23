@@ -1,0 +1,80 @@
+# Simplified Azure DevOps Pipeline for SERA React Native App (Android Only)
+# This pipeline builds Android APK for quick testing
+
+trigger:
+  - main
+  - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  nodeVersion: '18.x'
+
+steps:
+  - checkout: self
+    fetchDepth: 1
+
+  - task: NodeTool@0
+    displayName: 'Install Node.js $(nodeVersion)'
+    inputs:
+      versionSpec: '$(nodeVersion)'
+
+  - task: Cache@2
+    displayName: 'Cache Node Modules'
+    inputs:
+      key: 'npm | "$(Agent.OS)" | package-lock.json'
+      restoreKeys: |
+        npm | "$(Agent.OS)"
+        npm
+      path: 'node_modules'
+
+  - script: |
+      npm ci --legacy-peer-deps
+    displayName: 'Install NPM Dependencies'
+
+  - script: |
+      npx react-native info
+    displayName: 'Show React Native Info'
+
+  - task: Cache@2
+    displayName: 'Cache Gradle Dependencies'
+    inputs:
+      key: 'gradle | "$(Agent.OS)" | android/gradle/wrapper/gradle-wrapper.properties'
+      restoreKeys: |
+        gradle | "$(Agent.OS)"
+        gradle
+      path: 'android/.gradle'
+
+  - script: |
+      cd android
+      chmod +x gradlew
+      ./gradlew clean
+    displayName: 'Clean Android Project'
+
+  - script: |
+      cd android
+      ./gradlew assembleRelease --no-daemon --stacktrace --info
+    displayName: 'Build Android Release APK'
+
+  - script: |
+      echo "Listing APK files:"
+      find android -name "*.apk" -type f
+
+      echo "Creating output directory:"
+      mkdir -p $(Build.ArtifactStagingDirectory)
+
+      echo "Copying APK files:"
+      cp android/app/build/outputs/apk/release/app-release.apk $(Build.ArtifactStagingDirectory)/sera-app-release.apk
+      cp android/app/build/outputs/apk/release/app-release.apk $(Build.ArtifactStagingDirectory)/sera-app-$(Build.BuildNumber).apk
+
+      echo "Final APK files:"
+      ls -la $(Build.ArtifactStagingDirectory)/
+    displayName: 'Prepare APK Artifacts'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Android APK'
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'android-apk'
+      publishLocation: 'Container'
