@@ -1,0 +1,91 @@
+name: 🚀 Build Android Release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build-android-release:
+    name: Build Android Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: ☕ Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🔄 Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: 📦 Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: ℹ️ Show React Native info
+        run: npx react-native info
+
+      - name: 🔧 Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: 🏗️ Build Android Release APK (Unsigned)
+        run: cd android && ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: 🔑 Sign APK (if keystore available)
+        if: ${{ secrets.ANDROID_KEYSTORE }}
+        run: |
+          echo "🔐 Signing APK with provided keystore..."
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/keystore.jks
+          cd android && ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=app/keystore.jks \
+            -Pandroid.injected.signing.store.password="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            -Pandroid.injected.signing.key.alias="${{ secrets.ANDROID_KEY_ALIAS }}" \
+            -Pandroid.injected.signing.key.password="${{ secrets.ANDROID_KEY_PASSWORD }}"
+
+      - name: 📋 List APK files
+        run: find android -name "*.apk" -type f
+
+      - name: ⬆️ Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-android-release-${{ github.run_number }}
+          path: android/app/build/outputs/apk/release/*.apk
+          retention-days: 30
+
+      - name: 📊 APK Info
+        run: |
+          echo "🎉 Android Release APK built successfully!"
+          echo "📱 APK Location: android/app/build/outputs/apk/release/"
+          if [ "${{ secrets.ANDROID_KEYSTORE }}" ]; then
+            echo "🔑 APK is SIGNED and ready for production!"
+          else
+            echo "⚠️  APK is UNSIGNED - add keystore secrets for production signing"
+          fi
+          echo "📥 Download from: Actions → Artifacts → sera-android-release-${{ github.run_number }}"
+
+      - name: 📊 APK Size Check
+        run: |
+          cd android/app/build/outputs/apk/release/
+          for apk in *.apk; do
+            size=$(du -h "$apk" | cut -f1)
+            echo "📏 $apk size: $size"
+          done

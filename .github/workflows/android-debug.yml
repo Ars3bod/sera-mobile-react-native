@@ -1,0 +1,68 @@
+name: 📱 Build Android Debug
+
+on:
+  push:
+    branches: [develop, feature/*]
+  pull_request:
+    branches: [develop, main]
+  workflow_dispatch:
+
+jobs:
+  build-android-debug:
+    name: Build Android Debug APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: ☕ Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🔄 Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: 📦 Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: ℹ️ Show React Native info
+        run: npx react-native info
+
+      - name: 🔧 Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: 🏗️ Build Android Debug APK
+        run: cd android && ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: 📋 List APK files
+        run: find android -name "*.apk" -type f
+
+      - name: ⬆️ Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-android-debug-${{ github.run_number }}
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
+
+      - name: 📊 APK Info
+        run: |
+          echo "🎉 Android Debug APK built successfully!"
+          echo "📱 APK Location: android/app/build/outputs/apk/debug/app-debug.apk"
+          echo "📥 Download from: Actions → Artifacts → sera-android-debug-${{ github.run_number }}"

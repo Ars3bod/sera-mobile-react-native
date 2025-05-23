@@ -1,0 +1,78 @@
+name: 🍎 Build iOS Debug
+
+on:
+  push:
+    branches: [develop, feature/*]
+  pull_request:
+    branches: [develop, main]
+  workflow_dispatch:
+
+jobs:
+  build-ios-debug:
+    name: Build iOS Debug App
+    runs-on: macos-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 💎 Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          working-directory: ios
+
+      - name: 🔄 Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: 📦 Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: ℹ️ Show React Native info
+        run: npx react-native info
+
+      - name: 🍎 Install CocoaPods dependencies
+        run: cd ios && pod install --repo-update
+
+      - name: 📱 List available simulators
+        run: xcrun simctl list devices available
+
+      - name: 🏗️ Build iOS Debug App
+        run: |
+          cd ios
+          xcodebuild -workspace seraApp.xcworkspace \
+                     -scheme seraApp \
+                     -configuration Debug \
+                     -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+                     -derivedDataPath ./build \
+                     build
+
+      - name: 📱 Create iOS App Bundle
+        run: |
+          cd ios
+          mkdir -p build/Debug-iphonesimulator
+          echo "📱 iOS Debug app built for simulator"
+          echo "🔍 App location: ios/build/Build/Products/Debug-iphonesimulator/seraApp.app"
+
+      - name: 📋 List build outputs
+        run: find ios/build -name "*.app" -type d
+
+      - name: 📊 Build Info
+        run: |
+          echo "🎉 iOS Debug build completed successfully!"
+          echo "📱 Platform: iOS Simulator"
+          echo "🔧 Configuration: Debug"
+          echo "📝 Note: Debug builds are for simulator testing only"
+          echo "💡 Tip: Use Xcode or iOS simulator to test the app"

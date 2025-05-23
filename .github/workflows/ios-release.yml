@@ -1,0 +1,111 @@
+name: 🍎 Build iOS Release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build-ios-release:
+    name: Build iOS Release IPA
+    runs-on: macos-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 💎 Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          working-directory: ios
+
+      - name: 🔄 Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: 📦 Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: ℹ️ Show React Native info
+        run: npx react-native info
+
+      - name: 🍎 Install CocoaPods dependencies
+        run: cd ios && pod install --repo-update
+
+      - name: 🔐 Import Code-Signing Certificates (if available)
+        if: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+        run: |
+          echo "🔑 Setting up iOS code signing..."
+          echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > certificate.p12
+          security create-keychain -p "" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "" build.keychain
+          security import certificate.p12 -k build.keychain -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
+
+      - name: 🔐 Install Provisioning Profile (if available)
+        if: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          echo "📄 Installing provisioning profile..."
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/seraApp.mobileprovision
+
+      - name: 🏗️ Build iOS Release Archive
+        run: |
+          cd ios
+          xcodebuild -workspace seraApp.xcworkspace \
+                     -scheme seraApp \
+                     -configuration Release \
+                     -destination generic/platform=iOS \
+                     -archivePath $PWD/build/seraApp.xcarchive \
+                     archive
+
+      - name: 📦 Export IPA
+        run: |
+          cd ios
+          xcodebuild -exportArchive \
+                     -archivePath $PWD/build/seraApp.xcarchive \
+                     -exportOptionsPlist ExportOptions.plist \
+                     -exportPath $PWD/build
+
+      - name: 📋 List IPA files
+        run: find ios/build -name "*.ipa" -type f
+
+      - name: ⬆️ Upload iOS IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-ios-release-${{ github.run_number }}
+          path: ios/build/*.ipa
+          retention-days: 30
+
+      - name: 📊 IPA Info
+        run: |
+          cd ios/build
+          if ls *.ipa >/dev/null 2>&1; then
+            echo "🎉 iOS Release IPA built successfully!"
+            for ipa in *.ipa; do
+              size=$(du -h "$ipa" | cut -f1)
+              echo "📏 $ipa size: $size"
+            done
+            if [ "${{ secrets.IOS_CERTIFICATE_BASE64 }}" ]; then
+              echo "🔑 IPA is SIGNED and ready for distribution!"
+            else
+              echo "⚠️  IPA is UNSIGNED - add certificates for App Store distribution"
+            fi
+            echo "📥 Download from: Actions → Artifacts → sera-ios-release-${{ github.run_number }}"
+          else
+            echo "⚠️  No IPA files found. Check if code signing is properly configured."
+          fi
