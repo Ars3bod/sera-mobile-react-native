@@ -268,8 +268,11 @@ jobs:
           ls -la ./artifacts/ios-debug/ 2>/dev/null || echo "No iOS Debug files found (may be skipped)"
 
       - name: 🔥 Deploy Android Debug to Firebase App Distribution
-        if: needs.build-android-debug.result == 'success' && hashFiles('./artifacts/android-debug/*.apk') != '' && secrets.FIREBASE_APP_ID != '' && secrets.FIREBASE_SERVICE_ACCOUNT != '' && (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'android-only' || github.event_name == 'push')
+        if: needs.build-android-debug.result == 'success' && hashFiles('./artifacts/android-debug/*.apk') != '' && env.FIREBASE_APP_ID != '' && env.FIREBASE_SERVICE_ACCOUNT != '' && (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'android-only' || github.event_name == 'push')
         uses: wzieba/Firebase-Distribution-Github-Action@v1
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
@@ -290,8 +293,11 @@ jobs:
             ${{ github.event.inputs.release_notes || 'Debug build for testing and development' }}
 
       - name: 🔥 Deploy iOS Debug to Firebase App Distribution (if available)
-        if: needs.build-ios-debug.result == 'success' && hashFiles('./artifacts/ios-debug/*.ipa') != '' && secrets.FIREBASE_IOS_APP_ID != '' && secrets.FIREBASE_SERVICE_ACCOUNT != '' && (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'ios-only' || github.event_name == 'push')
+        if: needs.build-ios-debug.result == 'success' && hashFiles('./artifacts/ios-debug/*.ipa') != '' && env.FIREBASE_IOS_APP_ID != '' && env.FIREBASE_SERVICE_ACCOUNT != '' && (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'ios-only' || github.event_name == 'push')
         uses: wzieba/Firebase-Distribution-Github-Action@v1
+        env:
+          FIREBASE_IOS_APP_ID: ${{ secrets.FIREBASE_IOS_APP_ID }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         with:
           appId: ${{ secrets.FIREBASE_IOS_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
@@ -317,10 +323,12 @@ jobs:
           echo "📦 Run: ${{ github.run_number }}"
           echo "🏗️ Platforms: ${{ github.event.inputs.platforms || 'both (auto-triggered)' }}"
           echo "🧪 Tests: ${{ github.event.inputs.skip_tests == 'true' && 'Skipped ⏭️' || 'Passed ✅' }}"
-          echo "🤖 Android Debug: ${{ (github.event.inputs.platforms == 'ios-only') && github.event_name == 'workflow_dispatch' && 'Skipped ⏭️' || (needs.build-android-debug.result == 'success' && 'Success ✅' || 'Failed ❌') }}"
-          echo "🍎 iOS Debug: ${{ (github.event.inputs.platforms == 'android-only') && github.event_name == 'workflow_dispatch' && 'Skipped ⏭️' || (needs.build-ios-debug.result == 'success' && 'Success ✅' || 'Failed ❌') }}"
-          echo "🔥 Firebase: ${{ secrets.FIREBASE_APP_ID != '' && 'Deployed' || 'Not configured' }}"
+          echo "🤖 Android Debug: ${{ (github.event.inputs.platforms == 'ios-only' && github.event_name == 'workflow_dispatch') && 'Skipped ⏭️' || (needs.build-android-debug.result == 'success' && 'Success ✅' || 'Failed ❌') }}"
+          echo "🍎 iOS Debug: ${{ (github.event.inputs.platforms == 'android-only' && github.event_name == 'workflow_dispatch') && 'Skipped ⏭️' || (needs.build-ios-debug.result == 'success' && 'Success ✅' || 'Failed ❌') }}"
+          echo "🔥 Firebase: ${{ env.FIREBASE_CONFIG_SET == 'true' && 'Deployed' || 'Not configured' }}"
           echo "📥 Artifacts: Available for 30 days"
+        env:
+          FIREBASE_CONFIG_SET: ${{ secrets.FIREBASE_APP_ID != '' && 'true' || 'false' }}
 
   create-debug-release:
     name: 📦 Create Debug Release
