@@ -97,6 +97,7 @@ const resources = {
       more: {
         title: 'More',
         language: 'عر',
+        mainActions: 'Main Actions',
         settings: {
           title: 'Settings',
           description: 'Manage your app preferences and account settings',
@@ -124,6 +125,10 @@ const resources = {
         importantLinks: {
           title: 'Important Links',
           description: 'Quick access to essential resources and websites',
+        },
+        complaints: {
+          title: 'Complaints',
+          description: 'Submit and track your complaints easily',
         },
       },
       settings: {
@@ -300,6 +305,92 @@ const resources = {
           statistics: 'Statistics',
         },
       },
+      complaints: {
+        title: 'Complaints',
+        description: 'Submit and track your complaints easily',
+        welcomeTitle: 'Complaints Center',
+        welcomeDescription:
+          'Submit complaints and track their status easily and transparently',
+        newComplaint: {
+          title: 'New Complaint',
+          description: 'Submit a new complaint or objection',
+        },
+        viewComplaints: {
+          title: 'View Complaints',
+          description: 'View and track your existing complaints',
+        },
+        filters: {
+          all: 'All',
+          open: 'Open',
+          closed: 'Closed',
+          rejected: 'Rejected',
+        },
+        create: {
+          title: 'New Complaint',
+          serviceProvider: 'Service Provider',
+          serviceProviderPlaceholder: 'Select Service Provider',
+          consumptionCategory: 'Consumption Category',
+          consumptionCategoryPlaceholder: 'Select Consumption Category',
+          complaintType: 'Complaint Type',
+          complaintTypePlaceholder: 'Select Complaint Type',
+          complaintDetails: 'Complaint Details',
+          complaintDetailsPlaceholder: 'Write your complaint details here...',
+          attachments: 'Attachments',
+          attachFile: 'Attach File',
+          attachmentNote:
+            'Max size: 20 MB per file\nAllowed types: PDF, DOC, DOCX, XLS, XLSX, PNG, JPEG, JPG',
+          submit: 'Submit Complaint',
+          submitting: 'Submitting...',
+          success: 'Success',
+          successMessage:
+            'Your complaint has been submitted successfully. Complaint number: #12345',
+          error: 'Error',
+          errorMessage: 'Please fill all required fields',
+          submitError: 'An error occurred while submitting the complaint',
+          uploadFileTitle: 'Upload File',
+          uploadFileMessage:
+            'Max size: 20 MB\nAllowed types: PDF, DOC, DOCX, XLS, XLSX, PNG, JPEG, JPG',
+          cancel: 'Cancel',
+          chooseFile: 'Choose File',
+          ok: 'OK',
+          close: 'Close',
+          required: '*',
+        },
+        view: {
+          title: 'Complaints',
+          loading: 'Loading...',
+          noComplaints: 'No Complaints',
+          noComplaintsMessage: 'No complaints found with the selected filter',
+          yourComplaints: 'Your Complaints',
+          priority: {
+            high: 'High',
+            medium: 'Medium',
+            low: 'Low',
+          },
+          status: {
+            open: 'Open',
+            closed: 'Closed',
+            rejected: 'Rejected',
+          },
+        },
+        serviceProviders: {
+          sec: 'Saudi Electricity Company',
+          marafiq: 'Marafiq',
+        },
+        consumptionCategories: {
+          residential: 'Residential',
+          commercial: 'Commercial',
+          industrial: 'Industrial',
+          government: 'Government',
+        },
+        complaintTypes: {
+          powerOutage: 'Power Outage',
+          highBill: 'High Bill',
+          serviceQuality: 'Service Quality',
+          connectionDelay: 'Connection Delay',
+          customerService: 'Customer Service',
+        },
+      },
     },
   },
   ar: {
@@ -389,6 +480,7 @@ const resources = {
       more: {
         title: 'المزيد',
         language: 'عر',
+        mainActions: 'الإجراءات الرئيسية',
         settings: {
           title: 'الإعدادات',
           description: 'إدارة تفضيلاتك وإعدادات حسابك',
@@ -416,6 +508,10 @@ const resources = {
         importantLinks: {
           title: 'الروابط المهمة',
           description: 'الوصول السريع إلى الموارد والمواقع الأساسية',
+        },
+        complaints: {
+          title: 'الشكاوى',
+          description: 'تقديم ومتابعة شكاويك بسهولة',
         },
       },
       settings: {
@@ -588,6 +684,90 @@ const resources = {
           regulations: 'التنظيمات والقوانين',
           reports: 'تقارير السنوية',
           statistics: 'الإحصائيات',
+        },
+      },
+      complaints: {
+        title: 'الشكاوى',
+        description: 'تقديم ومتابعة شكاويك بسهولة',
+        welcomeTitle: 'مركز الشكاوى',
+        welcomeDescription: 'تقديم الشكاوى ومتابعة حالتها بسهولة وشفافية',
+        newComplaint: {
+          title: 'شكوى جديدة',
+          description: 'تقديم شكوى أو اعتراض جديد',
+        },
+        viewComplaints: {
+          title: 'عرض الشكاوى',
+          description: 'عرض ومتابعة شكاويك الحالية',
+        },
+        filters: {
+          all: 'الكل',
+          open: 'مفتوحة',
+          closed: 'مغلقة',
+          rejected: 'مرفوضة',
+        },
+        create: {
+          title: 'شكوى جديدة',
+          serviceProvider: 'مقدم الخدمة',
+          serviceProviderPlaceholder: 'اختر مقدم الخدمة',
+          consumptionCategory: 'فئة الاستهلاك',
+          consumptionCategoryPlaceholder: 'اختر فئة الاستهلاك',
+          complaintType: 'نوع الشكوى',
+          complaintTypePlaceholder: 'اختر نوع الشكوى',
+          complaintDetails: 'تفاصيل الشكوى',
+          complaintDetailsPlaceholder: 'اكتب تفاصيل شكواك هنا...',
+          attachments: 'المرفقات',
+          attachFile: 'إرفاق ملف',
+          attachmentNote:
+            'الحد الأقصى: 20 ميجا لكل ملف\nالأنواع المسموحة: PDF, DOC, DOCX, XLS, XLSX, PNG, JPEG, JPG',
+          submit: 'تقديم الشكوى',
+          submitting: 'جاري التقديم...',
+          success: 'تم بنجاح',
+          successMessage: 'تم تقديم شكواك بنجاح. رقم الشكوى: #12345',
+          error: 'خطأ',
+          errorMessage: 'يرجى ملء جميع الحقول المطلوبة',
+          submitError: 'حدث خطأ أثناء تقديم الشكوى',
+          uploadFileTitle: 'رفع ملف',
+          uploadFileMessage:
+            'الحد الأقصى: 20 ميجا\nالأنواع المسموحة: PDF, DOC, DOCX, XLS, XLSX, PNG, JPEG, JPG',
+          cancel: 'إلغاء',
+          chooseFile: 'اختيار ملف',
+          ok: 'موافق',
+          close: 'إغلاق',
+          required: '*',
+        },
+        view: {
+          title: 'الشكاوى',
+          loading: 'جاري التحميل...',
+          noComplaints: 'لا توجد شكاوى',
+          noComplaintsMessage: 'لم يتم العثور على أي شكاوى بالفلتر المحدد',
+          yourComplaints: 'شكاويك',
+          priority: {
+            high: 'عالية',
+            medium: 'متوسطة',
+            low: 'منخفضة',
+          },
+          status: {
+            open: 'مفتوحة',
+            closed: 'مغلقة',
+            rejected: 'مرفوضة',
+          },
+        },
+        serviceProviders: {
+          sec: 'الشركة السعودية للكهرباء',
+          marafiq: 'مرافق',
+        },
+        consumptionCategories: {
+          residential: 'سكني',
+          commercial: 'تجاري',
+          industrial: 'صناعي',
+          government: 'حكومي',
+        },
+        complaintTypes: {
+          powerOutage: 'انقطاع الكهرباء',
+          highBill: 'فاتورة مرتفعة',
+          serviceQuality: 'جودة الخدمة',
+          connectionDelay: 'تأخير في التوصيل',
+          customerService: 'خدمة العملاء',
         },
       },
     },

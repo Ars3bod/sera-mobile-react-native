@@ -18,6 +18,9 @@ import NewsScreen from '../screens/NewsScreen';
 import PoliciesScreen from '../screens/PoliciesScreen';
 import FAQScreen from '../screens/FAQScreen';
 import ImportantLinksScreen from '../screens/ImportantLinksScreen';
+import ComplaintsScreen from '../screens/ComplaintsScreen';
+import CreateComplaintScreen from '../screens/CreateComplaintScreen';
+import ViewComplaintsScreen from '../screens/ViewComplaintsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -142,6 +145,30 @@ export default function AppNavigator() {
         <Stack.Screen
           name="ImportantLinks"
           component={ImportantLinksScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="Complaints"
+          component={ComplaintsScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="CreateComplaint"
+          component={CreateComplaintScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="ViewComplaints"
+          component={ViewComplaintsScreen}
           options={{
             animation: 'slide_from_right',
             animationDuration: 300,

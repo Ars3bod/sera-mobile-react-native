@@ -36,6 +36,12 @@ class StyleManager {
 
     // Typography
     this.typography = {
+      fontFamily: {
+        regular: 'System',
+        medium: 'System',
+        semiBold: 'System',
+        bold: 'System',
+      },
       sizes: {
         xs: 13,
         sm: 15,
@@ -49,8 +55,10 @@ class StyleManager {
         giant: 40,
       },
       weights: {
-        normal: 'normal',
-        bold: 'bold',
+        normal: '400',
+        medium: '500',
+        semiBold: '600',
+        bold: '700',
       },
       lineHeights: {
         tight: 22,
@@ -161,6 +169,7 @@ class StyleManager {
       subHeaderText: {
         color: this.colors.text.primary,
         fontSize: this.typography.sizes.sm,
+        fontWeight: this.typography.weights.normal,
         textAlign: 'right',
         marginBottom: this.spacing.lg,
         lineHeight: this.typography.lineHeights.tight,
@@ -168,7 +177,7 @@ class StyleManager {
       sectionTitle: {
         color: this.colors.primary,
         fontSize: this.typography.sizes.xl,
-        fontWeight: this.typography.weights.bold,
+        fontWeight: this.typography.weights.semiBold,
         textAlign: 'right',
         marginBottom: this.spacing.sm,
         marginTop: this.spacing.lg,
@@ -176,6 +185,7 @@ class StyleManager {
       sectionDescription: {
         color: this.colors.text.primary,
         fontSize: this.typography.sizes.sm,
+        fontWeight: this.typography.weights.normal,
         textAlign: 'right',
         marginBottom: this.spacing.md,
         lineHeight: this.typography.lineHeights.tight,
@@ -236,7 +246,7 @@ class StyleManager {
       buttonText: {
         color: this.colors.text.white,
         fontSize: this.typography.sizes.xl,
-        fontWeight: this.typography.weights.bold,
+        fontWeight: this.typography.weights.semiBold,
       },
 
       // Inputs
@@ -247,6 +257,7 @@ class StyleManager {
         borderRadius: this.spacing.sm,
         padding: this.spacing.base,
         fontSize: this.typography.sizes.lg,
+        fontWeight: this.typography.weights.normal,
         marginBottom: this.spacing.md,
         backgroundColor: this.colors.background,
       },
@@ -255,22 +266,25 @@ class StyleManager {
       primaryText: {
         color: this.colors.primary,
         fontSize: this.typography.sizes.base,
-        fontWeight: this.typography.weights.bold,
+        fontWeight: this.typography.weights.semiBold,
       },
       secondaryText: {
         color: this.colors.text.secondary,
         fontSize: this.typography.sizes.xs,
+        fontWeight: this.typography.weights.normal,
         textAlign: 'right',
       },
       mutedText: {
         color: this.colors.text.muted,
         fontSize: this.typography.sizes.sm,
+        fontWeight: this.typography.weights.normal,
         textAlign: 'center',
       },
       errorText: {
         color: this.colors.status.error,
         marginTop: this.spacing.base,
         fontSize: this.typography.sizes.base,
+        fontWeight: this.typography.weights.medium,
       },
 
       // Utility classes
@@ -320,6 +334,7 @@ class StyleManager {
       subHeaderText: {
         color: colors.text || this.colors.text.primary,
         fontSize: this.typography.sizes.sm,
+        fontWeight: this.typography.weights.normal,
         textAlign: 'right',
         marginBottom: this.spacing.lg,
         lineHeight: this.typography.lineHeights.tight,
@@ -350,13 +365,13 @@ class StyleManager {
       mainCardText: {
         color: colors.text || this.colors.text.primary,
         fontSize: this.typography.sizes.base,
-        fontWeight: this.typography.weights.bold,
+        fontWeight: this.typography.weights.semiBold,
         textAlign: 'center',
       },
       sectionTitle: {
         color: colors.primary || this.colors.primary,
         fontSize: this.typography.sizes.xl,
-        fontWeight: this.typography.weights.bold,
+        fontWeight: this.typography.weights.semiBold,
         textAlign: 'right',
         marginBottom: this.spacing.sm,
         marginTop: this.spacing.lg,
@@ -364,6 +379,7 @@ class StyleManager {
       sectionDescription: {
         color: colors.text || this.colors.text.primary,
         fontSize: this.typography.sizes.sm,
+        fontWeight: this.typography.weights.normal,
         textAlign: 'right',
         marginBottom: this.spacing.md,
         lineHeight: this.typography.lineHeights.tight,
@@ -387,13 +403,14 @@ class StyleManager {
       infoCardTitle: {
         color: colors.text || this.colors.text.primary,
         fontSize: this.typography.sizes.base,
-        fontWeight: this.typography.weights.bold,
+        fontWeight: this.typography.weights.semiBold,
         textAlign: 'right',
         marginBottom: this.spacing.xs,
       },
       secondaryText: {
         color: colors.textSecondary || this.colors.text.secondary,
         fontSize: this.typography.sizes.sm,
+        fontWeight: this.typography.weights.normal,
         textAlign: 'right',
       },
       navBarSafeArea: {
@@ -420,6 +437,7 @@ class StyleManager {
       navLabel: {
         color: colors.textSecondary || this.colors.text.muted,
         fontSize: this.typography.sizes.xs,
+        fontWeight: this.typography.weights.normal,
         textAlign: 'center',
       },
     });
@@ -453,6 +471,7 @@ class StyleManager {
       },
       subtitle: {
         fontSize: this.typography.sizes.sm,
+        fontWeight: this.typography.weights.normal,
         color: colors.textSecondary || this.colors.text.muted,
         textAlign: 'center',
         marginBottom: this.spacing.md,
@@ -464,6 +483,7 @@ class StyleManager {
         borderRadius: this.spacing.sm,
         padding: this.spacing.base,
         fontSize: this.typography.sizes.lg,
+        fontWeight: this.typography.weights.normal,
         marginBottom: this.spacing.md,
         backgroundColor:
           colors.inputBackground || colors.surface || this.colors.background,
@@ -480,7 +500,7 @@ class StyleManager {
       buttonText: {
         color: colors.textInverse || this.colors.text.white,
         fontSize: this.typography.sizes.xl,
-        fontWeight: this.typography.weights.bold,
+        fontWeight: this.typography.weights.semiBold,
       },
       randomBox: {
         backgroundColor: colors.surface || this.colors.border.dark,

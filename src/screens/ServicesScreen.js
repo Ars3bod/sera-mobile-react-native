@@ -65,7 +65,15 @@ const ServicesScreen = ({navigation}) => {
   const handleServicePress = service => {
     // Navigate to specific service screen or handle service action
     console.log('Service pressed:', t(service.titleKey));
-    // You can add navigation logic here
+
+    // Handle complaints service specifically
+    if (service.id === 2) {
+      // Complaints service
+      navigation.navigate('Complaints');
+      return;
+    }
+
+    // For other services, you can add navigation logic here
     // navigation.navigate('ServiceDetail', { service });
   };
 
@@ -165,7 +173,12 @@ const ServicesScreen = ({navigation}) => {
           style={styles.backButton}
           onPress={handleGoBack}
           activeOpacity={0.7}>
-          <ArrowLeft24Regular style={[dynamicStyles.backIcon]} />
+          <ArrowLeft24Regular
+            style={[
+              dynamicStyles.backIcon,
+              {transform: [{scaleX: isRTL ? -1 : 1}]},
+            ]}
+          />
         </TouchableOpacity>
         <Text style={dynamicStyles.headerTitle}>{t('services.title')}</Text>
         <View style={styles.placeholderView} />

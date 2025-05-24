@@ -3,14 +3,17 @@ import React from 'react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AppNavigator from './src/navigation/AppNavigator';
 import {ThemeProvider} from './src/context/ThemeContext';
+import {FontProvider} from './src/context/FontProvider';
 import './src/localization/i18n';
 
 export default function App() {
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <ThemeProvider>
-        <AppNavigator />
-      </ThemeProvider>
+      <FontProvider>
+        <ThemeProvider>
+          <AppNavigator />
+        </ThemeProvider>
+      </FontProvider>
     </GestureHandlerRootView>
   );
 }

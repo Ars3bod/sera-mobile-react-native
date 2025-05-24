@@ -50,11 +50,11 @@ jobs:
         run: |
           echo "🔑 Setting up iOS code signing..."
           echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > certificate.p12
-          security create-keychain -p "" build.keychain
+          security create-keychain -p "temp123" build.keychain
           security default-keychain -s build.keychain
-          security unlock-keychain -p "" build.keychain
+          security unlock-keychain -p "temp123" build.keychain
           security import certificate.p12 -k build.keychain -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "temp123" build.keychain
 
       - name: 🔐 Install Provisioning Profile (if available)
         if: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
@@ -70,42 +70,132 @@ jobs:
                      -scheme seraApp \
                      -configuration Release \
                      -destination generic/platform=iOS \
-                     -archivePath $PWD/build/seraApp.xcarchive \
+                     -archivePath $PWD/build/seraApp-Release.xcarchive \
+                     archive \
+                     CODE_SIGNING_ALLOWED=NO || \
+          xcodebuild -workspace seraApp.xcworkspace \
+                     -scheme seraApp \
+                     -configuration Release \
+                     -destination generic/platform=iOS \
+                     -archivePath $PWD/build/seraApp-Release.xcarchive \
                      archive
+
+      - name: 📦 Create Export Options
+        run: |
+          cd ios
+          cat > ExportOptionsRelease.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>${{ secrets.IOS_CERTIFICATE_BASE64 && 'app-store' || 'development' }}</string>
+              <key>teamID</key>
+              <string>\${DEVELOPMENT_TEAM}</string>
+              <key>compileBitcode</key>
+              <false/>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>uploadBitcode</key>
+              <false/>
+              <key>uploadSymbols</key>
+              <true/>
+              <key>manageAppVersionAndBuildNumber</key>
+              <false/>
+          </dict>
+          </plist>
+          EOF
 
       - name: 📦 Export IPA
         run: |
           cd ios
           xcodebuild -exportArchive \
-                     -archivePath $PWD/build/seraApp.xcarchive \
-                     -exportOptionsPlist ExportOptions.plist \
-                     -exportPath $PWD/build
+                     -archivePath $PWD/build/seraApp-Release.xcarchive \
+                     -exportOptionsPlist ExportOptionsRelease.plist \
+                     -exportPath $PWD/build/release \
+                     -allowProvisioningUpdates || \
+          xcodebuild -exportArchive \
+                     -archivePath $PWD/build/seraApp-Release.xcarchive \
+                     -exportPath $PWD/build/release \
+                     -exportOptionsPlist ExportOptionsRelease.plist \
+                     -allowProvisioningDeviceRegistration
 
-      - name: 📋 List IPA files
-        run: find ios/build -name "*.ipa" -type f
+      - name: 📋 List IPA files and info
+        run: |
+          echo "🔍 Build outputs:"
+          find ios/build -name "*.ipa" -type f || echo "No IPA files found"
+          find ios/build -name "*.app" -type d || echo "No app bundles found"
 
-      - name: ⬆️ Upload iOS IPA
+          echo ""
+          echo "📊 Archive info:"
+          ls -la ios/build/ || echo "No build directory"
+
+          if [ -d "ios/build/release" ]; then
+            echo ""
+            echo "📦 Release directory contents:"
+            ls -la ios/build/release/
+          fi
+
+      - name: ⬆️ Upload iOS Release IPA
         uses: actions/upload-artifact@v4
         with:
           name: sera-ios-release-${{ github.run_number }}
-          path: ios/build/*.ipa
-          retention-days: 30
+          path: |
+            ios/build/release/*.ipa
+            ios/build/release/seraApp.app
+            ios/build/seraApp-Release.xcarchive
+          retention-days: 90
+          if-no-files-found: warn
 
-      - name: 📊 IPA Info
+      - name: ⬆️ Upload dSYM files (for crash reporting)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sera-ios-dsym-${{ github.run_number }}
+          path: |
+            ios/build/seraApp-Release.xcarchive/dSYMs/**
+            ios/build/release/**/*.dSYM
+          retention-days: 365
+          if-no-files-found: ignore
+
+      - name: 📊 IPA Info & Summary
         run: |
-          cd ios/build
+          cd ios/build/release
           if ls *.ipa >/dev/null 2>&1; then
             echo "🎉 iOS Release IPA built successfully!"
+            echo ""
+            echo "📦 IPA Details:"
             for ipa in *.ipa; do
               size=$(du -h "$ipa" | cut -f1)
-              echo "📏 $ipa size: $size"
+              echo "  📱 File: $ipa"
+              echo "  📏 Size: $size"
+              echo "  🔍 Info: $(file "$ipa")"
+              
+              # استخراج معلومات إضافية
+              unzip -l "$ipa" | head -20
+              echo ""
             done
+            
+            echo "🔑 Code Signing Status:"
             if [ "${{ secrets.IOS_CERTIFICATE_BASE64 }}" ]; then
-              echo "🔑 IPA is SIGNED and ready for distribution!"
+              echo "  ✅ SIGNED - Ready for App Store or Enterprise distribution"
+              echo "  📝 Method: ${{ secrets.IOS_CERTIFICATE_BASE64 && 'app-store' || 'development' }}"
             else
-              echo "⚠️  IPA is UNSIGNED - add certificates for App Store distribution"
+              echo "  ⚠️  UNSIGNED - Add certificates for distribution"
+              echo "  💡 Current: Development/Ad-hoc build"
             fi
-            echo "📥 Download from: Actions → Artifacts → sera-ios-release-${{ github.run_number }}"
+            
+            echo ""
+            echo "📥 Download Links:"
+            echo "  🔗 Main IPA: Actions → Artifacts → sera-ios-release-${{ github.run_number }}"
+            echo "  🔗 Debug Symbols: Actions → Artifacts → sera-ios-dsym-${{ github.run_number }}"
+            
           else
-            echo "⚠️  No IPA files found. Check if code signing is properly configured."
+            echo "❌ No IPA files generated"
+            echo "🔍 Checking build outputs..."
+            find ../.. -name "*.app" -type d | head -5
+            echo "💡 Possible issues:"
+            echo "  - Code signing configuration"
+            echo "  - Export options setup"
+            echo "  - Archive creation failed"
           fi

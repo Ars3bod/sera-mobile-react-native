@@ -49,30 +49,94 @@ jobs:
       - name: 📱 List available simulators
         run: xcrun simctl list devices available
 
-      - name: 🏗️ Build iOS Debug App
+      - name: 🏗️ Build iOS Debug Archive
         run: |
           cd ios
           xcodebuild -workspace seraApp.xcworkspace \
                      -scheme seraApp \
                      -configuration Debug \
-                     -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
-                     -derivedDataPath ./build \
-                     build
+                     -destination generic/platform=iOS \
+                     -archivePath $PWD/build/seraApp-Debug.xcarchive \
+                     archive
 
-      - name: 📱 Create iOS App Bundle
+      - name: 📦 Export Debug IPA
         run: |
           cd ios
-          mkdir -p build/Debug-iphonesimulator
-          echo "📱 iOS Debug app built for simulator"
-          echo "🔍 App location: ios/build/Build/Products/Debug-iphonesimulator/seraApp.app"
+          # إنشاء ExportOptions.plist للـ Debug
+          cat > ExportOptionsDebug.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>development</string>
+              <key>teamID</key>
+              <string>\${DEVELOPMENT_TEAM}</string>
+              <key>compileBitcode</key>
+              <false/>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>uploadBitcode</key>
+              <false/>
+              <key>uploadSymbols</key>
+              <true/>
+          </dict>
+          </plist>
+          EOF
+
+          # Export IPA
+          xcodebuild -exportArchive \
+                     -archivePath $PWD/build/seraApp-Debug.xcarchive \
+                     -exportOptionsPlist ExportOptionsDebug.plist \
+                     -exportPath $PWD/build/debug \
+                     -allowProvisioningUpdates || \
+          xcodebuild -exportArchive \
+                     -archivePath $PWD/build/seraApp-Debug.xcarchive \
+                     -exportPath $PWD/build/debug \
+                     -exportOptionsPlist ExportOptionsDebug.plist \
+                     -allowProvisioningDeviceRegistration
 
       - name: 📋 List build outputs
-        run: find ios/build -name "*.app" -type d
+        run: |
+          find ios/build -name "*.app" -type d || echo "No .app files found"
+          find ios/build -name "*.ipa" -type f || echo "No .ipa files found"
+
+      - name: ⬆️ Upload iOS Debug IPA
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sera-ios-debug-${{ github.run_number }}
+          path: |
+            ios/build/debug/*.ipa
+            ios/build/debug/*.app
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: 📱 Upload Simulator App Bundle
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sera-ios-debug-simulator-${{ github.run_number }}
+          path: ios/build/Build/Products/Debug-iphonesimulator/seraApp.app
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: 📊 Build Info
         run: |
-          echo "🎉 iOS Debug build completed successfully!"
-          echo "📱 Platform: iOS Simulator"
+          echo "🎉 iOS Debug build completed!"
+          echo "📱 Platform: iOS Device + Simulator"
           echo "🔧 Configuration: Debug"
-          echo "📝 Note: Debug builds are for simulator testing only"
-          echo "💡 Tip: Use Xcode or iOS simulator to test the app"
+          echo "📦 Artifacts:"
+          if [ -f ios/build/debug/*.ipa ]; then
+            for ipa in ios/build/debug/*.ipa; do
+              size=$(du -h "$ipa" | cut -f1)
+              echo "  📱 IPA: $(basename $ipa) ($size)"
+            done
+            echo "✅ Debug IPA built successfully!"
+            echo "⚠️  Note: Debug IPA requires development provisioning profile"
+          else
+            echo "  📱 Simulator .app bundle created"
+            echo "ℹ️  Note: No IPA created - requires proper code signing for device"
+          fi
+          echo "📥 Download from: Actions → Artifacts → sera-ios-debug-${{ github.run_number }}"
+          echo "💡 Tip: Use Xcode or iOS device for testing"
