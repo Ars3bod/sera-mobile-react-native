@@ -2,8 +2,8 @@ name: 🚀 Release & Deploy
 
 on:
   push:
-    tags: ['v*']
     branches: [main]
+    tags: ['v*']
   workflow_dispatch:
     inputs:
       release_type:
@@ -17,7 +17,7 @@ on:
       release_notes:
         description: 'Release notes'
         required: false
-        default: 'Automated release from GitHub Actions'
+        default: ''
       skip_tests:
         description: 'Skip running tests'
         required: false
@@ -375,3 +375,10 @@ jobs:
           echo "🍎 iOS: ${{ needs.build-ios.result == 'success' && 'Success ✅' || 'Failed ❌' }}"
           echo "🔥 Firebase: ${{ secrets.FIREBASE_APP_ID && 'Deployed' || 'Not configured' }}"
           echo "📥 GitHub Release: Created"
+
+# إضافة الصلاحيات المطلوبة لـ GitHub Actions
+permissions:
+  contents: write # لإنشاء releases وإرفاق files
+  actions: read # لقراءة workflow runs
+  packages: read # لقراءة packages إذا لزم الأمر
+  pull-requests: read # لقراءة PR info إذا لزم الأمر

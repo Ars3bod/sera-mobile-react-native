@@ -38,6 +38,13 @@ on:
         default: true
         type: boolean
 
+# إضافة الصلاحيات المطلوبة لـ GitHub Actions
+permissions:
+  contents: write # لإنشاء releases وإرفاق files
+  actions: read # لقراءة workflow runs
+  packages: read # لقراءة packages إذا لزم الأمر
+  pull-requests: read # لقراءة PR info إذا لزم الأمر
+
 env:
   NODE_VERSION: '18'
   JAVA_VERSION: '17'
