@@ -1,6 +1,8 @@
 import React, {useEffect, useState, useRef, useCallback} from 'react';
-import {View, Text, TouchableOpacity, Alert} from 'react-native';
+import {View, Text, TouchableOpacity, Alert, StatusBar} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
+import {useTheme} from '../context/ThemeContext';
 import {pollNafathStatus, loginNafath} from '../services/nafathService';
 import StyleManager from '../styles/StyleManager';
 import {LoadingSpinner} from '../animations';
@@ -8,7 +10,8 @@ import DeepLinkService from '../services/deepLinkService';
 
 export default function NafathVerificationScreen({route, navigation}) {
   const {t} = useTranslation();
-  const styles = StyleManager.getNafathStyles();
+  const {theme, isDarkMode} = useTheme();
+  const styles = StyleManager.getNafathStyles(theme);
   const {
     transId: initialTransId,
     random: initialRandom,
@@ -55,7 +58,7 @@ export default function NafathVerificationScreen({route, navigation}) {
       }
     }
     poll();
-  }, [transId, random, nationalId, navigation]);
+  }, [transId, random, nationalId, navigation, t]);
 
   useEffect(() => {
     startPolling();
@@ -72,7 +75,7 @@ export default function NafathVerificationScreen({route, navigation}) {
       setCanResend(true);
       clearInterval(timerRef.current);
     }
-  }, [remaining]);
+  }, [remaining, t]);
 
   // Resend Request logic
   const handleResend = async () => {
@@ -121,78 +124,61 @@ export default function NafathVerificationScreen({route, navigation}) {
     }
   };
 
-  // Add debug function to test all Nafath app launch methods
-  const debugNafathApp = async () => {
-    console.log('🔍 Starting Nafath app debug...');
-    try {
-      const results = await DeepLinkService.debugNafathApp();
-      console.log('Debug results:', results);
-
-      // Show simple alert with results
-      Alert.alert(
-        'Debug Results',
-        `Platform: ${results.platform}\nPackage Check: ${results.packageCheck}\nCheck console for detailed logs`,
-      );
-    } catch (error) {
-      console.error('Debug error:', error);
-      Alert.alert('Debug Error', error.message);
-    }
-  };
-
   return (
-    <View style={[styles.container, styles.centerContent]}>
-      <View style={styles.card}>
-        <Text style={styles.title}>{t('nafathVerification.title')}</Text>
-        <Text style={styles.subtitle}>{t('nafathVerification.subtitle')}</Text>
-        <View style={styles.randomBox}>
-          <Text style={styles.randomText}>{random}</Text>
-        </View>
-        <Text style={styles.timer}>
-          {t('nafathVerification.remainingTime')}:{' '}
-          {`00:${remaining.toString().padStart(2, '0')}`}
-        </Text>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        backgroundColor={theme.colors.background}
+      />
+      <View style={[styles.container, styles.centerContent]}>
+        <View style={styles.card}>
+          <Text style={styles.title}>{t('nafathVerification.title')}</Text>
+          <Text style={styles.subtitle}>
+            {t('nafathVerification.subtitle')}
+          </Text>
+          <View style={styles.randomBox}>
+            <Text style={styles.randomText}>{random}</Text>
+          </View>
+          <Text style={styles.timer}>
+            {t('nafathVerification.remainingTime')}:{' '}
+            {`00:${remaining.toString().padStart(2, '0')}`}
+          </Text>
 
-        <TouchableOpacity
-          onPress={handleResend}
-          disabled={!canResend}
-          style={[
-            styles.resendBtn,
-            canResend ? styles.resendActive : styles.resendDisabled,
-          ]}>
-          <Text
-            style={
-              canResend ? styles.resendActiveText : styles.resendDisabledText
-            }>
-            {t('nafathVerification.resendRequest')}
+          <TouchableOpacity
+            onPress={handleResend}
+            disabled={!canResend}
+            style={[
+              styles.resendBtn,
+              canResend ? styles.resendActive : styles.resendDisabled,
+            ]}>
+            <Text
+              style={
+                canResend ? styles.resendActiveText : styles.resendDisabledText
+              }>
+              {t('nafathVerification.resendRequest')}
+            </Text>
+          </TouchableOpacity>
+
+          {loading && (
+            <View style={{marginTop: 16}}>
+              <LoadingSpinner
+                type="rotating"
+                size={40}
+                color={theme.colors.primary}
+                duration={1000}
+              />
+            </View>
+          )}
+
+          {error && <Text style={styles.errorText}>{error}</Text>}
+        </View>
+
+        <TouchableOpacity onPress={openNafathApp} style={styles.openBtn}>
+          <Text style={styles.buttonText}>
+            {t('nafathVerification.openApp')}
           </Text>
         </TouchableOpacity>
-
-        {loading && (
-          <View style={{marginTop: 16}}>
-            <LoadingSpinner
-              type="rotating"
-              size={40}
-              color="#00623B"
-              duration={1000}
-            />
-          </View>
-        )}
-
-        {error && <Text style={styles.errorText}>{error}</Text>}
       </View>
-
-      <TouchableOpacity onPress={openNafathApp} style={styles.openBtn}>
-        <Text style={styles.buttonText}>{t('nafathVerification.openApp')}</Text>
-      </TouchableOpacity>
-
-      {/* Debug button - remove this in production */}
-      {__DEV__ && (
-        <TouchableOpacity
-          onPress={debugNafathApp}
-          style={[styles.openBtn, {backgroundColor: '#orange', marginTop: 10}]}>
-          <Text style={styles.buttonText}>Debug Nafath App</Text>
-        </TouchableOpacity>
-      )}
-    </View>
+    </SafeAreaView>
   );
 }

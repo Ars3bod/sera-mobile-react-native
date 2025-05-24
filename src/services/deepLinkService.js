@@ -38,20 +38,18 @@ class DeepLinkService {
           const isInstalled = await this.isAppInstalledAndroid(
             this.nafathConfig.packageName,
           );
-          console.log('Android package check result:', isInstalled);
           if (isInstalled) return true;
         } catch (error) {
-          console.warn('Package check failed:', error);
+          // Silent fail
         }
 
         // Method 2: Try URL scheme
         for (const scheme of this.nafathConfig.schemes.android) {
           try {
             const canOpen = await Linking.canOpenURL(scheme);
-            console.log(`Android scheme ${scheme} check:`, canOpen);
             if (canOpen) return true;
           } catch (error) {
-            console.warn(`Error checking scheme ${scheme}:`, error);
+            // Silent fail
           }
         }
 
@@ -59,7 +57,6 @@ class DeepLinkService {
       } else {
         // iOS method
         const canOpen = await Linking.canOpenURL(this.nafathConfig.schemes.ios);
-        console.log('iOS scheme check result:', canOpen);
         return canOpen;
       }
     } catch (error) {
@@ -78,20 +75,17 @@ class DeepLinkService {
 
         // Method 1: Try using package name directly
         try {
-          console.log('Attempting to launch using package name...');
           const result = await this.launchNafathAppAndroid();
           if (result.success) {
-            console.log('Successfully launched using package name');
             return result;
           }
         } catch (error) {
-          console.warn('Package launch failed:', error);
+          // Try next method
         }
 
         // Method 2: Try URL schemes
         for (const scheme of this.nafathConfig.schemes.android) {
           try {
-            console.log(`Attempting to launch using scheme: ${scheme}`);
             let url = scheme;
             if (
               Object.keys(params).length > 0 &&
@@ -104,11 +98,9 @@ class DeepLinkService {
             }
 
             const canOpen = await Linking.canOpenURL(url);
-            console.log(`Can open ${url}:`, canOpen);
 
             if (canOpen) {
               await Linking.openURL(url);
-              console.log('Successfully launched using URL scheme');
               return {
                 success: true,
                 action: 'app_launched',
@@ -116,7 +108,7 @@ class DeepLinkService {
               };
             }
           } catch (error) {
-            console.warn(`Error with scheme ${scheme}:`, error);
+            // Try next scheme
           }
         }
 
@@ -132,7 +124,6 @@ class DeepLinkService {
           url += `?${queryString}`;
         }
 
-        console.log(`iOS attempting to open: ${url}`);
         const canOpen = await Linking.canOpenURL(url);
         if (canOpen) {
           await Linking.openURL(url);
@@ -181,9 +172,6 @@ class DeepLinkService {
 
     try {
       // Try to launch using package name
-      console.log(
-        `Launching Android app with package: ${this.nafathConfig.packageName}`,
-      );
       await SendIntentAndroid.openApp(this.nafathConfig.packageName, {});
       return {success: true, action: 'app_launched_android'};
     } catch (error) {
@@ -289,99 +277,6 @@ class DeepLinkService {
 
       return {success: false, error: error.message};
     }
-  }
-
-  /**
-   * Debug method to test all available methods for launching Nafath app
-   * Call this method to see detailed logs about what works and what doesn't
-   */
-  async debugNafathApp() {
-    console.log('🔍 === NAFATH APP DEBUG STARTING ===');
-    console.log('Platform:', Platform.OS);
-    console.log('Package Name:', this.nafathConfig.packageName);
-
-    const results = {
-      platform: Platform.OS,
-      packageCheck: false,
-      schemes: {},
-      launchAttempts: {},
-    };
-
-    if (Platform.OS === 'android') {
-      // Test 1: Check if app is installed using package name
-      console.log('\n📱 Testing package installation check...');
-      try {
-        const isInstalled = await this.isAppInstalledAndroid(
-          this.nafathConfig.packageName,
-        );
-        results.packageCheck = isInstalled;
-        console.log('✅ Package check result:', isInstalled);
-      } catch (error) {
-        console.log('❌ Package check failed:', error.message);
-        results.packageCheck = `Error: ${error.message}`;
-      }
-
-      // Test 2: Check each URL scheme
-      console.log('\n🔗 Testing URL schemes...');
-      for (const scheme of this.nafathConfig.schemes.android) {
-        try {
-          const canOpen = await Linking.canOpenURL(scheme);
-          results.schemes[scheme] = canOpen;
-          console.log(`${canOpen ? '✅' : '❌'} Scheme "${scheme}":`, canOpen);
-        } catch (error) {
-          results.schemes[scheme] = `Error: ${error.message}`;
-          console.log(`❌ Scheme "${scheme}" error:`, error.message);
-        }
-      }
-
-      // Test 3: Try launching with package name
-      console.log('\n🚀 Testing launch with package name...');
-      try {
-        await SendIntentAndroid.openApp(this.nafathConfig.packageName, {});
-        results.launchAttempts.packageName = 'Success';
-        console.log('✅ Package launch successful');
-      } catch (error) {
-        results.launchAttempts.packageName = `Error: ${error.message}`;
-        console.log('❌ Package launch failed:', error.message);
-      }
-
-      // Test 4: Try launching with intent
-      console.log('\n🎯 Testing launch with intent...');
-      try {
-        const intent = {
-          action: 'android.intent.action.MAIN',
-          category: 'android.intent.category.LAUNCHER',
-          package: this.nafathConfig.packageName,
-        };
-        await SendIntentAndroid.openApp('', intent);
-        results.launchAttempts.intent = 'Success';
-        console.log('✅ Intent launch successful');
-      } catch (error) {
-        results.launchAttempts.intent = `Error: ${error.message}`;
-        console.log('❌ Intent launch failed:', error.message);
-      }
-    } else {
-      // iOS testing
-      console.log('\n🍎 Testing iOS URL scheme...');
-      const scheme = this.nafathConfig.schemes.ios;
-      try {
-        const canOpen = await Linking.canOpenURL(scheme);
-        results.schemes[scheme] = canOpen;
-        console.log(
-          `${canOpen ? '✅' : '❌'} iOS scheme "${scheme}":`,
-          canOpen,
-        );
-      } catch (error) {
-        results.schemes[scheme] = `Error: ${error.message}`;
-        console.log(`❌ iOS scheme error:`, error.message);
-      }
-    }
-
-    console.log('\n📊 === DEBUG RESULTS SUMMARY ===');
-    console.log(JSON.stringify(results, null, 2));
-    console.log('🔍 === NAFATH APP DEBUG COMPLETE ===\n');
-
-    return results;
   }
 }
 

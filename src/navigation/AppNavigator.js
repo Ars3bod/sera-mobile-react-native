@@ -9,6 +9,15 @@ import LoginScreen from '../screens/LoginScreen';
 import HomeScreen from '../screens/HomeScreen';
 import NafathLoginScreen from '../screens/NafathLoginScreen';
 import NafathVerificationScreen from '../screens/NafathVerificationScreen';
+import ServicesScreen from '../screens/ServicesScreen';
+import MoreScreen from '../screens/MoreScreen';
+import SettingsScreen from '../screens/SettingsScreen';
+import AboutScreen from '../screens/AboutScreen';
+import ContactScreen from '../screens/ContactScreen';
+import NewsScreen from '../screens/NewsScreen';
+import PoliciesScreen from '../screens/PoliciesScreen';
+import FAQScreen from '../screens/FAQScreen';
+import ImportantLinksScreen from '../screens/ImportantLinksScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -64,6 +73,78 @@ export default function AppNavigator() {
             animation: 'fade',
             animationDuration: 500,
             gestureEnabled: false, // Prevent going back to login
+          }}
+        />
+        <Stack.Screen
+          name="Services"
+          component={ServicesScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="More"
+          component={MoreScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="About"
+          component={AboutScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="Contact"
+          component={ContactScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="News"
+          component={NewsScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="Policies"
+          component={PoliciesScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="FAQ"
+          component={FAQScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="ImportantLinks"
+          component={ImportantLinksScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
           }}
         />
       </Stack.Navigator>

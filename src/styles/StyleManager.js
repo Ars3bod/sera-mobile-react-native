@@ -291,94 +291,214 @@ class StyleManager {
     });
   }
 
-  // Screen-specific styles
-  getHomeScreenStyles() {
-    const common = this.getCommonStyles();
+  // Home screen specific styles
+  getHomeScreenStyles(theme) {
+    const colors = theme ? theme.colors : this.colors;
+    const shadows = theme ? theme.shadows : this.shadows;
+
     return this.createStyleSheet('homeScreen', {
-      ...common,
+      safeArea: {
+        flex: 1,
+        backgroundColor: colors.background || this.colors.background,
+      },
+      container: {
+        flex: 1,
+        backgroundColor: colors.background || this.colors.background,
+      },
+      scrollContent: {
+        padding: this.spacing.xl,
+        paddingBottom: this.spacing.xl,
+      },
+      headerText: {
+        color: colors.primary || this.colors.primary,
+        fontSize: this.typography.sizes.xxxl,
+        fontWeight: this.typography.weights.bold,
+        textAlign: 'right',
+        marginBottom: this.spacing.sm,
+        marginTop: this.spacing.base,
+      },
+      subHeaderText: {
+        color: colors.text || this.colors.text.primary,
+        fontSize: this.typography.sizes.sm,
+        textAlign: 'right',
+        marginBottom: this.spacing.lg,
+        lineHeight: this.typography.lineHeights.tight,
+      },
       mainCardsRow: {
-        ...common.flexRow,
-        marginBottom: this.spacing.xxl,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: this.spacing.lg,
+      },
+      mainCard: {
+        flex: 1,
+        backgroundColor:
+          colors.card || colors.surface || this.colors.background,
+        borderRadius: this.borderRadius.md,
+        borderWidth: 1,
+        borderColor: colors.border || this.colors.border.light,
+        alignItems: 'center',
+        paddingVertical: this.spacing.lg,
+        marginHorizontal: this.spacing.xs,
+        ...(shadows ? shadows.medium : this.shadows.medium),
       },
       mainCardIcon: {
-        width: 48,
-        height: 48,
-        color: this.colors.primary,
+        color: colors.primary || this.colors.primary,
         marginBottom: this.spacing.sm,
-      },
-      mainCardText: {
-        fontSize: this.typography.sizes.base,
-        color: this.colors.primary,
-        fontWeight: this.typography.weights.bold,
-      },
-      infoCardIcon: {
         width: 32,
         height: 32,
-        color: this.colors.primary,
-        marginLeft: this.spacing.base,
-        marginRight: this.spacing.base,
       },
-      infoCardTitle: {
-        color: this.colors.primary,
+      mainCardText: {
+        color: colors.text || this.colors.text.primary,
         fontSize: this.typography.sizes.base,
         fontWeight: this.typography.weights.bold,
-        marginBottom: 2,
-        textAlign: 'right',
+        textAlign: 'center',
       },
-      navIcon: {
+      sectionTitle: {
+        color: colors.primary || this.colors.primary,
+        fontSize: this.typography.sizes.xl,
+        fontWeight: this.typography.weights.bold,
+        textAlign: 'right',
+        marginBottom: this.spacing.sm,
+        marginTop: this.spacing.lg,
+      },
+      sectionDescription: {
+        color: colors.text || this.colors.text.primary,
+        fontSize: this.typography.sizes.sm,
+        textAlign: 'right',
+        marginBottom: this.spacing.md,
+        lineHeight: this.typography.lineHeights.tight,
+      },
+      infoCard: {
+        flexDirection: I18nManager.isRTL ? 'row' : 'row-reverse',
+        alignItems: 'center',
+        backgroundColor: colors.card || colors.surface || this.colors.surface,
+        borderRadius: this.borderRadius.md,
+        padding: this.spacing.md,
+        marginBottom: this.spacing.base,
+        ...(shadows ? shadows.light : this.shadows.light),
+      },
+      infoCardIcon: {
+        color: colors.primary || this.colors.primary,
+        marginLeft: I18nManager.isRTL ? 0 : this.spacing.base,
+        marginRight: I18nManager.isRTL ? this.spacing.base : 0,
         width: 24,
         height: 24,
-        color: this.colors.primary,
-        marginBottom: 2,
+      },
+      infoCardTitle: {
+        color: colors.text || this.colors.text.primary,
+        fontSize: this.typography.sizes.base,
+        fontWeight: this.typography.weights.bold,
+        textAlign: 'right',
+        marginBottom: this.spacing.xs,
+      },
+      secondaryText: {
+        color: colors.textSecondary || this.colors.text.secondary,
+        fontSize: this.typography.sizes.sm,
+        textAlign: 'right',
+      },
+      navBarSafeArea: {
+        backgroundColor: colors.surface || this.colors.background,
+      },
+      navBar: {
+        flexDirection: 'row',
+        backgroundColor: colors.surface || this.colors.background,
+        borderTopWidth: 1,
+        borderTopColor: colors.border || this.colors.border.light,
+        paddingVertical: this.spacing.sm,
+      },
+      navTab: {
+        flex: 1,
+        alignItems: 'center',
+        paddingVertical: this.spacing.xs,
+      },
+      navIcon: {
+        color: colors.icon || this.colors.text.muted,
+        marginBottom: this.spacing.xs / 2,
+        width: 20,
+        height: 20,
       },
       navLabel: {
+        color: colors.textSecondary || this.colors.text.muted,
         fontSize: this.typography.sizes.xs,
-        color: this.colors.text.primary,
-        fontWeight: this.typography.weights.bold,
+        textAlign: 'center',
       },
     });
   }
 
   // Nafath screen styles
-  getNafathStyles() {
+  getNafathStyles(theme) {
+    const colors = theme ? theme.colors : this.colors;
+    const shadows = theme ? theme.shadows : this.shadows;
     const common = this.getCommonStyles();
+
     return this.createStyleSheet('nafath', {
       ...common,
+      container: {
+        flex: 1,
+        backgroundColor: colors.background || this.colors.background,
+      },
       card: {
         width: '85%',
-        backgroundColor: this.colors.surface,
+        backgroundColor: colors.card || colors.surface || this.colors.surface,
         borderRadius: this.borderRadius.xl,
         padding: this.spacing.xxl,
         alignItems: 'center',
-        ...this.shadows.heavy,
+        ...(shadows ? shadows.heavy : this.shadows.heavy),
       },
       title: {
         fontSize: this.typography.sizes.huge,
         fontWeight: this.typography.weights.bold,
-        color: this.colors.primary,
+        color: colors.primary || this.colors.primary,
         marginBottom: this.spacing.sm,
       },
       subtitle: {
         fontSize: this.typography.sizes.sm,
-        color: this.colors.text.muted,
+        color: colors.textSecondary || this.colors.text.muted,
         textAlign: 'center',
         marginBottom: this.spacing.md,
       },
+      textInput: {
+        width: '100%',
+        borderWidth: 1,
+        borderColor: colors.border || this.colors.border.medium,
+        borderRadius: this.spacing.sm,
+        padding: this.spacing.base,
+        fontSize: this.typography.sizes.lg,
+        marginBottom: this.spacing.md,
+        backgroundColor:
+          colors.inputBackground || colors.surface || this.colors.background,
+        color: colors.inputText || colors.text || this.colors.text.primary,
+      },
+      primaryButton: {
+        backgroundColor: colors.primary || this.colors.primary,
+        borderRadius: this.borderRadius.base,
+        paddingVertical: this.spacing.md,
+        paddingHorizontal: this.spacing.xxxl,
+        alignItems: 'center',
+        width: '100%',
+      },
+      buttonText: {
+        color: colors.textInverse || this.colors.text.white,
+        fontSize: this.typography.sizes.xl,
+        fontWeight: this.typography.weights.bold,
+      },
       randomBox: {
-        backgroundColor: this.colors.border.dark,
+        backgroundColor: colors.surface || this.colors.border.dark,
         borderRadius: this.spacing.sm,
         paddingHorizontal: this.spacing.xxxl,
         paddingVertical: this.spacing.sm,
         marginBottom: this.spacing.base,
+        borderWidth: 1,
+        borderColor: colors.border || this.colors.border.light,
       },
       randomText: {
         fontSize: this.typography.sizes.giant,
         fontWeight: this.typography.weights.bold,
-        color: this.colors.text.primary,
+        color: colors.text || this.colors.text.primary,
       },
       timer: {
         fontSize: this.typography.sizes.lg,
-        color: this.colors.secondary,
+        color: colors.textSecondary || this.colors.secondary,
         marginBottom: this.spacing.sm,
       },
       resendBtn: {
@@ -389,29 +509,40 @@ class StyleManager {
         alignItems: 'center',
       },
       resendActive: {
-        backgroundColor: this.colors.primaryLight,
+        backgroundColor: colors.primaryLight || this.colors.primaryLight,
       },
       resendDisabled: {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: colors.surface || '#f0f0f0',
       },
       resendActiveText: {
-        color: this.colors.primary,
+        color: colors.primary || this.colors.primary,
         fontSize: this.typography.sizes.lg,
         fontWeight: this.typography.weights.bold,
       },
       resendDisabledText: {
-        color: this.colors.text.light,
+        color: colors.textSecondary || this.colors.text.light,
         fontSize: this.typography.sizes.lg,
         fontWeight: this.typography.weights.bold,
+      },
+      errorText: {
+        color: colors.error || this.colors.status.error,
+        marginTop: this.spacing.base,
+        fontSize: this.typography.sizes.base,
+        textAlign: 'center',
       },
       openBtn: {
         position: 'absolute',
         bottom: 40,
         left: 20,
         right: 20,
-        backgroundColor: this.colors.primary,
+        backgroundColor: colors.primary || this.colors.primary,
         borderRadius: this.borderRadius.lg,
         paddingVertical: this.spacing.lg,
+        alignItems: 'center',
+        ...(shadows ? shadows.medium : this.shadows.medium),
+      },
+      centerContent: {
+        justifyContent: 'center',
         alignItems: 'center',
       },
     });
