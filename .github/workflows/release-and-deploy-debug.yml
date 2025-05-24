@@ -175,17 +175,22 @@ jobs:
       - name: 🏗️ Build iOS Debug Archive
         run: |
           cd ios
-          # بناء debug archive بدون code signing requirements
+          # إعداد Team ID افتراضي للـ debug builds
+          DEFAULT_TEAM="XXXXXXXXXX"  # Team ID افتراضي (يمكن أن يكون وهمي للـ debug)
+
+          # بناء debug archive مع minimal signing requirements
           xcodebuild -workspace seraApp.xcworkspace \
                      -scheme seraApp \
                      -configuration Debug \
                      -destination generic/platform=iOS \
                      -archivePath $PWD/build/seraApp-Debug.xcarchive \
                      archive \
-                     CODE_SIGNING_ALLOWED=NO \
+                     DEVELOPMENT_TEAM="$DEFAULT_TEAM" \
+                     CODE_SIGNING_ALLOWED=YES \
                      CODE_SIGNING_REQUIRED=NO \
                      CODE_SIGN_IDENTITY="" \
-                     PROVISIONING_PROFILE_SPECIFIER=""
+                     PROVISIONING_PROFILE_SPECIFIER="" \
+                     -allowProvisioningUpdates
 
       - name: 📦 Create Debug Export Options
         run: |
@@ -197,6 +202,10 @@ jobs:
           <dict>
               <key>method</key>
               <string>development</string>
+              <key>teamID</key>
+              <string>XXXXXXXXXX</string>
+              <key>signingStyle</key>
+              <string>automatic</string>
               <key>compileBitcode</key>
               <false/>
               <key>stripSwiftSymbols</key>
@@ -207,11 +216,15 @@ jobs:
               <false/>
               <key>manageAppVersionAndBuildNumber</key>
               <false/>
+              <key>generateAppStoreInformation</key>
+              <false/>
           </dict>
           </plist>
           EOF
 
-      - name: 📦 Export Debug IPA
+      - name: 📦 Export Debug IPA (Attempt 1 - Development)
+        id: export_dev
+        continue-on-error: true
         run: |
           cd ios
           xcodebuild -exportArchive \
@@ -219,7 +232,74 @@ jobs:
                      -exportOptionsPlist ExportOptionsDebug.plist \
                      -exportPath $PWD/build/debug \
                      -allowProvisioningUpdates \
-                     -allowProvisioningDeviceRegistration || echo "IPA export may have issues, but archive is available"
+                     -allowProvisioningDeviceRegistration
+
+      - name: 📦 Export Debug IPA (Attempt 2 - Ad Hoc)
+        if: steps.export_dev.outcome == 'failure'
+        id: export_adhoc
+        continue-on-error: true
+        run: |
+          cd ios
+          # جرب ad-hoc method
+          cat > ExportOptionsAdHoc.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>ad-hoc</string>
+              <key>teamID</key>
+              <string>XXXXXXXXXX</string>
+              <key>signingStyle</key>
+              <string>automatic</string>
+              <key>compileBitcode</key>
+              <false/>
+              <key>stripSwiftSymbols</key>
+              <false/>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild -exportArchive \
+                     -archivePath $PWD/build/seraApp-Debug.xcarchive \
+                     -exportOptionsPlist ExportOptionsAdHoc.plist \
+                     -exportPath $PWD/build/debug-adhoc \
+                     -allowProvisioningUpdates
+
+      - name: 📦 Export Debug IPA (Attempt 3 - No Signing)
+        if: steps.export_dev.outcome == 'failure' && steps.export_adhoc.outcome == 'failure'
+        continue-on-error: true
+        run: |
+          cd ios
+          echo "🔧 محاولة export بدون signing requirements..."
+          # استخراج الـ .app من archive للاختبار
+          mkdir -p $PWD/build/debug-nosign
+          cp -R $PWD/build/seraApp-Debug.xcarchive/Products/Applications/seraApp.app $PWD/build/debug-nosign/
+
+          # إنشاء IPA يدوياً (للاختبار فقط)
+          cd $PWD/build/debug-nosign
+          mkdir Payload
+          cp -R seraApp.app Payload/
+          zip -r seraApp-Debug-NoSign.ipa Payload/
+          mv seraApp-Debug-NoSign.ipa ../debug/
+
+      - name: 📋 Debug Export Summary
+        run: |
+          cd ios
+          echo "📦 iOS Debug Export Results:"
+          echo "🔄 Development method: ${{ steps.export_dev.outcome }}"
+          echo "🔄 Ad-hoc method: ${{ steps.export_adhoc.outcome || 'skipped' }}"
+          echo "📁 Available files:"
+          find build/ -name "*.ipa" -o -name "*.app" | head -10
+
+          # تحقق من وجود أي IPA أو app files
+          if find build/ -name "*.ipa" | grep -q .; then
+            echo "✅ IPA files found!"
+          elif find build/ -name "*.app" | grep -q .; then
+            echo "✅ APP files found (archive successful)!"
+          else
+            echo "⚠️ No IPA or APP files found, but archive may still be available"
+          fi
 
       - name: ⬆️ Upload iOS Debug Archive
         uses: actions/upload-artifact@v4
@@ -227,7 +307,9 @@ jobs:
           name: sera-ios-debug-${{ github.run_number }}
           path: |
             ios/build/debug/*.ipa
-            ios/build/debug/seraApp.app
+            ios/build/debug-adhoc/*.ipa
+            ios/build/debug/*.app
+            ios/build/debug-nosign/*.app
             ios/build/seraApp-Debug.xcarchive
           retention-days: 30
           if-no-files-found: warn
