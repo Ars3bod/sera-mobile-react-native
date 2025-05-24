@@ -24,235 +24,182 @@
 ### 3. 🍎 **iOS Debug** (`ios-debug.yml`) - ✨ **Updated**
 
 - **Trigger**: Push to `develop`, `feature/*`, PRs to `develop`/`main`
-- **Purpose**: بناء IPA للتطوير والاختبار
-- **Features**:
-  - ✅ Debug IPA generation
-  - ✅ Simulator .app bundle
-  - ✅ Development provisioning support
-  - ✅ Artifact upload with build number
-- **Output**:
-  - Debug IPA (if signed)
-  - Simulator app bundle
+- **Purpose**: بناء وتجريب IPA للتطوير
+- **Features**: Simulator builds, debug configurations
+- **Output**: Debug IPA with enhanced artifacts
 - **Retention**: 7 days
 
-### 4. 🍎 **iOS Release** (`ios-release.yml`) - ✨ **Enhanced**
+### 4. 🍎 **iOS Release** (`ios-release.yml`) - ✨ **Updated**
 
 - **Trigger**: Push to `main`, tags `v*`
-- **Purpose**: بناء IPA نهائي للتوزيع
-- **Features**:
-  - ✅ Release IPA generation
-  - ✅ Enhanced code signing
-  - ✅ dSYM files for crash reporting
-  - ✅ Multiple export options
-  - ✅ Detailed build info
-  - ✅ Archive preservation
-- **Output**:
-  - Release IPA (signed/unsigned)
-  - dSYM debug symbols
-  - Xcode archive
-- **Retention**: 90 days (IPA), 365 days (dSYM)
+- **Purpose**: بناء IPA نهائي للإنتاج
+- **Features**: Code signing, provisioning profiles, release optimizations
+- **Output**: Signed Release IPA with dSYM files
+- **Retention**: 90 days
 
 ### 5. 🚀 **Release & Deploy** (`release-and-deploy.yml`) - ✨ **Enhanced**
 
-- **Trigger**: Tags `v*`, Push to `main`, Manual dispatch
-- **Purpose**: إنتاج وتوزيع شامل
-- **New Features**:
-  - ✅ **Optional Tests**: `skip_tests` parameter
-  - ✅ **Conditional Builds**: Continue even if tests fail/skip
-  - ✅ **Enhanced Artifacts**: Build number in names
-  - ✅ **Better Error Handling**: Individual job success tracking
-  - ✅ **Detailed Reporting**: Test status in releases
+- **Trigger**: Push to `main`, tags `v*`, manual dispatch
+- **Purpose**: بناء ونشر شامل للإنتاج
+- **Features**:
+  - ✅ Optional test execution (can be skipped)
+  - 🤖 Android release APK with keystore signing
+  - 🍎 iOS release IPA with code signing
+  - 🔥 Firebase App Distribution deployment
+  - 📦 Automatic GitHub releases
+  - 📊 Comprehensive build reporting
+- **Inputs**:
+  - `release_type`: beta/production
+  - `release_notes`: Custom release description
+  - `skip_tests`: Skip test execution for faster builds
+- **Output**: Production-ready builds
+- **Retention**: 90 days
 
-## 🎯 **Key Improvements**
+### 6. 🐛 **Release & Deploy (Debug Mode)** (`release-and-deploy-debug.yml`) - ✨ **NEW**
 
-### 📱 **iOS Enhancements**
+- **Trigger**: Push to `develop`, `feature/*`, manual dispatch
+- **Purpose**: بناء ونشر سريع للاختبار والتطوير
+- **Features**:
+  - ⚡ Fast debug builds without complex signing
+  - 🤖 Android debug APK (uses debug keystore)
+  - 🍎 iOS debug archive (no signing requirements)
+  - 🔥 Firebase App Distribution for beta testing
+  - 📦 Debug GitHub releases with clear labeling
+  - 🧪 Optional test execution (default: skipped)
+  - ⚠️ Clear debug/testing indicators
+- **Inputs**:
+  - `release_type`: beta-debug/internal-debug/testing-debug
+  - `release_notes`: Custom debug notes
+  - `skip_tests`: Skip tests (default: true)
+  - `deploy_to_firebase`: Enable/disable Firebase deployment
+- **Output**: Debug builds for testing
+- **Retention**: 30 days
+- **Benefits**:
+  - 🚀 Faster execution (no complex signing)
+  - 🔄 Frequent testing capability
+  - 🐛 Debug symbols included
+  - 👥 Easy distribution to testers
 
-1. **IPA Generation**:
+## 🔧 **Workflow Features Comparison**
 
-   - Debug و Release builds تنتج IPA files
-   - Support للـ development و app-store export methods
-   - Enhanced export options configuration
+| Feature             | Debug Workflows | Release Workflows | Release & Deploy | Debug Release & Deploy     |
+| ------------------- | --------------- | ----------------- | ---------------- | -------------------------- |
+| **Speed**           | ⚡ Fast         | 🐌 Slower         | 🐌 Comprehensive | ⚡ Very Fast               |
+| **Code Signing**    | 🚫 None/Simple  | ✅ Full           | ✅ Production    | 🚫 Debug Only              |
+| **Firebase Deploy** | ❌ No           | ❌ No             | ✅ Yes           | ✅ Yes (Optional)          |
+| **Test Execution**  | ✅ Yes          | ✅ Yes            | 🔄 Optional      | 🔄 Optional (Skip Default) |
+| **Artifacts**       | 📦 Basic        | 📦 Enhanced       | 📦 Production    | 📦 Debug + Symbols         |
+| **Use Case**        | 🛠️ Development  | 🏭 Production     | 🚀 Release       | 🧪 Testing                 |
 
-2. **Code Signing**:
+## 🎯 **Recommended Usage**
 
-   - Improved keychain handling
-   - Automatic provisioning profile installation
-   - Fallback options for unsigned builds
+### **للتطوير اليومي:**
 
-3. **Artifacts**:
-   - Unique names with build numbers
-   - dSYM files للـ crash reporting
-   - Xcode archives preservation
-   - Extended retention periods
+- استخدم **Android/iOS Debug** workflows للتطوير المستمر
+- استخدم **Release & Deploy (Debug Mode)** للاختبار مع الفريق
 
-### 🧪 **Testing Flexibility**
+### **للإنتاج:**
 
-- **Optional Tests**: يمكن تخطي الـ tests عبر `skip_tests` parameter
-- **Conditional Builds**: البناء يستمر حتى لو فشلت الـ tests
-- **Status Tracking**: تتبع حالة كل job بشكل منفصل
+- استخدم **Release & Deploy** للإصدارات النهائية
+- استخدم **Android/iOS Release** للبناء المنفصل
 
-### 📦 **Artifact Management**
+### **للاختبار السريع:**
 
-- **Unique Names**: كل build له اسم فريد مع رقم البناء
-- **Retention Policies**:
-  - Debug builds: 7 days
-  - Release builds: 90 days
-  - Debug symbols: 365 days
-- **Error Handling**: `if-no-files-found` للتعامل مع الملفات المفقودة
-
-## 🔧 **Manual Workflow Dispatch Options**
-
-### 🚀 **Release & Deploy Workflow**
-
-```yaml
-# Manual trigger options:
-release_type: [beta, production]
-release_notes: 'Custom release notes'
-skip_tests: [true, false] # ✨ New option
-```
-
-## 📁 **Artifact Structure**
-
-### 🤖 **Android Artifacts**
-
-```
-sera-android-debug-{build_number}
-├── app-debug.apk
-
-sera-android-release-{build_number}
-├── app-release.apk (signed/unsigned)
-```
-
-### 🍎 **iOS Artifacts**
-
-```
-sera-ios-debug-{build_number}
-├── seraApp.ipa (if signed)
-├── seraApp.app/
-
-sera-ios-release-{build_number}
-├── seraApp.ipa
-├── seraApp.app/
-├── seraApp-Release.xcarchive/
-
-sera-ios-dsym-{build_number}
-├── dSYMs/
-    ├── seraApp.app.dSYM/
-    └── [other debug symbols]
-```
+- استخدم **Release & Deploy (Debug Mode)** مع Firebase Distribution
+- فعل `skip_tests` للسرعة القصوى
 
 ## 🔐 **Required Secrets**
 
-### 🤖 **Android Signing**
-
-- `ANDROID_KEYSTORE` (base64)
-- `ANDROID_KEYSTORE_PASSWORD`
-- `ANDROID_KEY_ALIAS`
-- `ANDROID_KEY_PASSWORD`
-
-### 🍎 **iOS Signing**
-
-- `IOS_CERTIFICATE_BASE64`
-- `IOS_CERTIFICATE_PASSWORD`
-- `IOS_PROVISIONING_PROFILE_BASE64`
-
-### 🔥 **Firebase Distribution**
-
-- `FIREBASE_APP_ID` (Android)
-- `FIREBASE_IOS_APP_ID` (iOS)
-- `FIREBASE_SERVICE_ACCOUNT`
-
-### 📊 **Analytics**
-
-- `CODECOV_TOKEN` (optional)
-
-## 🎯 **Usage Examples**
-
-### 🚀 **Quick Release (Skip Tests)**
+### **للـ Release Workflows:**
 
 ```bash
-# Manual dispatch مع تخطي الـ tests
-gh workflow run "release-and-deploy.yml" \
-  -f release_type=beta \
-  -f skip_tests=true \
-  -f release_notes="Hotfix release"
+# Android Signing
+ANDROID_KEYSTORE=<base64_keystore>
+ANDROID_KEYSTORE_PASSWORD=<password>
+ANDROID_KEY_ALIAS=<alias>
+ANDROID_KEY_PASSWORD=<password>
+
+# iOS Signing (Optional)
+IOS_CERTIFICATE_BASE64=<certificate>
+IOS_CERTIFICATE_PASSWORD=<password>
+IOS_PROVISIONING_PROFILE_BASE64=<profile>
+
+# Firebase Distribution
+FIREBASE_SERVICE_ACCOUNT=<service_account_json>
+FIREBASE_APP_ID=<android_app_id>
+FIREBASE_IOS_APP_ID=<ios_app_id>
+
+# Optional
+CODECOV_TOKEN=<token>
 ```
 
-### 📱 **Development Build**
+### **للـ Debug Workflows:**
 
 ```bash
-# Push to develop branch
-git push origin develop
+# Firebase Distribution (Optional)
+FIREBASE_SERVICE_ACCOUNT=<service_account_json>
+FIREBASE_APP_ID=<android_app_id>
+FIREBASE_IOS_APP_ID=<ios_app_id>
 
-# يبدأ تلقائياً:
-# - android-debug.yml
-# - ios-debug.yml
+# Optional
+CODECOV_TOKEN=<token>
 ```
 
-### 🏷️ **Production Release**
+## 📊 **Workflow Status**
 
-```bash
-# Create and push tag
-git tag v1.2.3
-git push origin v1.2.3
+| Workflow               | Status      | Last Updated | Notes                       |
+| ---------------------- | ----------- | ------------ | --------------------------- |
+| Android Debug          | ✅ Ready    | 2024         | Basic debug builds          |
+| Android Release        | ✅ Ready    | 2024         | Production ready            |
+| iOS Debug              | ✅ Enhanced | 2024         | Updated with IPA generation |
+| iOS Release            | ✅ Enhanced | 2024         | Full signing support        |
+| Release & Deploy       | ✅ Enhanced | 2024         | Skip tests option added     |
+| Debug Release & Deploy | ✨ New      | 2024         | Fast debug distribution     |
 
-# يبدأ تلقائياً:
-# - release-and-deploy.yml (all platforms)
-# - Creates GitHub release
-# - Deploys to Firebase
-```
+## 🚨 **Important Notes**
 
-## 📊 **Build Status Matrix**
+### **Debug Mode Workflow:**
 
-| Workflow         | Debug | Release | Tests | Firebase | GitHub Release |
-| ---------------- | ----- | ------- | ----- | -------- | -------------- |
-| Android Debug    | ✅    | ❌      | ❌    | ❌       | ❌             |
-| Android Release  | ❌    | ✅      | ❌    | ❌       | ❌             |
-| iOS Debug        | ✅    | ❌      | ❌    | ❌       | ❌             |
-| iOS Release      | ❌    | ✅      | ❌    | ❌       | ❌             |
-| Release & Deploy | ❌    | ✅      | ✅/⏭️ | ✅       | ✅             |
+- ⚠️ **مخصص للاختبار فقط** - لا يستخدم للإنتاج
+- 🔓 يستخدم debug keystore (مفاتيح مكشوفة)
+- 🚀 أسرع في التنفيذ من release workflows
+- 📱 مناسب للتوزيع على Firebase للمختبرين
+- 🐛 يحتوي على debug symbols لتتبع الأخطاء
 
-## 🛡️ **Error Handling & Recovery**
+### **Security:**
 
-### 🧪 **Test Failures**
+- 🔐 Release keystores محمية في GitHub Secrets
+- 🚫 Debug keystores ليست سرية
+- 📱 Firebase service account مشترك بين جميع workflows
 
-- Tests can be skipped using `skip_tests: true`
-- Builds continue even if tests fail
-- Test status reported in release notes
+### **Performance:**
 
-### 📱 **Build Failures**
+- ⚡ Debug workflows: ~5-10 دقائق
+- 🐌 Release workflows: ~15-25 دقيقة
+- 🚀 Debug Release & Deploy: ~8-15 دقيقة
 
-- Individual platform failures don't stop other platforms
-- Partial releases supported (e.g., Android success, iOS fail)
-- Detailed error reporting in job summaries
+## 🎉 **Getting Started**
 
-### 🔐 **Code Signing Issues**
+### **للبدء السريع:**
 
-- Unsigned builds created as fallback
-- Clear indication of signing status
-- Supports both development and distribution certificates
+1. أعد Firebase App Distribution (اختياري)
+2. شغل **Debug Release & Deploy** للاختبار
+3. أعد Android Keystore للإنتاج
+4. شغل **Release & Deploy** للنشر النهائي
 
-## 📈 **Performance Optimizations**
+### **للتطوير المستمر:**
 
-- **Caching**: Node modules, Gradle, CocoaPods, Ruby gems
-- **Parallel Jobs**: Android and iOS build simultaneously
-- **Artifact Compression**: Automatic compression by GitHub Actions
-- **Conditional Steps**: Skip unnecessary steps based on available secrets
+1. استخدم **Android/iOS Debug** مع كل commit
+2. استخدم **Debug Release & Deploy** للاختبار الأسبوعي
+3. استخدم **Release & Deploy** للإصدارات الشهرية
 
-## 🔄 **Update History**
+---
 
-### ✨ **Latest Updates (Current)**
+## 📞 **Support & Documentation**
 
-- ✅ iOS Debug IPA generation
-- ✅ iOS Release enhancements (dSYM, archives)
-- ✅ Optional tests in Release & Deploy
-- ✅ Enhanced artifact naming with build numbers
-- ✅ Better error handling and status reporting
-- ✅ Extended retention policies
+للمزيد من التفاصيل:
 
-### 📋 **Next Planned Improvements**
-
-- 🔄 Automatic version bumping
-- 📱 TestFlight upload automation
-- 🔍 Enhanced testing with device farms
-- 📊 Performance monitoring integration
+- 📚 **Android Keystore**: `.github/ANDROID_KEYSTORE_SETUP.md`
+- 🔥 **Firebase Setup**: `.github/FIREBASE_SETUP.md`
+- 🛠️ **Troubleshooting**: Check individual workflow logs
+- 📋 **Quick Start**: `KEYSTORE_SETUP_SUMMARY.md`

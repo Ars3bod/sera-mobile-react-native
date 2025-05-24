@@ -1,0 +1,369 @@
+name: 🚀 Release & Deploy (Debug Mode)
+
+on:
+  push:
+    branches: [develop, feature/*]
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Type of debug release'
+        required: true
+        default: 'beta-debug'
+        type: choice
+        options:
+          - beta-debug
+          - internal-debug
+          - testing-debug
+      release_notes:
+        description: 'Release notes for debug build'
+        required: false
+        default: 'Debug build for testing and development'
+      skip_tests:
+        description: 'Skip running tests'
+        required: false
+        default: true
+        type: boolean
+      deploy_to_firebase:
+        description: 'Deploy to Firebase App Distribution'
+        required: false
+        default: true
+        type: boolean
+
+env:
+  NODE_VERSION: '18'
+  JAVA_VERSION: '17'
+
+jobs:
+  test:
+    name: 🧪 Run Tests (Optional)
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.skip_tests != 'true' }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: 🧪 Run unit tests
+        run: npm test -- --coverage --watchAll=false
+
+      - name: 📊 Upload test coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests-debug
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  build-android-debug:
+    name: 🤖 Build Android Debug
+    runs-on: ubuntu-latest
+    needs: test
+    if: always() && (needs.test.result == 'success' || needs.test.result == 'skipped')
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: ☕ Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: 🔄 Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: ${{ runner.os }}-gradle-debug-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-debug-
+            ${{ runner.os }}-gradle-
+
+      - name: 📦 Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: 🔧 Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: 🏗️ Build Android Debug APK
+        run: cd android && ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: 📋 List APK files
+        run: |
+          echo "🔍 Debug APK files generated:"
+          find android/app/build/outputs/apk/debug/ -name "*.apk" -exec ls -la {} \;
+
+      - name: ⬆️ Upload Android Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-android-debug-${{ github.run_number }}
+          path: android/app/build/outputs/apk/debug/*.apk
+          retention-days: 30
+
+  build-ios-debug:
+    name: 🍎 Build iOS Debug
+    runs-on: macos-latest
+    needs: test
+    if: always() && (needs.test.result == 'success' || needs.test.result == 'skipped')
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 💎 Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          working-directory: ios
+
+      - name: 🔄 Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-debug-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-debug-
+            ${{ runner.os }}-pods-
+
+      - name: 📦 Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: 🍎 Install CocoaPods dependencies
+        run: cd ios && pod install --repo-update
+
+      - name: 🏗️ Build iOS Debug Archive
+        run: |
+          cd ios
+          # بناء debug archive بدون code signing requirements
+          xcodebuild -workspace seraApp.xcworkspace \
+                     -scheme seraApp \
+                     -configuration Debug \
+                     -destination generic/platform=iOS \
+                     -archivePath $PWD/build/seraApp-Debug.xcarchive \
+                     archive \
+                     CODE_SIGNING_ALLOWED=NO \
+                     CODE_SIGNING_REQUIRED=NO \
+                     CODE_SIGN_IDENTITY="" \
+                     PROVISIONING_PROFILE_SPECIFIER=""
+
+      - name: 📦 Create Debug Export Options
+        run: |
+          cd ios
+          cat > ExportOptionsDebug.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>development</string>
+              <key>compileBitcode</key>
+              <false/>
+              <key>stripSwiftSymbols</key>
+              <false/>
+              <key>uploadBitcode</key>
+              <false/>
+              <key>uploadSymbols</key>
+              <false/>
+              <key>manageAppVersionAndBuildNumber</key>
+              <false/>
+          </dict>
+          </plist>
+          EOF
+
+      - name: 📦 Export Debug IPA
+        run: |
+          cd ios
+          xcodebuild -exportArchive \
+                     -archivePath $PWD/build/seraApp-Debug.xcarchive \
+                     -exportOptionsPlist ExportOptionsDebug.plist \
+                     -exportPath $PWD/build/debug \
+                     -allowProvisioningUpdates \
+                     -allowProvisioningDeviceRegistration || echo "IPA export may have issues, but archive is available"
+
+      - name: ⬆️ Upload iOS Debug Archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-ios-debug-${{ github.run_number }}
+          path: |
+            ios/build/debug/*.ipa
+            ios/build/debug/seraApp.app
+            ios/build/seraApp-Debug.xcarchive
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: ⬆️ Upload iOS Debug Symbols
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sera-ios-debug-dsym-${{ github.run_number }}
+          path: |
+            ios/build/seraApp-Debug.xcarchive/dSYMs/**
+            ios/build/debug/**/*.dSYM
+          retention-days: 90
+          if-no-files-found: ignore
+
+  deploy-firebase-debug:
+    name: 🔥 Deploy Debug to Firebase
+    runs-on: ubuntu-latest
+    needs: [build-android-debug, build-ios-debug]
+    if: always() && (needs.build-android-debug.result == 'success' || needs.build-ios-debug.result == 'success') && github.event.inputs.deploy_to_firebase != 'false'
+
+    steps:
+      - name: 📥 Download Android Debug APK
+        uses: actions/download-artifact@v4
+        if: needs.build-android-debug.result == 'success'
+        with:
+          name: sera-android-debug-${{ github.run_number }}
+          path: ./artifacts/android-debug
+          continue-on-error: true
+
+      - name: 📥 Download iOS Debug Archive
+        uses: actions/download-artifact@v4
+        if: needs.build-ios-debug.result == 'success'
+        with:
+          name: sera-ios-debug-${{ github.run_number }}
+          path: ./artifacts/ios-debug
+          continue-on-error: true
+
+      - name: 📋 List debug artifacts
+        run: |
+          echo "📱 Available debug artifacts:"
+          echo "🤖 Android Debug APKs:"
+          ls -la ./artifacts/android-debug/ 2>/dev/null || echo "No Android Debug APK found"
+          echo "🍎 iOS Debug files:"
+          ls -la ./artifacts/ios-debug/ 2>/dev/null || echo "No iOS Debug files found"
+
+      - name: 🔥 Deploy Android Debug to Firebase App Distribution
+        if: needs.build-android-debug.result == 'success' && hashFiles('./artifacts/android-debug/*.apk') != '' && secrets.FIREBASE_APP_ID && secrets.FIREBASE_SERVICE_ACCOUNT
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          groups: beta-testers
+          file: ./artifacts/android-debug/app-debug.apk
+          releaseNotes: |
+            🚀 SERA Mobile App - Debug Build for Testing
+
+            📱 Build: ${{ github.run_number }}
+            🔄 Commit: ${{ github.sha }}
+            📅 Date: ${{ github.event.head_commit.timestamp }}
+            🐛 Build Type: DEBUG
+            🧪 Tests: ${{ github.event.inputs.skip_tests == 'true' && 'Skipped' || 'Passed' }}
+
+            ⚠️ **هذا إصدار تجريبي للاختبار والتطوير فقط**
+
+            ${{ github.event.inputs.release_notes || 'Debug build for testing and development' }}
+
+      - name: 🔥 Deploy iOS Debug to Firebase App Distribution (if available)
+        if: needs.build-ios-debug.result == 'success' && hashFiles('./artifacts/ios-debug/*.ipa') != '' && secrets.FIREBASE_IOS_APP_ID && secrets.FIREBASE_SERVICE_ACCOUNT
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_IOS_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          groups: beta-testers
+          file: ./artifacts/ios-debug/*.ipa
+          releaseNotes: |
+            🚀 SERA Mobile App iOS - Debug Build for Testing
+
+            📱 Build: ${{ github.run_number }}
+            🔄 Commit: ${{ github.sha }}
+            📅 Date: ${{ github.event.head_commit.timestamp }}
+            🐛 Build Type: DEBUG
+            🧪 Tests: ${{ github.event.inputs.skip_tests == 'true' && 'Skipped' || 'Passed' }}
+
+            ⚠️ **هذا إصدار تجريبي للاختبار والتطوير فقط**
+
+            ${{ github.event.inputs.release_notes || 'Debug build for testing and development' }}
+
+      - name: 📊 Debug Deployment Summary
+        run: |
+          echo "🐛 Debug Build Deployment Summary:"
+          echo "📦 Run: ${{ github.run_number }}"
+          echo "🏗️ Build: ${{ github.run_number }}"
+          echo "🧪 Tests: ${{ github.event.inputs.skip_tests == 'true' && 'Skipped ⏭️' || 'Passed ✅' }}"
+          echo "🤖 Android Debug: ${{ needs.build-android-debug.result == 'success' && 'Success ✅' || 'Failed ❌' }}"
+          echo "🍎 iOS Debug: ${{ needs.build-ios-debug.result == 'success' && 'Success ✅' || 'Failed ❌' }}"
+          echo "🔥 Firebase: ${{ secrets.FIREBASE_APP_ID && 'Deployed' || 'Not configured' }}"
+          echo "📥 Artifacts: Available for 30 days"
+
+  create-debug-release:
+    name: 📦 Create Debug Release
+    runs-on: ubuntu-latest
+    needs: [build-android-debug, build-ios-debug]
+    if: always() && (needs.build-android-debug.result == 'success' || needs.build-ios-debug.result == 'success') && github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: 📥 Download all debug artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: 📦 Create Debug GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: SERA Mobile Debug Build ${{ github.run_number }}
+          tag_name: debug-build-${{ github.run_number }}
+          body: |
+            🐛 **SERA Mobile App - Debug Build ${{ github.run_number }}**
+
+            ⚠️ **هذا إصدار تجريبي للاختبار والتطوير فقط**
+
+            **معلومات الإصدار:**
+            ${{ github.event.inputs.release_notes || 'Debug build for testing and development' }}
+
+            **معلومات البناء:**
+            - 📱 Build Number: ${{ github.run_number }}
+            - 🔄 Commit: ${{ github.sha }}
+            - 📅 Build Date: ${{ github.event.head_commit.timestamp }}
+            - 🐛 Build Type: DEBUG
+            - 🧪 Tests: ${{ github.event.inputs.skip_tests == 'true' && '⏭️ Skipped' || '✅ Passed' }}
+            - 🤖 Android Debug APK: ${{ needs.build-android-debug.result == 'success' && '✅ Built' || '❌ Failed' }}
+            - 🍎 iOS Debug Archive: ${{ needs.build-ios-debug.result == 'success' && '✅ Built' || '❌ Failed' }}
+
+            **التحميلات:**
+            - 🤖 Android Debug APK: app-debug.apk
+            - 🍎 iOS Debug Archive: seraApp-Debug.xcarchive
+            - 🐛 Debug Symbols: dSYM files (لتتبع الأخطاء)
+
+            **التثبيت:**
+            - **Android**: فعل "Unknown Sources" وثبت APK
+            - **iOS**: يحتاج Xcode أو development certificate
+
+            **Firebase Distribution:**
+            - المختبرين في beta-testers سيحصلون على إشعارات تلقائية
+            - تحقق من Firebase App Distribution للتحديثات
+
+            **ملاحظة مهمة:**
+            هذا debug build مخصص للاختبار والتطوير. لا يُنصح باستخدامه في الإنتاج.
+          files: |
+            ./artifacts/**/*.apk
+            ./artifacts/**/*.ipa
+            ./artifacts/**/*.xcarchive
+          draft: false
+          prerelease: true
+          make_latest: false

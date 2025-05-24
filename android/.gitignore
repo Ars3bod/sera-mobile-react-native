@@ -1,0 +1,35 @@
+# Android .gitignore
+
+# Keystore files - مهم جداً لحماية الـ keystore
+*.keystore
+*.jks
+key.properties
+
+# Gradle files
+.gradle/
+build/
+local.properties
+
+# Generated files
+bin/
+gen/
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Captures folder
+captures/
+
+# Keystore files (backup)
+*.keystore.bak
+*.jks.bak
+
+# Sensitive files
+google-services.json.backup
+GoogleService-Info.plist.backup
+
+# Local configuration files
+local.properties 

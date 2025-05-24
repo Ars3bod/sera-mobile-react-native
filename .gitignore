@@ -35,6 +35,20 @@ local.properties
 !debug.keystore
 .kotlin/
 
+# Keystore & Signing - مهم جداً للأمان
+*.keystore
+*.jks
+key.properties
+sera-keystore-base64.txt
+android/key.properties
+android/*.keystore
+android/*.jks
+
+# Firebase & Auth files
+google-services.json.backup
+GoogleService-Info.plist.backup
+**/firebase-debug.log
+
 # node.js
 #
 node_modules/
