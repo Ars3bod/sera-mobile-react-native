@@ -60,6 +60,7 @@
 - **Trigger**: Push to `develop`, `feature/*`, manual dispatch
 - **Purpose**: بناء ونشر سريع للاختبار والتطوير
 - **Features**:
+  - ⚙️ **Platform Selection**: إمكانية اختيار both/android-only/ios-only
   - ⚡ Fast debug builds without complex signing
   - 🤖 Android debug APK (uses debug keystore)
   - 🍎 iOS debug archive (no signing requirements)
@@ -68,17 +69,19 @@
   - 🧪 Optional test execution (default: skipped)
   - ⚠️ Clear debug/testing indicators
 - **Inputs**:
+  - `platforms`: both/android-only/ios-only (default: both)
   - `release_type`: beta-debug/internal-debug/testing-debug
   - `release_notes`: Custom debug notes
   - `skip_tests`: Skip tests (default: true)
   - `deploy_to_firebase`: Enable/disable Firebase deployment
-- **Output**: Debug builds for testing
+- **Output**: Debug builds for testing (platform-specific)
 - **Retention**: 30 days
 - **Benefits**:
   - 🚀 Faster execution (no complex signing)
   - 🔄 Frequent testing capability
   - 🐛 Debug symbols included
   - 👥 Easy distribution to testers
+  - 🎯 Platform-specific builds for targeted testing
 
 ## 🔧 **Workflow Features Comparison**
 

@@ -5,6 +5,15 @@ on:
     branches: [develop, feature/*]
   workflow_dispatch:
     inputs:
+      platforms:
+        description: 'Platforms to build and deploy'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - both
+          - android-only
+          - ios-only
       release_type:
         description: 'Type of debug release'
         required: true
@@ -67,7 +76,7 @@ jobs:
     name: 🤖 Build Android Debug
     runs-on: ubuntu-latest
     needs: test
-    if: always() && (needs.test.result == 'success' || needs.test.result == 'skipped')
+    if: always() && (needs.test.result == 'success' || needs.test.result == 'skipped') && (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'android-only' || github.event_name == 'push')
 
     steps:
       - name: 📥 Checkout code
@@ -122,7 +131,7 @@ jobs:
     name: 🍎 Build iOS Debug
     runs-on: macos-latest
     needs: test
-    if: always() && (needs.test.result == 'success' || needs.test.result == 'skipped')
+    if: always() && (needs.test.result == 'success' || needs.test.result == 'skipped') && (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'ios-only' || github.event_name == 'push')
 
     steps:
       - name: 📥 Checkout code
@@ -236,7 +245,7 @@ jobs:
     steps:
       - name: 📥 Download Android Debug APK
         uses: actions/download-artifact@v4
-        if: needs.build-android-debug.result == 'success'
+        if: needs.build-android-debug.result == 'success' && (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'android-only' || github.event_name == 'push')
         with:
           name: sera-android-debug-${{ github.run_number }}
           path: ./artifacts/android-debug
@@ -244,7 +253,7 @@ jobs:
 
       - name: 📥 Download iOS Debug Archive
         uses: actions/download-artifact@v4
-        if: needs.build-ios-debug.result == 'success'
+        if: needs.build-ios-debug.result == 'success' && (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'ios-only' || github.event_name == 'push')
         with:
           name: sera-ios-debug-${{ github.run_number }}
           path: ./artifacts/ios-debug
@@ -252,14 +261,14 @@ jobs:
 
       - name: 📋 List debug artifacts
         run: |
-          echo "📱 Available debug artifacts:"
+          echo "📱 Available debug artifacts for platforms: ${{ github.event.inputs.platforms || 'both (auto-triggered)' }}"
           echo "🤖 Android Debug APKs:"
-          ls -la ./artifacts/android-debug/ 2>/dev/null || echo "No Android Debug APK found"
+          ls -la ./artifacts/android-debug/ 2>/dev/null || echo "No Android Debug APK found (may be skipped)"
           echo "🍎 iOS Debug files:"
-          ls -la ./artifacts/ios-debug/ 2>/dev/null || echo "No iOS Debug files found"
+          ls -la ./artifacts/ios-debug/ 2>/dev/null || echo "No iOS Debug files found (may be skipped)"
 
       - name: 🔥 Deploy Android Debug to Firebase App Distribution
-        if: needs.build-android-debug.result == 'success' && hashFiles('./artifacts/android-debug/*.apk') != '' && secrets.FIREBASE_APP_ID != '' && secrets.FIREBASE_SERVICE_ACCOUNT != ''
+        if: needs.build-android-debug.result == 'success' && hashFiles('./artifacts/android-debug/*.apk') != '' && secrets.FIREBASE_APP_ID != '' && secrets.FIREBASE_SERVICE_ACCOUNT != '' && (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'android-only' || github.event_name == 'push')
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
@@ -273,6 +282,7 @@ jobs:
             🔄 Commit: ${{ github.sha }}
             📅 Date: ${{ github.event.head_commit.timestamp }}
             🐛 Build Type: DEBUG
+            🏗️ Platforms: ${{ github.event.inputs.platforms || 'both (auto-triggered)' }}
             🧪 Tests: ${{ github.event.inputs.skip_tests == 'true' && 'Skipped' || 'Passed' }}
 
             ⚠️ **هذا إصدار تجريبي للاختبار والتطوير فقط**
@@ -280,7 +290,7 @@ jobs:
             ${{ github.event.inputs.release_notes || 'Debug build for testing and development' }}
 
       - name: 🔥 Deploy iOS Debug to Firebase App Distribution (if available)
-        if: needs.build-ios-debug.result == 'success' && hashFiles('./artifacts/ios-debug/*.ipa') != '' && secrets.FIREBASE_IOS_APP_ID != '' && secrets.FIREBASE_SERVICE_ACCOUNT != ''
+        if: needs.build-ios-debug.result == 'success' && hashFiles('./artifacts/ios-debug/*.ipa') != '' && secrets.FIREBASE_IOS_APP_ID != '' && secrets.FIREBASE_SERVICE_ACCOUNT != '' && (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'ios-only' || github.event_name == 'push')
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_IOS_APP_ID }}
@@ -294,6 +304,7 @@ jobs:
             🔄 Commit: ${{ github.sha }}
             📅 Date: ${{ github.event.head_commit.timestamp }}
             🐛 Build Type: DEBUG
+            🏗️ Platforms: ${{ github.event.inputs.platforms || 'both (auto-triggered)' }}
             🧪 Tests: ${{ github.event.inputs.skip_tests == 'true' && 'Skipped' || 'Passed' }}
 
             ⚠️ **هذا إصدار تجريبي للاختبار والتطوير فقط**
@@ -304,10 +315,10 @@ jobs:
         run: |
           echo "🐛 Debug Build Deployment Summary:"
           echo "📦 Run: ${{ github.run_number }}"
-          echo "🏗️ Build: ${{ github.run_number }}"
+          echo "🏗️ Platforms: ${{ github.event.inputs.platforms || 'both (auto-triggered)' }}"
           echo "🧪 Tests: ${{ github.event.inputs.skip_tests == 'true' && 'Skipped ⏭️' || 'Passed ✅' }}"
-          echo "🤖 Android Debug: ${{ needs.build-android-debug.result == 'success' && 'Success ✅' || 'Failed ❌' }}"
-          echo "🍎 iOS Debug: ${{ needs.build-ios-debug.result == 'success' && 'Success ✅' || 'Failed ❌' }}"
+          echo "🤖 Android Debug: ${{ (github.event.inputs.platforms == 'ios-only') && github.event_name == 'workflow_dispatch' && 'Skipped ⏭️' || (needs.build-android-debug.result == 'success' && 'Success ✅' || 'Failed ❌') }}"
+          echo "🍎 iOS Debug: ${{ (github.event.inputs.platforms == 'android-only') && github.event_name == 'workflow_dispatch' && 'Skipped ⏭️' || (needs.build-ios-debug.result == 'success' && 'Success ✅' || 'Failed ❌') }}"
           echo "🔥 Firebase: ${{ secrets.FIREBASE_APP_ID != '' && 'Deployed' || 'Not configured' }}"
           echo "📥 Artifacts: Available for 30 days"
 
@@ -326,8 +337,8 @@ jobs:
       - name: 📦 Create Debug GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: SERA Mobile Debug Build ${{ github.run_number }}
-          tag_name: debug-build-${{ github.run_number }}
+          name: SERA Mobile Debug Build ${{ github.run_number }} - ${{ github.event.inputs.platforms }}
+          tag_name: debug-build-${{ github.run_number }}-${{ github.event.inputs.platforms }}
           body: |
             🐛 **SERA Mobile App - Debug Build ${{ github.run_number }}**
 
@@ -338,21 +349,22 @@ jobs:
 
             **معلومات البناء:**
             - 📱 Build Number: ${{ github.run_number }}
+            - 🏗️ Platforms: ${{ github.event.inputs.platforms }}
             - 🔄 Commit: ${{ github.sha }}
             - 📅 Build Date: ${{ github.event.head_commit.timestamp }}
             - 🐛 Build Type: DEBUG
             - 🧪 Tests: ${{ github.event.inputs.skip_tests == 'true' && '⏭️ Skipped' || '✅ Passed' }}
-            - 🤖 Android Debug APK: ${{ needs.build-android-debug.result == 'success' && '✅ Built' || '❌ Failed' }}
-            - 🍎 iOS Debug Archive: ${{ needs.build-ios-debug.result == 'success' && '✅ Built' || '❌ Failed' }}
+            - 🤖 Android Debug APK: ${{ (github.event.inputs.platforms == 'ios-only') && '⏭️ Skipped' || (needs.build-android-debug.result == 'success' && '✅ Built' || '❌ Failed') }}
+            - 🍎 iOS Debug Archive: ${{ (github.event.inputs.platforms == 'android-only') && '⏭️ Skipped' || (needs.build-ios-debug.result == 'success' && '✅ Built' || '❌ Failed') }}
 
             **التحميلات:**
-            - 🤖 Android Debug APK: app-debug.apk
-            - 🍎 iOS Debug Archive: seraApp-Debug.xcarchive
+            ${{ (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'android-only') && '- 🤖 Android Debug APK: app-debug.apk' || '' }}
+            ${{ (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'ios-only') && '- 🍎 iOS Debug Archive: seraApp-Debug.xcarchive' || '' }}
             - 🐛 Debug Symbols: dSYM files (لتتبع الأخطاء)
 
             **التثبيت:**
-            - **Android**: فعل "Unknown Sources" وثبت APK
-            - **iOS**: يحتاج Xcode أو development certificate
+            ${{ (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'android-only') && '- **Android**: فعل "Unknown Sources" وثبت APK' || '' }}
+            ${{ (github.event.inputs.platforms == 'both' || github.event.inputs.platforms == 'ios-only') && '- **iOS**: يحتاج Xcode أو development certificate' || '' }}
 
             **Firebase Distribution:**
             - المختبرين في beta-testers سيحصلون على إشعارات تلقائية
