@@ -26,9 +26,11 @@ const AppConfig = {
 
     // Enable mock data for specific services
     mockServices: {
-      complaints: false, // Set to true to force mock data for complaints
-      nafath: false, // Set to true to force mock data for nafath
-      contact: false, // Set to true to force mock data for contact validation
+      complaints: false, // Complaints viewing
+      complaintCreation: false, // Complaint creation APIs
+      permits: false, // Permits viewing and management
+      nafath: false,
+      validateContact: false,
     },
   },
 

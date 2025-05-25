@@ -73,6 +73,13 @@ const ServicesScreen = ({navigation}) => {
       return;
     }
 
+    // Handle permit request service specifically
+    if (service.id === 1) {
+      // Permit Request service
+      navigation.navigate('Permits');
+      return;
+    }
+
     // For other services, you can add navigation logic here
     // navigation.navigate('ServiceDetail', { service });
   };

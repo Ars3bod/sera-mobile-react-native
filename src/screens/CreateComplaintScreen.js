@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import {
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '../context/ThemeContext';
+import {useUser} from '../context/UserContext';
+import {useFocusEffect} from '@react-navigation/native';
 import {
   ArrowLeft24Regular,
   ChevronDown24Regular,
@@ -21,19 +23,40 @@ import {
   Delete24Regular,
   Document24Regular,
 } from '@fluentui/react-native-icons';
+import complaintCreationService, {
+  MOCK_SERVICE_PROVIDERS,
+  MOCK_CONSUMPTION_CATEGORIES,
+  MOCK_COMPLAINT_TYPES,
+} from '../services/complaintCreationService';
+import AppConfig from '../config/appConfig';
+import Toast from '../components/Toast';
+import {LoadingSpinner} from '../animations';
 
 const CreateComplaintScreen = ({navigation}) => {
   const {t, i18n} = useTranslation();
   const {theme, isDarkMode} = useTheme();
+  const {user} = useUser();
   const isRTL = i18n.language === 'ar';
 
   // Form state
-  const [serviceProvider, setServiceProvider] = useState('');
-  const [consumptionCategory, setConsumptionCategory] = useState('');
-  const [complaintType, setComplaintType] = useState('');
+  const [serviceProvider, setServiceProvider] = useState(null);
+  const [consumptionCategory, setConsumptionCategory] = useState(null);
+  const [complaintType, setComplaintType] = useState(null);
   const [complaintText, setComplaintText] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [orderNumber, setOrderNumber] = useState('');
   const [attachments, setAttachments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  // Data state
+  const [serviceProviders, setServiceProviders] = useState([]);
+  const [consumptionCategories, setConsumptionCategories] = useState([]);
+  const [complaintTypes, setComplaintTypes] = useState([]);
+
+  // Field visibility state
+  const [showAccountNumber, setShowAccountNumber] = useState(false);
+  const [showOrderNumber, setShowOrderNumber] = useState(false);
 
   // Modal states
   const [showServiceProviderModal, setShowServiceProviderModal] =
@@ -41,77 +64,215 @@ const CreateComplaintScreen = ({navigation}) => {
   const [showConsumptionModal, setShowConsumptionModal] = useState(false);
   const [showComplaintTypeModal, setShowComplaintTypeModal] = useState(false);
 
+  // Toast state
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('success');
+
   const handleGoBack = () => {
     navigation.goBack();
   };
 
-  // Mock data - في التطبيق الحقيقي سيتم جلبها من API
-  const serviceProviders = [
-    {
-      id: '1',
-      nameAr: t('complaints.serviceProviders.sec'),
-      nameEn: t('complaints.serviceProviders.sec'),
-    },
-    {
-      id: '2',
-      nameAr: t('complaints.serviceProviders.marafiq'),
-      nameEn: t('complaints.serviceProviders.marafiq'),
-    },
-  ];
+  // Get contact ID from user context
+  const getContactId = () => {
+    if (user?.contactInfo?.id) {
+      return user.contactInfo.id;
+    }
+    return null;
+  };
 
-  const consumptionCategories = [
-    {
-      id: '1',
-      nameAr: t('complaints.consumptionCategories.residential'),
-      nameEn: t('complaints.consumptionCategories.residential'),
-    },
-    {
-      id: '2',
-      nameAr: t('complaints.consumptionCategories.commercial'),
-      nameEn: t('complaints.consumptionCategories.commercial'),
-    },
-    {
-      id: '3',
-      nameAr: t('complaints.consumptionCategories.industrial'),
-      nameEn: t('complaints.consumptionCategories.industrial'),
-    },
-    {
-      id: '4',
-      nameAr: t('complaints.consumptionCategories.government'),
-      nameEn: t('complaints.consumptionCategories.government'),
-    },
-  ];
+  // Check if should use mock data based on config
+  const shouldUseMockData = () => {
+    if (AppConfig.api.useMockData) {
+      return true;
+    }
 
-  const complaintTypes = [
-    {
-      id: '1',
-      nameAr: t('complaints.complaintTypes.powerOutage'),
-      nameEn: t('complaints.complaintTypes.powerOutage'),
-    },
-    {
-      id: '2',
-      nameAr: t('complaints.complaintTypes.highBill'),
-      nameEn: t('complaints.complaintTypes.highBill'),
-    },
-    {
-      id: '3',
-      nameAr: t('complaints.complaintTypes.serviceQuality'),
-      nameEn: t('complaints.complaintTypes.serviceQuality'),
-    },
-    {
-      id: '4',
-      nameAr: t('complaints.complaintTypes.connectionDelay'),
-      nameEn: t('complaints.complaintTypes.connectionDelay'),
-    },
-    {
-      id: '5',
-      nameAr: t('complaints.complaintTypes.customerService'),
-      nameEn: t('complaints.complaintTypes.customerService'),
-    },
-  ];
+    if (AppConfig.development.mockServices.complaintCreation) {
+      return true;
+    }
+
+    const contactId = getContactId();
+    if (!contactId) {
+      return true;
+    }
+
+    return false;
+  };
+
+  // Show toast notification
+  const showToast = (message, type = 'success') => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastVisible(true);
+  };
+
+  // Hide toast notification
+  const hideToast = () => {
+    setToastVisible(false);
+  };
+
+  // Fetch service providers
+  const fetchServiceProviders = async () => {
+    try {
+      if (shouldUseMockData()) {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Using mock data for service providers');
+        }
+        setServiceProviders(MOCK_SERVICE_PROVIDERS);
+      } else {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Fetching real service providers from API');
+        }
+
+        const response = await complaintCreationService.getServiceProviders();
+        if (response.success) {
+          setServiceProviders(response.providers || []);
+        } else {
+          throw new Error('Failed to fetch service providers');
+        }
+      }
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Error fetching service providers:', error);
+      }
+      // Fallback to mock data
+      setServiceProviders(MOCK_SERVICE_PROVIDERS);
+    }
+  };
+
+  // Fetch consumption categories
+  const fetchConsumptionCategories = async () => {
+    try {
+      if (shouldUseMockData()) {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Using mock data for consumption categories');
+        }
+        setConsumptionCategories(
+          MOCK_CONSUMPTION_CATEGORIES[i18n.language] ||
+            MOCK_CONSUMPTION_CATEGORIES.ar,
+        );
+      } else {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Fetching real consumption categories from API');
+        }
+
+        const response =
+          await complaintCreationService.getConsumptionCategories(
+            i18n.language,
+          );
+        if (response.success) {
+          setConsumptionCategories(response.categories || []);
+        } else {
+          throw new Error('Failed to fetch consumption categories');
+        }
+      }
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Error fetching consumption categories:', error);
+      }
+      // Fallback to mock data
+      setConsumptionCategories(
+        MOCK_CONSUMPTION_CATEGORIES[i18n.language] ||
+          MOCK_CONSUMPTION_CATEGORIES.ar,
+      );
+    }
+  };
+
+  // Fetch complaint types
+  const fetchComplaintTypes = async () => {
+    try {
+      if (shouldUseMockData()) {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Using mock data for complaint types');
+        }
+        setComplaintTypes(MOCK_COMPLAINT_TYPES);
+      } else {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Fetching real complaint types from API');
+        }
+
+        const response = await complaintCreationService.getComplaintTypes();
+        if (response.success) {
+          setComplaintTypes(response.types || []);
+        } else {
+          throw new Error('Failed to fetch complaint types');
+        }
+      }
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Error fetching complaint types:', error);
+      }
+      // Fallback to mock data
+      setComplaintTypes(MOCK_COMPLAINT_TYPES);
+    }
+  };
+
+  // Check field visibility based on complaint type
+  const checkFieldVisibility = async caseTypeId => {
+    try {
+      if (shouldUseMockData()) {
+        // Mock behavior - show account number for certain types
+        setShowAccountNumber(true);
+        setShowOrderNumber(false);
+        return;
+      }
+
+      const response = await complaintCreationService.checkFieldVisibility(
+        caseTypeId,
+      );
+      if (response.success) {
+        setShowAccountNumber(response.showAccountNumber);
+        setShowOrderNumber(response.showOrderNumber);
+      }
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Error checking field visibility:', error);
+      }
+      // Default to showing account number
+      setShowAccountNumber(true);
+      setShowOrderNumber(false);
+    }
+  };
+
+  // Load initial data
+  const loadInitialData = async () => {
+    try {
+      setInitialLoading(true);
+      await Promise.all([
+        fetchServiceProviders(),
+        fetchConsumptionCategories(),
+        fetchComplaintTypes(),
+      ]);
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Error loading initial data:', error);
+      }
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+
+  // Load data when screen focuses
+  useFocusEffect(
+    React.useCallback(() => {
+      loadInitialData();
+    }, []),
+  );
+
+  // Handle complaint type selection
+  const handleComplaintTypeSelect = async selectedType => {
+    setComplaintType(selectedType);
+
+    if (!shouldUseMockData() && selectedType?.caseTypeId) {
+      await checkFieldVisibility(selectedType.caseTypeId);
+    } else if (shouldUseMockData()) {
+      // Mock behavior
+      setShowAccountNumber(true);
+      setShowOrderNumber(false);
+    }
+  };
 
   const handleAttachFile = () => {
-    // في التطبيق الحقيقي سيتم استخدام react-native-document-picker
     Alert.alert(
       t('complaints.create.uploadFileTitle'),
       t('complaints.create.uploadFileMessage'),
@@ -139,6 +300,7 @@ const CreateComplaintScreen = ({navigation}) => {
   };
 
   const handleSubmit = async () => {
+    // Validation
     if (
       !serviceProvider ||
       !consumptionCategory ||
@@ -152,26 +314,83 @@ const CreateComplaintScreen = ({navigation}) => {
       return;
     }
 
+    if (showAccountNumber && !accountNumber.trim()) {
+      Alert.alert(
+        t('complaints.create.error'),
+        'Account number is required for this complaint type',
+      );
+      return;
+    }
+
+    if (showOrderNumber && !orderNumber.trim()) {
+      Alert.alert(
+        t('complaints.create.error'),
+        'Order number is required for this complaint type',
+      );
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      if (shouldUseMockData()) {
+        // Mock API call
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        showToast(
+          t('complaints.create.successWithCaseId', {caseId: '#25010898'}),
+        );
+
+        // Navigate to complaints screen after delay
+        setTimeout(() => {
+          navigation.navigate('Complaints');
+        }, 1000);
+      } else {
+        // Real API call
+        const contactId = getContactId();
+
+        const complaintData = {
+          accountNumber: accountNumber || '',
+          orderNumber: orderNumber || '',
+          attachmentsObject: null, // TODO: Handle file uploads
+          complainterType: consumptionCategory?.value || consumptionCategory,
+          beneficiary: contactId,
+          descriptionParam: complaintText,
+          isTheConsumerHasPriority: false,
+          isThereComplaint: 1,
+          region: '962d623d-0a35-ee11-baea-0205857feb80', // TODO: Get from user data
+          city: 'CC631FD4-926D-EE11-BAF4-00155D007258', // TODO: Get from user data
+          caseType: complaintType?.caseTypeId || complaintType,
+          against: serviceProvider?.accountid || serviceProvider,
+        };
+
+        const response = await complaintCreationService.createComplaint(
+          complaintData,
+        );
+
+        if (response.success) {
+          showToast(
+            t('complaints.create.successWithCaseId', {
+              caseId: `#${response.caseId}`,
+            }),
+          );
+
+          // Navigate to complaints screen after delay
+          setTimeout(() => {
+            navigation.navigate('Complaints');
+          }, 1000);
+        } else {
+          throw new Error(response.message || 'Failed to create complaint');
+        }
+      }
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Submit complaint error:', error);
+      }
 
       Alert.alert(
-        t('complaints.create.success'),
-        t('complaints.create.successMessage'),
-        [
-          {
-            text: t('complaints.create.ok'),
-            onPress: () => navigation.goBack(),
-          },
-        ],
-      );
-    } catch (error) {
-      Alert.alert(
         t('complaints.create.error'),
-        t('complaints.create.submitError'),
+        error.message || t('complaints.create.submitError'),
       );
     } finally {
       setLoading(false);
@@ -205,7 +424,14 @@ const CreateComplaintScreen = ({navigation}) => {
     </TouchableOpacity>
   );
 
-  const renderSelectionModal = (visible, setVisible, title, data, onSelect) => (
+  const renderSelectionModal = (
+    visible,
+    setVisible,
+    title,
+    data,
+    onSelect,
+    displayKey,
+  ) => (
     <Modal
       visible={visible}
       transparent={true}
@@ -226,30 +452,51 @@ const CreateComplaintScreen = ({navigation}) => {
           </Text>
           <FlatList
             data={data}
-            keyExtractor={item => item.id}
-            renderItem={({item}) => (
-              <TouchableOpacity
-                style={[
-                  styles.modalItem,
-                  {borderBottomColor: theme.colors.border},
-                ]}
-                onPress={() => {
-                  onSelect(isRTL ? item.nameAr : item.nameEn);
-                  setVisible(false);
-                }}
-                activeOpacity={0.7}>
-                <Text
+            keyExtractor={(item, index) =>
+              item.id ||
+              item.accountid ||
+              item.caseTypeId ||
+              item.value ||
+              index.toString()
+            }
+            renderItem={({item}) => {
+              let displayText = '';
+              if (displayKey === 'serviceProvider') {
+                displayText = isRTL ? item.accountName : item.englishName;
+              } else if (displayKey === 'category') {
+                displayText = item.name;
+              } else if (displayKey === 'complaintType') {
+                displayText = item.caseType;
+              }
+
+              return (
+                <TouchableOpacity
                   style={[
-                    styles.modalItemText,
-                    {
-                      color: theme.colors.text,
-                      textAlign: isRTL ? 'right' : 'left',
-                    },
-                  ]}>
-                  {isRTL ? item.nameAr : item.nameEn}
-                </Text>
-              </TouchableOpacity>
-            )}
+                    styles.modalItem,
+                    {borderBottomColor: theme.colors.border},
+                  ]}
+                  onPress={() => {
+                    if (displayKey === 'complaintType') {
+                      handleComplaintTypeSelect(item);
+                    } else {
+                      onSelect(item);
+                    }
+                    setVisible(false);
+                  }}
+                  activeOpacity={0.7}>
+                  <Text
+                    style={[
+                      styles.modalItemText,
+                      {
+                        color: theme.colors.text,
+                        textAlign: isRTL ? 'right' : 'left',
+                      },
+                    ]}>
+                    {displayText}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }}
           />
           <TouchableOpacity
             style={[
@@ -358,11 +605,41 @@ const CreateComplaintScreen = ({navigation}) => {
     },
   });
 
+  if (initialLoading) {
+    return (
+      <SafeAreaView style={dynamicStyles.container}>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={theme.colors.surface}
+        />
+        <View style={styles.loadingContainer}>
+          <LoadingSpinner
+            type="rotating"
+            size={40}
+            color={theme.colors.primary}
+            duration={1000}
+          />
+          <Text style={[styles.loadingText, {color: theme.colors.text}]}>
+            Loading form data...
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={dynamicStyles.container}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={theme.colors.surface}
+      />
+
+      {/* Toast Notification */}
+      <Toast
+        visible={toastVisible}
+        message={toastMessage}
+        type={toastType}
+        onHide={hideToast}
       />
 
       {/* Header */}
@@ -406,7 +683,11 @@ const CreateComplaintScreen = ({navigation}) => {
             {t('complaints.create.serviceProvider')} *
           </Text>
           {renderDropdown(
-            serviceProvider,
+            serviceProvider
+              ? isRTL
+                ? serviceProvider.accountName
+                : serviceProvider.englishName
+              : null,
             t('complaints.create.serviceProviderPlaceholder'),
             () => setShowServiceProviderModal(true),
           )}
@@ -425,7 +706,7 @@ const CreateComplaintScreen = ({navigation}) => {
             {t('complaints.create.consumptionCategory')} *
           </Text>
           {renderDropdown(
-            consumptionCategory,
+            consumptionCategory?.name,
             t('complaints.create.consumptionCategoryPlaceholder'),
             () => setShowConsumptionModal(true),
           )}
@@ -444,11 +725,73 @@ const CreateComplaintScreen = ({navigation}) => {
             {t('complaints.create.complaintType')} *
           </Text>
           {renderDropdown(
-            complaintType,
+            complaintType?.caseType,
             t('complaints.create.complaintTypePlaceholder'),
             () => setShowComplaintTypeModal(true),
           )}
         </View>
+
+        {/* Account Number Field - Conditional */}
+        {showAccountNumber && (
+          <View style={styles.fieldContainer}>
+            <Text
+              style={[
+                styles.fieldLabel,
+                {
+                  color: theme.colors.text,
+                  textAlign: isRTL ? 'right' : 'left',
+                },
+              ]}>
+              {t('complaints.create.accountNumber')} *
+            </Text>
+            <TextInput
+              style={[
+                styles.textInput,
+                {
+                  backgroundColor: theme.colors.surface,
+                  borderColor: theme.colors.border,
+                  color: theme.colors.text,
+                  textAlign: isRTL ? 'right' : 'left',
+                },
+              ]}
+              placeholder={t('complaints.create.accountNumberPlaceholder')}
+              placeholderTextColor={theme.colors.textSecondary}
+              value={accountNumber}
+              onChangeText={setAccountNumber}
+            />
+          </View>
+        )}
+
+        {/* Order Number Field - Conditional */}
+        {showOrderNumber && (
+          <View style={styles.fieldContainer}>
+            <Text
+              style={[
+                styles.fieldLabel,
+                {
+                  color: theme.colors.text,
+                  textAlign: isRTL ? 'right' : 'left',
+                },
+              ]}>
+              {t('complaints.create.orderNumber')} *
+            </Text>
+            <TextInput
+              style={[
+                styles.textInput,
+                {
+                  backgroundColor: theme.colors.surface,
+                  borderColor: theme.colors.border,
+                  color: theme.colors.text,
+                  textAlign: isRTL ? 'right' : 'left',
+                },
+              ]}
+              placeholder={t('complaints.create.orderNumberPlaceholder')}
+              placeholderTextColor={theme.colors.textSecondary}
+              value={orderNumber}
+              onChangeText={setOrderNumber}
+            />
+          </View>
+        )}
 
         {/* Complaint Text */}
         <View style={styles.fieldContainer}>
@@ -563,6 +906,7 @@ const CreateComplaintScreen = ({navigation}) => {
         t('complaints.create.serviceProvider'),
         serviceProviders,
         setServiceProvider,
+        'serviceProvider',
       )}
 
       {renderSelectionModal(
@@ -571,6 +915,7 @@ const CreateComplaintScreen = ({navigation}) => {
         t('complaints.create.consumptionCategory'),
         consumptionCategories,
         setConsumptionCategory,
+        'category',
       )}
 
       {renderSelectionModal(
@@ -578,7 +923,8 @@ const CreateComplaintScreen = ({navigation}) => {
         setShowComplaintTypeModal,
         t('complaints.create.complaintType'),
         complaintTypes,
-        setComplaintType,
+        () => {}, // Handled by handleComplaintTypeSelect
+        'complaintType',
       )}
     </SafeAreaView>
   );
@@ -621,6 +967,13 @@ const styles = StyleSheet.create({
   dropdownIcon: {
     width: 20,
     height: 20,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 16,
   },
   textArea: {
     borderWidth: 1,
@@ -722,6 +1075,16 @@ const styles = StyleSheet.create({
   modalCloseText: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 20,
   },
 });
 
