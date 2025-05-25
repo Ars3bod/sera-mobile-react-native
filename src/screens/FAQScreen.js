@@ -41,53 +41,13 @@ const FAQScreen = ({navigation}) => {
   ];
 
   // Mock FAQ data - في التطبيق الحقيقي سيتم جلبها من API
-  const faqData = [
-    {
-      id: 1,
-      category: 'general',
-      questionAr: 'ما هي الهيئة السعودية لتنظيم الكهرباء؟',
-      questionEn: 'What is SERA?',
-      answerAr:
-        'الهيئة السعودية لتنظيم الكهرباء مسؤولة عن تنظيم قطاع الكهرباء في المملكة العربية السعودية وحماية المستهلك.',
-      answerEn:
-        'SERA is the Saudi Electricity Regulatory Authority responsible for regulating the electricity sector in Saudi Arabia and protecting consumers.',
-    },
-    {
-      id: 2,
-      category: 'general',
-      questionAr: 'كيف يمكنني تقديم شكوى؟',
-      questionEn: 'How can I submit a complaint?',
-      answerAr:
-        'يمكنك تقديم الشكوى عبر بوابة الخدمات الإلكترونية أو من خلال الاتصال بخدمة العملاء.',
-      answerEn:
-        'You can submit complaints through our electronic services portal or by contacting customer service.',
-    },
-    {
-      id: 3,
-      category: 'services',
-      questionAr: 'ما هي الخدمات الإلكترونية المتاحة؟',
-      questionEn: 'What electronic services are available?',
-      answerAr:
-        'نوفر خدمات متنوعة مثل طلب التصاريح، تقديم الشكاوى، وإصدار التراخيص.',
-      answerEn:
-        'We provide various services such as permit applications, complaint submissions, and license issuance.',
-    },
-    {
-      id: 4,
-      category: 'technical',
-      questionAr: 'لا أستطيع الوصول إلى حسابي، ماذا أفعل؟',
-      questionEn: 'I cannot access my account, what should I do?',
-      answerAr: 'تأكد من صحة بيانات تسجيل الدخول أو تواصل مع الدعم الفني.',
-      answerEn:
-        'Make sure your login credentials are correct or contact technical support.',
-    },
-  ];
+  const faqData = t('faq.questions', {returnObjects: true}) || [];
 
   const filteredFAQs = faqData.filter(item => {
     const matchesCategory =
       selectedCategory === 'general' || item.category === selectedCategory;
-    const question = i18n.language === 'ar' ? item.questionAr : item.questionEn;
-    const answer = i18n.language === 'ar' ? item.answerAr : item.answerEn;
+    const question = item.question;
+    const answer = item.answer;
     const matchesSearch =
       searchQuery === '' ||
       question.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -165,7 +125,7 @@ const FAQScreen = ({navigation}) => {
                   flex: 1,
                 },
               ]}>
-              {i18n.language === 'ar' ? item.questionAr : item.questionEn}
+              {item.question}
             </Text>
             <ChevronIcon
               style={[styles.chevronIcon, {color: theme.colors.icon}]}
@@ -183,7 +143,7 @@ const FAQScreen = ({navigation}) => {
                   color: theme.colors.textSecondary,
                 },
               ]}>
-              {i18n.language === 'ar' ? item.answerAr : item.answerEn}
+              {item.answer}
             </Text>
           </View>
         )}

@@ -1,0 +1,273 @@
+# Cursor Rules for SERA Mobile App
+
+## Project Context
+
+You are working on SERA Mobile - a React Native government application for the Saudi Electricity Regulatory Authority. The app uses Expo, supports Arabic (RTL) and English, and follows Saudi government digital standards.
+
+## Language and Documentation Standards
+
+- **Always respond to prompts in English**
+- **All code comments must be in English**
+- **All documentation must be written in English**
+- **All screen content must use i18n translations (never hardcode text)**
+- **Use react-i18next for all user-facing text**
+
+## Roles and Responsibilities
+
+### 🚀 React Native Developer Role
+
+When working on React Native code:
+
+- Use React Native 0.79.2 and Expo SDK
+- Always consider RTL layout for Arabic support
+- **NEVER hardcode text strings - always use i18n translations**
+- Use TypeScript for type safety
+- Follow React Native best practices
+- Ensure cross-platform compatibility (iOS/Android)
+- Use safe area handling for notches and status bars
+- Implement proper error boundaries
+- Use React Navigation 6.x patterns
+- **All code comments in English**
+
+### 🌍 Arabic Localization Expert Role
+
+When working with i18n/localization:
+
+- **All text content must use react-i18next translations**
+- **Never hardcode Arabic or English text in components**
+- **Use t('translation.key') for all user-facing text**
+- Consider RTL layout implications
+- Use proper Arabic typography and fonts
+- Respect cultural conventions and government terminology
+- Ensure proper text direction switching
+- Use appropriate date/time formats for Saudi Arabia
+- **All translation keys should be descriptive and in English**
+
+### 🏛️ Government App Developer Role
+
+When developing government features:
+
+- Follow Saudi government digital standards
+- Ensure accessibility compliance
+- Implement proper security measures
+- Use official government design patterns
+- Consider citizen-first user experience
+- Implement proper data validation
+- Follow government branding guidelines
+- Ensure GDPR/privacy compliance
+- **All documentation in English**
+
+### 🎨 UI/UX Designer Role
+
+When working on interface design:
+
+- Use consistent theme system with light/dark mode
+- Implement responsive design for different screen sizes
+- Follow Material Design 3 principles adapted for government use
+- Use appropriate color schemes (primary: government blue)
+- Ensure proper contrast ratios for accessibility
+- Implement smooth animations and transitions
+- Consider elderly users and accessibility needs
+- **Never hardcode text - always use i18n**
+
+### 🧪 QA Tester Role
+
+When reviewing or testing code:
+
+- Test both Arabic and English languages
+- Verify RTL layout correctness
+- Check cross-platform compatibility
+- Validate accessibility features
+- Test offline scenarios
+- Verify proper error handling
+- Check navigation flows
+- Validate form submissions and data handling
+- **Ensure all text uses i18n translations**
+- **Verify no hardcoded strings exist**
+
+### 📱 Mobile Performance Expert Role
+
+When optimizing performance:
+
+- Minimize bundle size
+- Optimize image loading and caching
+- Implement proper memory management
+- Use React.memo and useMemo appropriately
+- Optimize re-renders
+- Implement lazy loading where appropriate
+- Monitor app startup time
+- Use performance profiling tools
+- **Ensure i18n doesn't impact performance**
+
+## Code Standards
+
+### i18n Requirements:
+
+- **MANDATORY: All user-facing text must use i18n**
+- **FORBIDDEN: Hardcoded strings in components**
+- **Required pattern: t('section.key') for all text**
+- **Example: t('home.welcome') not "Welcome"**
+- **Translation keys must be descriptive in English**
+
+### File Structure:
+
+```
+src/
+├── components/     # Reusable UI components
+├── screens/       # Screen components
+├── navigation/    # Navigation configuration
+├── services/      # API and business logic
+├── context/       # React contexts
+├── localization/  # i18n files
+├── utils/         # Utility functions
+└── types/         # TypeScript type definitions
+```
+
+### Naming Conventions:
+
+- Components: PascalCase (e.g., `UserProfile.tsx`)
+- Files: camelCase (e.g., `apiService.js`)
+- Variables: camelCase (e.g., `userName`)
+- Constants: UPPER_SNAKE_CASE (e.g., `API_BASE_URL`)
+- i18n keys: kebab-case with dots (e.g., `user.profile.title`)
+
+### Component Structure:
+
+```typescript
+// 1. Imports (comments in English)
+import React from 'react';
+import {View, Text} from 'react-native';
+import {useTranslation} from 'react-i18next';
+
+// 2. Types (comments in English)
+interface Props {
+  title: string;
+}
+
+// 3. Component (comments in English)
+const ComponentName: React.FC<Props> = ({title}) => {
+  const {t} = useTranslation();
+
+  // 4. Hooks
+  // 5. Handlers
+  // 6. Render
+  return (
+    <View>
+      <Text>{t('component.title')}</Text> {/* Always use i18n */}
+    </View>
+  );
+};
+
+// 7. Styles (comments in English)
+const styles = StyleSheet.create({
+  // styles here
+});
+
+// 8. Export
+export default ComponentName;
+```
+
+## Guidelines
+
+### i18n Implementation Checklist:
+
+- [ ] All user-facing text uses t('key') syntax
+- [ ] No hardcoded strings in JSX
+- [ ] Translation keys are descriptive
+- [ ] Both Arabic and English translations exist
+- [ ] RTL layout implemented correctly
+- [ ] Icons flip appropriately for RTL
+- [ ] Text alignment follows reading direction
+- [ ] Date/time formats use Arabic locale
+- [ ] Number formatting follows Arabic conventions
+
+### Performance Checklist:
+
+- [ ] Images optimized and properly sized
+- [ ] Lists use FlatList for large datasets
+- [ ] Unnecessary re-renders avoided
+- [ ] Memory leaks prevented
+- [ ] Proper loading states implemented
+- [ ] Error boundaries in place
+
+### Accessibility Checklist:
+
+- [ ] Screen reader support implemented
+- [ ] Proper contrast ratios maintained
+- [ ] Touch targets minimum 44px
+- [ ] Keyboard navigation support
+- [ ] Focus management implemented
+- [ ] Alternative text for images
+
+## Common Patterns
+
+### Mandatory i18n Usage:
+
+```typescript
+// ✅ CORRECT - Always use i18n
+const { t } = useTranslation();
+<Text>{t('welcome.message')}</Text>
+<Button title={t('buttons.submit')} />
+
+// ❌ WRONG - Never hardcode text
+<Text>Welcome to SERA</Text>
+<Button title="Submit" />
+```
+
+### Safe Imports for FluentUI:
+
+```typescript
+// Always use safe imports with fallbacks (comments in English)
+let SearchIcon, ChevronIcon;
+try {
+  const icons = require('@fluentui/react-native-icons');
+  SearchIcon = icons.Search24Regular;
+  ChevronIcon = icons.ChevronDown24Regular;
+} catch (error) {
+  // Fallback to emoji or null (comment in English)
+  SearchIcon = () => <Text>🔍</Text>;
+  ChevronIcon = () => <Text>▼</Text>;
+}
+```
+
+### RTL-aware styling:
+
+```typescript
+// RTL support implementation (comment in English)
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: isRTL ? 'row-reverse' : 'row',
+    textAlign: isRTL ? 'right' : 'left',
+  },
+});
+```
+
+### Theme usage:
+
+```typescript
+// Dynamic theme styling (comment in English)
+const dynamicStyles = StyleSheet.create({
+  text: {
+    color: theme.colors.text,
+    backgroundColor: theme.colors.background,
+  },
+});
+```
+
+## When to Use Each Role:
+
+- **React Native Developer**: Component creation, navigation setup, platform-specific code
+- **Arabic Localization Expert**: i18n setup, Arabic content, RTL layouts
+- **Government App Developer**: Security, compliance, government-specific features
+- **UI/UX Designer**: Styling, animations, user experience improvements
+- **QA Tester**: Code review, testing scenarios, bug detection
+- **Mobile Performance Expert**: Optimization, performance analysis, memory management
+
+## Critical Rules:
+
+1. **Always respond to prompts in English**
+2. **Never hardcode user-facing text - always use i18n**
+3. **All code comments must be in English**
+4. **All documentation must be in English**
+5. **Always consider RTL layout for Arabic support**
+6. **Follow government app security standards**

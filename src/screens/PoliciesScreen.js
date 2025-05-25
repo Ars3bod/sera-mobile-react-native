@@ -10,14 +10,69 @@ import {
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '../context/ThemeContext';
-import {
-  ArrowLeft24Regular,
+
+// Simple icon components as fallback
+const ArrowLeftIcon = ({style, ...props}) => (
+  <Text style={[{fontSize: 20, color: '#007AFF'}, style]} {...props}>
+    ←
+  </Text>
+);
+
+const ChevronRightIcon = ({style, ...props}) => (
+  <Text style={[{fontSize: 16, color: '#999'}, style]} {...props}>
+    →
+  </Text>
+);
+
+const ShieldIcon = ({style, ...props}) => (
+  <Text style={[{fontSize: 20}, style]} {...props}>
+    🛡️
+  </Text>
+);
+
+const DocumentIcon = ({style, ...props}) => (
+  <Text style={[{fontSize: 20}, style]} {...props}>
+    📄
+  </Text>
+);
+
+const LockIcon = ({style, ...props}) => (
+  <Text style={[{fontSize: 20}, style]} {...props}>
+    🔒
+  </Text>
+);
+
+const GlobeIcon = ({style, ...props}) => (
+  <Text style={[{fontSize: 20}, style]} {...props}>
+    🌐
+  </Text>
+);
+
+// Try to import FluentUI icons, fallback to simple icons
+let ArrowLeft24Regular,
   Shield24Regular,
   Document24Regular,
   Lock24Regular,
   Globe24Regular,
-  ChevronRight24Regular,
-} from '@fluentui/react-native-icons';
+  ChevronRight24Regular;
+
+try {
+  const FluentIcons = require('@fluentui/react-native-icons');
+  ArrowLeft24Regular = FluentIcons.ArrowLeft24Regular || ArrowLeftIcon;
+  Shield24Regular = FluentIcons.Shield24Regular || ShieldIcon;
+  Document24Regular = FluentIcons.Document24Regular || DocumentIcon;
+  Lock24Regular = FluentIcons.Lock24Regular || LockIcon;
+  Globe24Regular = FluentIcons.Globe24Regular || GlobeIcon;
+  ChevronRight24Regular = FluentIcons.ChevronRight24Regular || ChevronRightIcon;
+} catch (error) {
+  console.warn('FluentUI icons not available, using emoji fallback');
+  ArrowLeft24Regular = ArrowLeftIcon;
+  Shield24Regular = ShieldIcon;
+  Document24Regular = DocumentIcon;
+  Lock24Regular = LockIcon;
+  Globe24Regular = GlobeIcon;
+  ChevronRight24Regular = ChevronRightIcon;
+}
 
 const PoliciesScreen = ({navigation}) => {
   const {t, i18n} = useTranslation();

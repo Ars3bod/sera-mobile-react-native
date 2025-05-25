@@ -4,6 +4,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AppNavigator from './src/navigation/AppNavigator';
 import {ThemeProvider} from './src/context/ThemeContext';
 import {FontProvider} from './src/context/FontProvider';
+import {UserProvider} from './src/context/UserContext';
 import './src/localization/i18n';
 
 export default function App() {
@@ -11,7 +12,9 @@ export default function App() {
     <GestureHandlerRootView style={{flex: 1}}>
       <FontProvider>
         <ThemeProvider>
-          <AppNavigator />
+          <UserProvider>
+            <AppNavigator />
+          </UserProvider>
         </ThemeProvider>
       </FontProvider>
     </GestureHandlerRootView>

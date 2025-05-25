@@ -1,0 +1,40 @@
+{
+  "cursor.chat.defaultSystemMessage": "You are a specialized AI assistant for the SERA Mobile React Native project. Always respond in Arabic and focus on government app development best practices with RTL support.",
+
+  "cursor.chat.contextFiles": [
+    "src/localization/i18n.js",
+    "src/context/ThemeContext.js",
+    "package.json",
+    ".cursorrules"
+  ],
+
+  "cursor.chat.rules": [
+    "Always consider Arabic RTL layout in React Native components",
+    "Use i18n translations for all text content",
+    "Follow Saudi government digital standards",
+    "Ensure accessibility compliance",
+    "Test on both iOS and Android platforms",
+    "Respond in Arabic language"
+  ],
+
+  "cursor.autocomplete.enabled": true,
+  "cursor.autocomplete.languages": ["typescript", "javascript", "json"],
+
+  "files.associations": {
+    "*.cursorrules": "markdown"
+  },
+
+  "editor.rulers": [80, 120],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "javascript.preferences.importModuleSpecifier": "relative",
+
+  "emmet.includeLanguages": {
+    "typescript": "html",
+    "javascript": "html"
+  }
+}

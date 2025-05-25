@@ -3,6 +3,7 @@ import {View, Text, TouchableOpacity, Alert, StatusBar} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '../context/ThemeContext';
+import {useUser} from '../context/UserContext';
 import {pollNafathStatus, loginNafath} from '../services/nafathService';
 import StyleManager from '../styles/StyleManager';
 import {LoadingSpinner} from '../animations';
@@ -11,6 +12,7 @@ import DeepLinkService from '../services/deepLinkService';
 export default function NafathVerificationScreen({route, navigation}) {
   const {t} = useTranslation();
   const {theme, isDarkMode} = useTheme();
+  const userContext = useUser();
   const styles = StyleManager.getNafathStyles(theme);
   const {
     transId: initialTransId,
@@ -34,11 +36,12 @@ export default function NafathVerificationScreen({route, navigation}) {
     return () => clearInterval(timerRef.current);
   }, []);
 
-  // Polling logic
+  // Polling logic with UserContext integration
   const startPolling = useCallback(() => {
     pollingRef.current = true;
     setLoading(true);
     setError(null);
+
     async function poll() {
       try {
         await pollNafathStatus(
@@ -46,19 +49,29 @@ export default function NafathVerificationScreen({route, navigation}) {
           random,
           nationalId,
           () => pollingRef.current,
-          () => {
+          authData => {
+            console.log('Authentication successful with data:', authData);
+
+            // Check if contact validation was successful
+            if (authData.contactValidation?.success) {
+              console.log('Contact validation completed successfully');
+            }
+
             setLoading(false);
             navigation.replace('Home');
           },
+          userContext, // Pass user context for data storage and validation
         );
       } catch (e) {
+        console.error('Polling error:', e);
         setError(t('nafathVerification.verificationFailed'));
         setLoading(false);
         setCanResend(true);
       }
     }
+
     poll();
-  }, [transId, random, nationalId, navigation, t]);
+  }, [transId, random, nationalId, navigation, t, userContext]);
 
   useEffect(() => {
     startPolling();
@@ -85,18 +98,21 @@ export default function NafathVerificationScreen({route, navigation}) {
     setCanResend(false);
     setRemaining(60);
     pollingRef.current = false;
+
     try {
       const res = await loginNafath(nationalId);
       setTransId(res.transId);
       setRandom(res.random);
       pollingRef.current = true;
       startPolling();
+
       // Restart timer
       clearInterval(timerRef.current);
       timerRef.current = setInterval(() => {
         setRemaining(prev => prev - 1);
       }, 1000);
     } catch (e) {
+      console.error('Resend error:', e);
       setError(t('nafathVerification.resendFailed'));
       setCanResend(true);
     } finally {

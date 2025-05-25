@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,12 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
+  RefreshControl,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '../context/ThemeContext';
+import {useUser} from '../context/UserContext';
+import {useFocusEffect} from '@react-navigation/native';
 import {
   ArrowLeft24Regular,
   Add24Regular,
@@ -18,11 +21,26 @@ import {
   Dismiss24Regular,
   ChevronRight24Regular,
 } from '@fluentui/react-native-icons';
+import complaintsService, {
+  MOCK_COMPLAINTS_DATA,
+} from '../services/complaintsService';
+import AppConfig from '../config/appConfig';
+import {LoadingSpinner} from '../animations';
 
 const ComplaintsScreen = ({navigation}) => {
   const {t, i18n} = useTranslation();
   const {theme, isDarkMode} = useTheme();
+  const {user} = useUser();
   const isRTL = i18n.language === 'ar';
+
+  const [complaintsCounts, setComplaintsCounts] = useState({
+    open: 0,
+    closed: 0,
+    rejected: 0,
+    total: 0,
+  });
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -35,6 +53,135 @@ const ComplaintsScreen = ({navigation}) => {
   const navigateToViewComplaints = (filter = 'all') => {
     navigation.navigate('ViewComplaints', {filter});
   };
+
+  // Get contact ID from user context
+  const getContactId = () => {
+    if (user?.contactInfo?.id) {
+      return user.contactInfo.id;
+    }
+    return null;
+  };
+
+  // Check if should use mock data based on config
+  const shouldUseMockData = () => {
+    if (AppConfig.api.useMockData) {
+      return true;
+    }
+
+    if (AppConfig.development.mockServices.complaints) {
+      return true;
+    }
+
+    const contactId = getContactId();
+    if (!contactId) {
+      return true;
+    }
+
+    return false;
+  };
+
+  // Fetch complaints counts from API or use mock data
+  const fetchComplaintsCounts = async (showLoading = true) => {
+    try {
+      if (showLoading) setLoading(true);
+
+      if (shouldUseMockData()) {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Using mock data for complaints counts');
+        }
+
+        // Calculate counts from mock data
+        const openCount = MOCK_COMPLAINTS_DATA.all.filter(
+          c => c.status === 'open',
+        ).length;
+        const closedCount = MOCK_COMPLAINTS_DATA.all.filter(
+          c => c.status === 'closed',
+        ).length;
+        const rejectedCount = MOCK_COMPLAINTS_DATA.all.filter(
+          c => c.status === 'rejected',
+        ).length;
+
+        setComplaintsCounts({
+          open: openCount,
+          closed: closedCount,
+          rejected: rejectedCount,
+          total: MOCK_COMPLAINTS_DATA.all.length,
+        });
+      } else {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Fetching real complaints counts from API');
+        }
+
+        const contactId = getContactId();
+
+        // Fetch all complaints to calculate counts
+        const response = await complaintsService.getComplaintsList({
+          cid: contactId,
+          statusCode: '3', // All complaints
+          pageNumber: '1',
+          pageSize: AppConfig.pagination.maxPageSize.toString(), // Get max to count all
+        });
+
+        if (response.success) {
+          const complaints = response.complaints || [];
+          const openCount = complaints.filter(c => c.status === 'open').length;
+          const closedCount = complaints.filter(
+            c => c.status === 'closed',
+          ).length;
+          const rejectedCount = complaints.filter(
+            c => c.status === 'rejected',
+          ).length;
+
+          setComplaintsCounts({
+            open: openCount,
+            closed: closedCount,
+            rejected: rejectedCount,
+            total: complaints.length,
+          });
+        } else {
+          throw new Error('Failed to fetch complaints');
+        }
+      }
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Error fetching complaints counts:', error);
+      }
+
+      // Fallback to mock data counts on error
+      const openCount = MOCK_COMPLAINTS_DATA.all.filter(
+        c => c.status === 'open',
+      ).length;
+      const closedCount = MOCK_COMPLAINTS_DATA.all.filter(
+        c => c.status === 'closed',
+      ).length;
+      const rejectedCount = MOCK_COMPLAINTS_DATA.all.filter(
+        c => c.status === 'rejected',
+      ).length;
+
+      setComplaintsCounts({
+        open: openCount,
+        closed: closedCount,
+        rejected: rejectedCount,
+        total: MOCK_COMPLAINTS_DATA.all.length,
+      });
+    } finally {
+      if (showLoading) setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  // Refresh complaints counts
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchComplaintsCounts(false);
+  };
+
+  // Load complaints counts when screen focuses
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchComplaintsCounts();
+    }, []),
+  );
 
   const mainActions = [
     {
@@ -60,21 +207,21 @@ const ComplaintsScreen = ({navigation}) => {
       titleKey: 'complaints.filters.open',
       icon: DocumentText24Regular,
       color: '#FF9800',
-      count: 3,
+      count: complaintsCounts.open,
       onPress: () => navigateToViewComplaints('open'),
     },
     {
       titleKey: 'complaints.filters.closed',
       icon: CheckmarkCircle24Regular,
       color: '#4CAF50',
-      count: 12,
+      count: complaintsCounts.closed,
       onPress: () => navigateToViewComplaints('closed'),
     },
     {
       titleKey: 'complaints.filters.rejected',
       icon: Dismiss24Regular,
       color: '#F44336',
-      count: 1,
+      count: complaintsCounts.rejected,
       onPress: () => navigateToViewComplaints('rejected'),
     },
   ];
@@ -226,7 +373,15 @@ const ComplaintsScreen = ({navigation}) => {
       <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={theme.colors.primary}
+            colors={[theme.colors.primary]}
+          />
+        }>
         {/* Welcome Card */}
         <View
           style={[
@@ -282,9 +437,27 @@ const ComplaintsScreen = ({navigation}) => {
             ]}>
             {t('complaints.view.yourComplaints')}
           </Text>
-          <View style={styles.filtersContainer}>
-            {quickFilters.map(renderQuickFilter)}
-          </View>
+          {loading ? (
+            <View style={styles.loadingContainer}>
+              <LoadingSpinner
+                type="rotating"
+                size={30}
+                color={theme.colors.primary}
+                duration={1000}
+              />
+              <Text
+                style={[
+                  styles.loadingText,
+                  {color: theme.colors.textSecondary},
+                ]}>
+                {t('complaints.view.loading')}
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.filtersContainer}>
+              {quickFilters.map(renderQuickFilter)}
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -411,6 +584,17 @@ const styles = StyleSheet.create({
   },
   filterTitle: {
     fontSize: 12,
+    fontWeight: '500',
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+    gap: 12,
+  },
+  loadingText: {
+    fontSize: 14,
     fontWeight: '500',
   },
 });

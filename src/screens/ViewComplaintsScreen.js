@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -7,142 +7,269 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
-  FlatList,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '../context/ThemeContext';
+import {useUser} from '../context/UserContext';
+import {useFocusEffect} from '@react-navigation/native';
 import {
   ArrowLeft24Regular,
-  Filter24Regular,
   DocumentText24Regular,
   CheckmarkCircle24Regular,
-  Clock24Regular,
   Dismiss24Regular,
-  ChevronRight24Regular,
+  Filter24Regular,
 } from '@fluentui/react-native-icons';
+import complaintsService, {
+  MOCK_COMPLAINTS_DATA,
+} from '../services/complaintsService';
+import {LoadingSpinner} from '../animations';
+import AppConfig from '../config/appConfig';
 
 const ViewComplaintsScreen = ({navigation, route}) => {
   const {t, i18n} = useTranslation();
   const {theme, isDarkMode} = useTheme();
+  const {user} = useUser();
   const isRTL = i18n.language === 'ar';
+  const {filter = 'all'} = route.params || {};
 
-  const initialFilter = route.params?.filter || 'all';
-  const [activeFilter, setActiveFilter] = useState(initialFilter);
   const [complaints, setComplaints] = useState([]);
-  const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(null);
+  const [currentFilter, setCurrentFilter] = useState(filter);
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
-  const filters = [
-    {
-      key: 'all',
-      labelAr: t('complaints.filters.all'),
-      labelEn: t('complaints.filters.all'),
-      icon: DocumentText24Regular,
-      color: theme.colors.primary,
-    },
-    {
-      key: 'open',
-      labelAr: t('complaints.filters.open'),
-      labelEn: t('complaints.filters.open'),
-      icon: Clock24Regular,
-      color: '#FF9800',
-    },
-    {
-      key: 'closed',
-      labelAr: t('complaints.filters.closed'),
-      labelEn: t('complaints.filters.closed'),
-      icon: CheckmarkCircle24Regular,
-      color: '#4CAF50',
-    },
-    {
-      key: 'rejected',
-      labelAr: t('complaints.filters.rejected'),
-      labelEn: t('complaints.filters.rejected'),
-      icon: Dismiss24Regular,
-      color: '#F44336',
-    },
-  ];
+  // Get contact ID from user context
+  const getContactId = () => {
+    if (user?.contactInfo?.id) {
+      return user.contactInfo.id;
+    }
+    return null;
+  };
 
-  // Mock data -
-  const mockComplaints = [
-    {
-      id: '12345',
-      titleAr: t('complaints.complaintTypes.powerOutage'),
-      titleEn: t('complaints.complaintTypes.powerOutage'),
-      status: 'open',
-      statusAr: t('complaints.view.status.open'),
-      statusEn: t('complaints.view.status.open'),
-      date: '2024-01-15',
-      serviceProvider: t('complaints.serviceProviders.sec'),
-      priority: 'high',
-    },
-    {
-      id: '12344',
-      titleAr: t('complaints.complaintTypes.highBill'),
-      titleEn: t('complaints.complaintTypes.highBill'),
-      status: 'closed',
-      statusAr: t('complaints.view.status.closed'),
-      statusEn: t('complaints.view.status.closed'),
-      date: '2024-01-12',
-      serviceProvider: t('complaints.serviceProviders.sec'),
-      priority: 'medium',
-    },
-    {
-      id: '12343',
-      titleAr: t('complaints.complaintTypes.connectionDelay'),
-      titleEn: t('complaints.complaintTypes.connectionDelay'),
-      status: 'open',
-      statusAr: t('complaints.view.status.open'),
-      statusEn: t('complaints.view.status.open'),
-      date: '2024-01-10',
-      serviceProvider: t('complaints.serviceProviders.marafiq'),
-      priority: 'low',
-    },
-    {
-      id: '12342',
-      titleAr: t('complaints.complaintTypes.serviceQuality'),
-      titleEn: t('complaints.complaintTypes.serviceQuality'),
-      status: 'rejected',
-      statusAr: t('complaints.view.status.rejected'),
-      statusEn: t('complaints.view.status.rejected'),
-      date: '2024-01-08',
-      serviceProvider: t('complaints.serviceProviders.marafiq'),
-      priority: 'medium',
-    },
-  ];
+  // Helper function to format date safely
+  const formatDate = dateString => {
+    if (AppConfig.development.enableDebugLogs) {
+      console.log('formatDate input:', dateString, typeof dateString);
+    }
 
-  const loadComplaints = async () => {
-    setLoading(true);
+    if (!dateString || dateString === null || dateString === undefined) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('formatDate: empty or null date');
+      }
+      return '';
+    }
+
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setComplaints(mockComplaints);
+      // Handle ISO date strings and clean format
+      let cleanDateString = dateString;
+
+      // If it's already a Date object
+      if (dateString instanceof Date) {
+        if (isNaN(dateString.getTime())) {
+          if (AppConfig.development.enableDebugLogs) {
+            console.log('formatDate: invalid Date object');
+          }
+          return t('complaints.view.invalidDate');
+        }
+        const result = dateString.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US');
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('formatDate result (from Date):', result);
+        }
+        return result;
+      }
+
+      // Handle string dates
+      if (typeof dateString === 'string') {
+        // Remove escape characters if present
+        cleanDateString = dateString.replace(/\\/g, '');
+
+        // Special handling for API format: "5/25/2025 10:25:12 AM"
+        if (
+          cleanDateString.match(
+            /^\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}:\d{2}\s+(AM|PM)$/i,
+          )
+        ) {
+          if (AppConfig.development.enableDebugLogs) {
+            console.log('formatDate: parsing MM/DD/YYYY HH:MM:SS AM/PM format');
+          }
+
+          // Convert to a format that JavaScript can parse reliably
+          // From "5/25/2025 10:25:12 AM" to "2025-05-25T10:25:12"
+          const parts = cleanDateString.split(' ');
+          const datePart = parts[0]; // "5/25/2025"
+          const timePart = parts[1]; // "10:25:12"
+          const ampm = parts[2]; // "AM" or "PM"
+
+          const [month, day, year] = datePart.split('/');
+          const [hours, minutes, seconds] = timePart.split(':');
+
+          // Convert to 24-hour format
+          let hour24 = parseInt(hours);
+          if (ampm.toUpperCase() === 'PM' && hour24 !== 12) {
+            hour24 += 12;
+          } else if (ampm.toUpperCase() === 'AM' && hour24 === 12) {
+            hour24 = 0;
+          }
+
+          // Create ISO format string: YYYY-MM-DDTHH:MM:SS
+          const isoString = `${year}-${month.padStart(2, '0')}-${day.padStart(
+            2,
+            '0',
+          )}T${hour24.toString().padStart(2, '0')}:${minutes}:${seconds}`;
+
+          if (AppConfig.development.enableDebugLogs) {
+            console.log('formatDate: converted to ISO:', isoString);
+          }
+
+          cleanDateString = isoString;
+        }
+      }
+
+      const date = new Date(cleanDateString);
+
+      if (isNaN(date.getTime())) {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log(
+            'formatDate: invalid date after parsing:',
+            cleanDateString,
+          );
+        }
+        return t('complaints.view.invalidDate');
+      }
+
+      const result = date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US');
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('formatDate result:', result);
+      }
+      return result;
     } catch (error) {
-      console.error('Error loading complaints:', error);
-    } finally {
-      setLoading(false);
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('formatDate error:', error);
+      }
+      return t('complaints.view.invalidDate');
     }
   };
 
-  const onRefresh = async () => {
+  // Check if should use mock data based on config
+  const shouldUseMockData = () => {
+    // First check global mock data setting
+    if (AppConfig.api.useMockData) {
+      return true;
+    }
+
+    // Then check service-specific mock setting
+    if (AppConfig.development.mockServices.complaints) {
+      return true;
+    }
+
+    // If no contact ID available, use mock data
+    const contactId = getContactId();
+    if (!contactId) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const fetchComplaints = async (showLoading = true) => {
+    try {
+      if (showLoading) setLoading(true);
+      setError(null);
+
+      if (shouldUseMockData()) {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Using mock data for complaints (configured mode)');
+        }
+
+        // Use mock data for development/presentation
+        const mockComplaints = MOCK_COMPLAINTS_DATA.all.filter(complaint => {
+          if (currentFilter === 'all') return true;
+          return complaint.status === currentFilter;
+        });
+        setComplaints(mockComplaints);
+      } else {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Using real API for complaints');
+        }
+
+        // Use real API
+        const contactId = getContactId();
+        const statusCode =
+          complaintsService.getStatusCodeForFilter(currentFilter);
+        const response = await complaintsService.getComplaintsList({
+          cid: contactId,
+          statusCode: statusCode,
+          pageNumber: '1',
+          pageSize: AppConfig.pagination.defaultPageSize.toString(),
+        });
+
+        if (response.success) {
+          setComplaints(response.complaints || []);
+        } else {
+          throw new Error('Failed to fetch complaints');
+        }
+      }
+    } catch (err) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Error fetching complaints:', err);
+      }
+      setError(err.message);
+
+      // Fallback to mock data on error
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Falling back to mock data due to error');
+      }
+      const mockComplaints = MOCK_COMPLAINTS_DATA.all.filter(complaint => {
+        if (currentFilter === 'all') return true;
+        return complaint.status === currentFilter;
+      });
+      setComplaints(mockComplaints);
+    } finally {
+      if (showLoading) setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
-    await loadComplaints();
-    setRefreshing(false);
-  };
+    fetchComplaints(false);
+  }, [currentFilter]);
 
-  useEffect(() => {
-    loadComplaints();
-  }, []);
+  // Load complaints when screen focuses or filter changes
+  useFocusEffect(
+    useCallback(() => {
+      fetchComplaints();
+    }, [currentFilter]),
+  );
 
-  const getFilteredComplaints = () => {
-    if (activeFilter === 'all') return complaints;
-    return complaints.filter(complaint => complaint.status === activeFilter);
-  };
+  const filterOptions = [
+    {
+      key: 'all',
+      labelKey: 'complaints.filters.all',
+      icon: DocumentText24Regular,
+    },
+    {
+      key: 'open',
+      labelKey: 'complaints.filters.open',
+      icon: DocumentText24Regular,
+    },
+    {
+      key: 'closed',
+      labelKey: 'complaints.filters.closed',
+      icon: CheckmarkCircle24Regular,
+    },
+    {
+      key: 'rejected',
+      labelKey: 'complaints.filters.rejected',
+      icon: Dismiss24Regular,
+    },
+  ];
 
   const getStatusColor = status => {
     switch (status) {
@@ -157,189 +284,115 @@ const ViewComplaintsScreen = ({navigation, route}) => {
     }
   };
 
-  const getPriorityColor = priority => {
-    switch (priority) {
-      case 'high':
-        return '#F44336';
-      case 'medium':
-        return '#FF9800';
-      case 'low':
-        return '#4CAF50';
-      default:
-        return theme.colors.textSecondary;
-    }
-  };
+  const renderComplaintCard = complaint => (
+    <TouchableOpacity
+      key={complaint.id}
+      style={[styles.complaintCard, {backgroundColor: theme.colors.card}]}
+      activeOpacity={0.7}>
+      <View style={styles.complaintHeader}>
+        <View style={styles.complaintTitleContainer}>
+          <Text
+            style={[
+              styles.complaintTitle,
+              {color: theme.colors.text, textAlign: isRTL ? 'right' : 'left'},
+            ]}>
+            {complaint.title}
+          </Text>
+          <Text
+            style={[
+              styles.complaintNumber,
+              {
+                color: theme.colors.textSecondary,
+                textAlign: isRTL ? 'right' : 'left',
+              },
+            ]}>
+            #{complaint.caseNumber}
+          </Text>
+        </View>
+        <View style={styles.statusContainer}>
+          <View
+            style={[
+              styles.statusBadge,
+              {backgroundColor: getStatusColor(complaint.status) + '20'},
+            ]}>
+            <Text
+              style={[
+                styles.statusText,
+                {color: getStatusColor(complaint.status)},
+              ]}>
+              {t(`complaints.view.status.${complaint.status}`)}
+            </Text>
+          </View>
+        </View>
+      </View>
 
-  const formatDate = dateString => {
-    const date = new Date(dateString);
-    if (isRTL) {
-      return date.toLocaleDateString('ar-SA');
-    }
-    return date.toLocaleDateString('en-US');
-  };
+      <Text
+        style={[
+          styles.complaintDescription,
+          {
+            color: theme.colors.textSecondary,
+            textAlign: isRTL ? 'right' : 'left',
+          },
+        ]}>
+        {complaint.description}
+      </Text>
 
-  const navigateToComplaintDetails = complaint => {
-    // في المستقبل يمكن إضافة شاشة تفاصيل الشكوى
-    console.log('Navigate to complaint details:', complaint.id);
-  };
+      <View style={styles.complaintFooter}>
+        <Text
+          style={[styles.complaintDate, {color: theme.colors.textSecondary}]}>
+          {(() => {
+            const dateValue = complaint.dateSubmitted || complaint.creationDate;
+            if (AppConfig.development.enableDebugLogs) {
+              console.log('Complaint date values:', {
+                id: complaint.id,
+                dateSubmitted: complaint.dateSubmitted,
+                creationDate: complaint.creationDate,
+                finalValue: dateValue,
+              });
+            }
+            return formatDate(dateValue);
+          })()}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
 
-  const renderFilterTab = filter => {
-    const IconComponent = filter.icon;
-    const isActive = activeFilter === filter.key;
+  const renderFilterButton = filterOption => {
+    const IconComponent = filterOption.icon;
+    const isActive = currentFilter === filterOption.key;
 
     return (
       <TouchableOpacity
-        key={filter.key}
+        key={filterOption.key}
         style={[
-          styles.filterTab,
+          styles.filterButton,
           {
-            backgroundColor: isActive ? filter.color + '20' : 'transparent',
-            borderColor: isActive ? filter.color : theme.colors.border,
+            backgroundColor: isActive
+              ? theme.colors.primary + '20'
+              : theme.colors.surface,
+            borderColor: isActive ? theme.colors.primary : theme.colors.border,
           },
         ]}
-        onPress={() => setActiveFilter(filter.key)}
+        onPress={() => setCurrentFilter(filterOption.key)}
         activeOpacity={0.7}>
         <IconComponent
           style={[
             styles.filterIcon,
-            {color: isActive ? filter.color : theme.colors.icon},
+            {color: isActive ? theme.colors.primary : theme.colors.icon},
           ]}
         />
         <Text
           style={[
             styles.filterText,
             {
-              color: isActive ? filter.color : theme.colors.textSecondary,
-              fontWeight: isActive ? 'bold' : 'normal',
+              color: isActive ? theme.colors.primary : theme.colors.text,
             },
           ]}>
-          {isRTL ? filter.labelAr : filter.labelEn}
+          {t(filterOption.labelKey)}
         </Text>
       </TouchableOpacity>
     );
   };
-
-  const renderComplaintItem = ({item}) => (
-    <TouchableOpacity
-      style={[styles.complaintCard, {backgroundColor: theme.colors.card}]}
-      onPress={() => navigateToComplaintDetails(item)}
-      activeOpacity={0.7}>
-      <View style={styles.complaintHeader}>
-        <View style={styles.complaintIdContainer}>
-          <Text
-            style={[
-              styles.complaintId,
-              {
-                color: theme.colors.primary,
-                textAlign: isRTL ? 'right' : 'left',
-              },
-            ]}>
-            #{item.id}
-          </Text>
-          <View
-            style={[
-              styles.statusBadge,
-              {backgroundColor: getStatusColor(item.status) + '20'},
-            ]}>
-            <Text
-              style={[styles.statusText, {color: getStatusColor(item.status)}]}>
-              {isRTL ? item.statusAr : item.statusEn}
-            </Text>
-          </View>
-        </View>
-        <Text
-          style={[
-            styles.complaintDate,
-            {
-              color: theme.colors.textSecondary,
-              textAlign: isRTL ? 'left' : 'right',
-            },
-          ]}>
-          {formatDate(item.date)}
-        </Text>
-      </View>
-
-      <Text
-        style={[
-          styles.complaintTitle,
-          {
-            color: theme.colors.text,
-            textAlign: isRTL ? 'right' : 'left',
-          },
-        ]}
-        numberOfLines={2}>
-        {isRTL ? item.titleAr : item.titleEn}
-      </Text>
-
-      <View style={styles.complaintFooter}>
-        <Text
-          style={[
-            styles.serviceProvider,
-            {
-              color: theme.colors.textSecondary,
-              textAlign: isRTL ? 'right' : 'left',
-            },
-          ]}
-          numberOfLines={1}>
-          {item.serviceProvider}
-        </Text>
-        <View style={styles.complaintActions}>
-          <View
-            style={[
-              styles.priorityBadge,
-              {backgroundColor: getPriorityColor(item.priority) + '20'},
-            ]}>
-            <Text
-              style={[
-                styles.priorityText,
-                {color: getPriorityColor(item.priority)},
-              ]}>
-              {t(`complaints.view.priority.${item.priority}`)}
-            </Text>
-          </View>
-          <ChevronRight24Regular
-            style={[
-              styles.chevronIcon,
-              {
-                transform: [{scaleX: isRTL ? -1 : 1}],
-                color: theme.colors.icon,
-              },
-            ]}
-          />
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
-  const renderEmptyState = () => (
-    <View style={styles.emptyContainer}>
-      <DocumentText24Regular
-        style={[styles.emptyIcon, {color: theme.colors.textSecondary}]}
-      />
-      <Text
-        style={[
-          styles.emptyTitle,
-          {
-            color: theme.colors.text,
-            textAlign: 'center',
-          },
-        ]}>
-        {t('complaints.view.noComplaints')}
-      </Text>
-      <Text
-        style={[
-          styles.emptySubtitle,
-          {
-            color: theme.colors.textSecondary,
-            textAlign: 'center',
-          },
-        ]}>
-        {t('complaints.view.noComplaintsMessage')}
-      </Text>
-    </View>
-  );
-
-  const filteredComplaints = getFilteredComplaints();
 
   const dynamicStyles = StyleSheet.create({
     container: {
@@ -400,45 +453,75 @@ const ViewComplaintsScreen = ({navigation, route}) => {
         <View style={styles.placeholderView} />
       </View>
 
-      {/* Filters */}
+      {/* Filter Buttons */}
       <View style={styles.filtersContainer}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filtersScrollContent}>
-          {filters.map(renderFilterTab)}
+          contentContainerStyle={styles.filtersContent}>
+          {filterOptions.map(renderFilterButton)}
         </ScrollView>
       </View>
 
       {/* Content */}
-      <View style={styles.content}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         {loading ? (
           <View style={styles.loadingContainer}>
-            <Text
-              style={[styles.loadingText, {color: theme.colors.textSecondary}]}>
+            <LoadingSpinner
+              type="rotating"
+              size={40}
+              color={theme.colors.primary}
+              duration={1000}
+            />
+            <Text style={[styles.loadingText, {color: theme.colors.text}]}>
               {t('complaints.view.loading')}
             </Text>
           </View>
-        ) : filteredComplaints.length === 0 ? (
-          renderEmptyState()
+        ) : error && complaints.length === 0 ? (
+          <View style={styles.errorContainer}>
+            <Text style={[styles.errorText, {color: theme.colors.error}]}>
+              {error}
+            </Text>
+            <TouchableOpacity
+              style={[
+                styles.retryButton,
+                {backgroundColor: theme.colors.primary},
+              ]}
+              onPress={() => fetchComplaints()}>
+              <Text style={styles.retryButtonText}>{t('retry')}</Text>
+            </TouchableOpacity>
+          </View>
+        ) : complaints.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <DocumentText24Regular
+              style={[styles.emptyIcon, {color: theme.colors.textSecondary}]}
+            />
+            <Text
+              style={[
+                styles.emptyTitle,
+                {color: theme.colors.text, textAlign: 'center'},
+              ]}>
+              {t('complaints.view.noComplaints')}
+            </Text>
+            <Text
+              style={[
+                styles.emptyDescription,
+                {color: theme.colors.textSecondary, textAlign: 'center'},
+              ]}>
+              {t('complaints.view.noComplaintsMessage')}
+            </Text>
+          </View>
         ) : (
-          <FlatList
-            data={filteredComplaints}
-            renderItem={renderComplaintItem}
-            keyExtractor={item => item.id}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContent}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[theme.colors.primary]}
-                tintColor={theme.colors.primary}
-              />
-            }
-          />
+          <View style={styles.complaintsContainer}>
+            {complaints.map(renderComplaintCard)}
+          </View>
         )}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -452,19 +535,20 @@ const styles = StyleSheet.create({
   },
   filtersContainer: {
     backgroundColor: 'transparent',
-    paddingVertical: 12,
+    paddingVertical: 16,
   },
-  filtersScrollContent: {
+  filtersContent: {
     paddingHorizontal: 20,
     gap: 12,
   },
-  filterTab: {
+  filterButton: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
+    marginRight: 8,
   },
   filterIcon: {
     width: 16,
@@ -478,21 +562,66 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  scrollContent: {
+    padding: 20,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 40,
   },
   loadingText: {
+    marginTop: 16,
     fontSize: 16,
   },
-  listContent: {
-    padding: 20,
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyIcon: {
+    width: 48,
+    height: 48,
+    marginBottom: 16,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  emptyDescription: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  complaintsContainer: {
+    gap: 16,
   },
   complaintCard: {
     borderRadius: 12,
     padding: 16,
-    marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -505,18 +634,24 @@ const styles = StyleSheet.create({
   complaintHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 8,
   },
-  complaintIdContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  complaintTitleContainer: {
     flex: 1,
+    marginRight: 12,
   },
-  complaintId: {
+  complaintTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginRight: 12,
+    marginBottom: 4,
+  },
+  complaintNumber: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  statusContainer: {
+    alignItems: 'flex-end',
   },
   statusBadge: {
     paddingHorizontal: 8,
@@ -527,62 +662,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
-  complaintDate: {
-    fontSize: 12,
-  },
-  complaintTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+  complaintDescription: {
+    fontSize: 14,
+    lineHeight: 20,
     marginBottom: 12,
-    lineHeight: 22,
   },
   complaintFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  serviceProvider: {
-    fontSize: 14,
-    flex: 1,
-    marginRight: 12,
-  },
-  complaintActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  priorityBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    marginRight: 8,
-  },
-  priorityText: {
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  chevronIcon: {
-    width: 16,
-    height: 16,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-  },
-  emptyIcon: {
-    width: 64,
-    height: 64,
-    marginBottom: 16,
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  emptySubtitle: {
-    fontSize: 14,
-    lineHeight: 20,
+  complaintDate: {
+    fontSize: 12,
   },
 });
 
