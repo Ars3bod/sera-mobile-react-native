@@ -184,7 +184,7 @@ export default function HomeScreen({navigation}) {
       backgroundColor: theme.colors.surface,
     },
     navBar: {
-      flexDirection: 'row',
+      flexDirection: isRTL ? 'row-reverse' : 'row',
       backgroundColor: theme.colors.surface,
       borderTopWidth: 1,
       borderTopColor: theme.colors.border,

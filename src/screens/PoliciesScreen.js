@@ -134,15 +134,30 @@ const PoliciesScreen = ({navigation}) => {
         style={[styles.policyItem, {backgroundColor: theme.colors.card}]}
         onPress={policy.onPress}
         activeOpacity={0.7}>
-        <View style={styles.policyContent}>
+        <View
+          style={[
+            styles.policyContent,
+            {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          ]}>
           <View
             style={[
               styles.iconContainer,
-              {backgroundColor: policy.color + '20'},
+              {
+                backgroundColor: policy.color + '20',
+                marginRight: isRTL ? 0 : 16,
+                marginLeft: isRTL ? 16 : 0,
+              },
             ]}>
             <IconComponent style={[styles.policyIcon, {color: policy.color}]} />
           </View>
-          <View style={styles.textContainer}>
+          <View
+            style={[
+              styles.textContainer,
+              {
+                marginRight: isRTL ? 12 : 12,
+                marginLeft: isRTL ? 12 : 0,
+              },
+            ]}>
             <Text
               style={[
                 styles.policyTitle,
@@ -336,7 +351,6 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   policyContent: {
-    flexDirection: 'row',
     alignItems: 'center',
   },
   iconContainer: {
@@ -345,7 +359,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
   },
   policyIcon: {
     width: 24,
@@ -353,7 +366,6 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    marginRight: 12,
   },
   policyTitle: {
     fontSize: 18,

@@ -101,7 +101,11 @@ const ServicesScreen = ({navigation}) => {
         style={[styles.serviceCard, {backgroundColor: theme.colors.card}]}
         onPress={() => handleServicePress(service)}
         activeOpacity={0.7}>
-        <View style={styles.cardContent}>
+        <View
+          style={[
+            styles.cardContent,
+            {alignItems: isRTL ? 'flex-end' : 'flex-start'},
+          ]}>
           <View
             style={[
               styles.iconContainer,
@@ -269,7 +273,6 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     padding: 20,
-    alignItems: 'flex-start',
   },
   iconContainer: {
     width: 56,

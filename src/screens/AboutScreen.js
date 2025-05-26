@@ -61,11 +61,19 @@ const AboutScreen = ({navigation}) => {
       <View
         key={section.titleKey}
         style={[styles.section, {backgroundColor: theme.colors.card}]}>
-        <View style={styles.sectionHeader}>
+        <View
+          style={[
+            styles.sectionHeader,
+            {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          ]}>
           <View
             style={[
               styles.iconContainer,
-              {backgroundColor: section.color + '20'},
+              {
+                backgroundColor: section.color + '20',
+                marginRight: isRTL ? 0 : 16,
+                marginLeft: isRTL ? 16 : 0,
+              },
             ]}>
             <IconComponent
               style={[styles.sectionIcon, {color: section.color}]}
@@ -98,11 +106,19 @@ const AboutScreen = ({navigation}) => {
 
   const renderValues = () => (
     <View style={[styles.section, {backgroundColor: theme.colors.card}]}>
-      <View style={styles.sectionHeader}>
+      <View
+        style={[
+          styles.sectionHeader,
+          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+        ]}>
         <View
           style={[
             styles.iconContainer,
-            {backgroundColor: theme.colors.primary + '20'},
+            {
+              backgroundColor: theme.colors.primary + '20',
+              marginRight: isRTL ? 0 : 16,
+              marginLeft: isRTL ? 16 : 0,
+            },
           ]}>
           <Star24Regular
             style={[styles.sectionIcon, {color: theme.colors.primary}]}
@@ -251,7 +267,6 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   sectionHeader: {
-    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
   },
@@ -261,7 +276,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
   },
   sectionIcon: {
     width: 24,

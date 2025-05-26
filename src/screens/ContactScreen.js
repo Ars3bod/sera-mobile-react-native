@@ -88,11 +88,21 @@ const ContactScreen = ({navigation}) => {
       <View
         style={[
           styles.contactItem,
-          {backgroundColor: theme.colors.card},
+          {
+            backgroundColor: theme.colors.card,
+            flexDirection: isRTL ? 'row-reverse' : 'row',
+          },
           isClickable && styles.clickableItem,
         ]}>
         <View
-          style={[styles.iconContainer, {backgroundColor: item.color + '20'}]}>
+          style={[
+            styles.iconContainer,
+            {
+              backgroundColor: item.color + '20',
+              marginRight: isRTL ? 0 : 16,
+              marginLeft: isRTL ? 16 : 0,
+            },
+          ]}>
           <IconComponent style={[styles.contactIcon, {color: item.color}]} />
         </View>
         <View style={styles.contactContent}>
@@ -256,7 +266,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   contactItem: {
-    flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 12,
     padding: 20,
@@ -279,7 +288,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
   },
   contactIcon: {
     width: 24,

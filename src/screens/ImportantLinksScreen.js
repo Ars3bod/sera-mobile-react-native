@@ -101,15 +101,30 @@ const ImportantLinksScreen = ({navigation}) => {
       style={[styles.linkItem, {backgroundColor: theme.colors.card}]}
       onPress={() => handleLinkPress(link.url)}
       activeOpacity={0.7}>
-      <View style={styles.linkContent}>
+      <View
+        style={[
+          styles.linkContent,
+          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+        ]}>
         <View
           style={[
             styles.linkIconContainer,
-            {backgroundColor: categoryColor + '20'},
+            {
+              backgroundColor: categoryColor + '20',
+              marginRight: isRTL ? 0 : 12,
+              marginLeft: isRTL ? 12 : 0,
+            },
           ]}>
           <Globe24Regular style={[styles.linkIcon, {color: categoryColor}]} />
         </View>
-        <View style={styles.linkTextContainer}>
+        <View
+          style={[
+            styles.linkTextContainer,
+            {
+              marginRight: isRTL ? 12 : 12,
+              marginLeft: isRTL ? 12 : 0,
+            },
+          ]}>
           <Text
             style={[
               styles.linkTitle,
@@ -148,11 +163,19 @@ const ImportantLinksScreen = ({navigation}) => {
     const IconComponent = category.icon;
     return (
       <View key={category.titleKey} style={styles.categorySection}>
-        <View style={styles.categoryHeader}>
+        <View
+          style={[
+            styles.categoryHeader,
+            {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          ]}>
           <View
             style={[
               styles.categoryIconContainer,
-              {backgroundColor: category.color + '20'},
+              {
+                backgroundColor: category.color + '20',
+                marginRight: isRTL ? 0 : 16,
+                marginLeft: isRTL ? 16 : 0,
+              },
             ]}>
             <IconComponent
               style={[styles.categoryIcon, {color: category.color}]}
@@ -321,7 +344,6 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   categoryHeader: {
-    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
   },
@@ -331,7 +353,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
   },
   categoryIcon: {
     width: 24,
@@ -358,7 +379,6 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   linkContent: {
-    flexDirection: 'row',
     alignItems: 'center',
   },
   linkIconContainer: {
@@ -367,7 +387,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
   },
   linkIcon: {
     width: 20,
@@ -375,7 +394,6 @@ const styles = StyleSheet.create({
   },
   linkTextContainer: {
     flex: 1,
-    marginRight: 12,
   },
   linkTitle: {
     fontSize: 16,

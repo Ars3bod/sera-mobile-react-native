@@ -23,6 +23,8 @@ import CreateComplaintScreen from '../screens/CreateComplaintScreen';
 import ViewComplaintsScreen from '../screens/ViewComplaintsScreen';
 import PermitsScreen from '../screens/PermitsScreen';
 import ViewPermitsScreen from '../screens/ViewPermitsScreen';
+import CreatePowerGenerationPermitScreen from '../screens/CreatePowerGenerationPermitScreen';
+import CreateDistrictCoolingPermitScreen from '../screens/CreateDistrictCoolingPermitScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -187,6 +189,22 @@ export default function AppNavigator() {
         <Stack.Screen
           name="ViewPermits"
           component={ViewPermitsScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="CreatePowerGenerationPermit"
+          component={CreatePowerGenerationPermitScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="CreateDistrictCoolingPermit"
+          component={CreateDistrictCoolingPermitScreen}
           options={{
             animation: 'slide_from_right',
             animationDuration: 300,

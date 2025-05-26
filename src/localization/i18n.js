@@ -4,6 +4,16 @@ import {initReactI18next} from 'react-i18next';
 const resources = {
   en: {
     translation: {
+      common: {
+        cancel: 'Cancel',
+        ok: 'OK',
+        exit: 'Exit',
+        error: 'Error',
+        save: 'Save',
+        submit: 'Submit',
+        loading: 'Loading...',
+        retry: 'Retry',
+      },
       login: 'Login',
       login_subtitle:
         'Identity Verification For Saudi citizens or residents with Saudi residency',
@@ -102,6 +112,11 @@ const resources = {
         title: 'More',
         language: 'عر',
         mainActions: 'Main Actions',
+        sections: {
+          aboutSera: 'About SERA',
+          legalAgreements: 'Legal Agreements',
+          appSettings: 'App Settings',
+        },
         settings: {
           title: 'Settings',
           description: 'Manage your app preferences and account settings',
@@ -515,11 +530,259 @@ const resources = {
           approved: 'Approved',
           rejected: 'Rejected',
         },
+        powerGeneration: {
+          title: 'Power Generation Permit Request',
+          saveForLater: 'Save',
+          submit: 'Submit Request',
+          attachFile: 'Attach File',
+          fileRequirements:
+            'Max size: 20MB | Formats: PDF, DOC, DOCX, XLS, XLSX, PNG, JPEG, JPG',
+          confirmExit: {
+            title: 'Confirm Exit',
+            message:
+              'Are you sure you want to exit? Any unsaved changes will be lost.',
+          },
+          fileAttachment: {
+            title: 'Attach File',
+            message: 'Select a file to attach',
+            select: 'Select File',
+          },
+          saveSuccess: {
+            title: 'Saved Successfully',
+            message: 'Your request has been saved for later completion.',
+          },
+          saveError: {
+            message: 'Failed to save request. Please try again.',
+          },
+          submitSuccess: {
+            title: 'Request Submitted',
+            message:
+              'Your permit request has been submitted successfully. Request number: {{permitNumber}}',
+          },
+          submitError: {
+            message: 'Failed to submit request. Please try again.',
+          },
+          validation: {
+            requiredFields: 'Please fill in all required fields.',
+          },
+          sections: {
+            basicData: '1. Basic Station Data',
+            locationLayout:
+              '2. Station/Project Location Coordinates and Layout',
+            energySales: '3. Energy Sales Information',
+            gridConnection: '4. Connection to Public Electricity Grid',
+          },
+          fields: {
+            userAccount: 'User Account',
+            stationNature: 'Nature of Station Product',
+            stationType: 'Type of Proposed Station',
+            stationLocation: 'Station/Project Location',
+            expectedPowerAC: 'Expected Power of Electricity/AC (MW)',
+            expectedPowerDC: 'Expected Power of Electricity/DC (MW)',
+            fuelType: 'Type of Fuel Expected to be Used',
+            stationUses: 'Station Uses',
+            dualProductionCapacity:
+              'Expected Dual Production Capacity (Water: m³/day)',
+            cogenerationCapacity:
+              'Expected Cogeneration Capacity (Steam: tons/day)',
+            coordinatesFile: 'Coordinates',
+            aerialPhotosFile: 'Aerial Photographs and Land Plan',
+            siteOwnershipFile: 'Site Ownership Document',
+            fuelAllocationFile: 'Fuel Allocation from Ministry of Energy',
+            energyEfficiencyFile:
+              'Proof of Coordination with Saudi Energy Efficiency Center',
+            energySoldTo: 'Party to Whom Energy Will Be Sold',
+            energyPercentageSold: 'Percentage of Energy Sold (%)',
+            totalLoad: 'Total Load of License Applicant (MW)',
+            gridConnection: 'Connection to Public Electricity Grid',
+            anchorPoint: 'Approximate Anchor Point',
+            connectionVoltage: 'Expected Connection Voltage (kV)',
+            operationDate: 'Expected Date of Commercial Operation',
+            initialApprovalFile:
+              'Initial Approval from Public Electricity Service Provider',
+          },
+          placeholders: {
+            selectAccount: 'Select user account',
+            selectNature: 'Select station nature',
+            selectType: 'Select station type',
+            enterLocation: 'Enter station/project location',
+            enterPowerAC: 'Enter expected AC power in MW',
+            enterPowerDC: 'Enter expected DC power in MW',
+            selectFuel: 'Select fuel type',
+            selectUses: 'Select station uses',
+            enterDualProduction: 'Enter dual production capacity',
+            enterCogeneration: 'Enter cogeneration capacity',
+            enterEnergySoldTo: 'Enter party name',
+            enterPercentage: 'Enter percentage (0-100)',
+            enterTotalLoad: 'Enter total load in MW',
+            selectGridConnection: 'Select grid connection option',
+            enterAnchorPoint: 'Enter approximate anchor point',
+            enterVoltage: 'Enter voltage in kV',
+            enterOperationDate: 'Enter expected operation date',
+          },
+          mockData: {
+            accounts: {
+              company1: 'Saudi Electricity Company',
+              company2: 'Al Jouf Electricity Company',
+              company3: 'Green Energy Solutions Ltd.',
+            },
+            natures: {
+              solar: 'Solar Power',
+              wind: 'Wind Power',
+              gas: 'Natural Gas',
+              diesel: 'Diesel',
+              hybrid: 'Hybrid (Solar + Wind)',
+            },
+            types: {
+              commercial: 'Commercial',
+              industrial: 'Industrial',
+              residential: 'Residential',
+              utility: 'Utility Scale',
+            },
+            fuels: {
+              naturalGas: 'Natural Gas',
+              diesel: 'Diesel',
+              solar: 'Solar (No Fuel)',
+              wind: 'Wind (No Fuel)',
+              biomass: 'Biomass',
+            },
+            uses: {
+              powerOnly: 'Power Generation Only',
+              cogeneration: 'Cogeneration (Power + Steam)',
+              dualProduction: 'Dual Production (Power + Water)',
+            },
+            gridConnection: {
+              yes: 'Yes',
+              no: 'No',
+              planned: 'Planned',
+            },
+          },
+        },
+        districtCooling: {
+          title: 'District Cooling Station Permit Request',
+          saveForLater: 'Save',
+          submit: 'Submit Request',
+          attachFile: 'Attach File',
+          fileRequirements:
+            'Max size: 20MB | Formats: PDF, DOC, DOCX, XLS, XLSX, PNG, JPEG, JPG',
+          confirmExit: {
+            title: 'Confirm Exit',
+            message:
+              'Are you sure you want to exit? Any unsaved changes will be lost.',
+          },
+          fileAttachment: {
+            title: 'Attach File',
+            message: 'Select a file to attach',
+            select: 'Select File',
+          },
+          saveSuccess: {
+            title: 'Saved Successfully',
+            message: 'Your request has been saved for later completion.',
+          },
+          saveError: {
+            message: 'Failed to save request. Please try again.',
+          },
+          submitSuccess: {
+            title: 'Request Submitted',
+            message:
+              'Your permit request has been submitted successfully. Request number: {{permitNumber}}',
+          },
+          submitError: {
+            message: 'Failed to submit request. Please try again.',
+          },
+          validation: {
+            requiredFields: 'Please fill in all required fields.',
+          },
+          sections: {
+            basicData: '1. Basic Station Data',
+            gridConnection: '2. Grid Connection Information',
+          },
+          fields: {
+            userAccount: 'Account Selection',
+            stationLocation: 'Station/Project Location',
+            coolingPurposes: 'District Cooling Purposes',
+            expectedCoolingQuantity:
+              'Expected Cooling Water Quantity (Cooling Tons)',
+            powerSource: 'Power Source',
+            operationDate: 'Expected Date of Commercial Operation',
+            coolingWaterSource: 'Cooling Water Source',
+            ministryApprovalFile:
+              'Approval from Ministry of Environment, Water and Agriculture',
+            landPlanFile: 'Land and Buildings Plan',
+            energyEfficiencyFile:
+              'Coordination with Saudi Energy Efficiency Center',
+            fuelAllocationFile: 'Fuel Allocation from Ministry of Energy',
+            gridConnection: 'Connection to Public Electricity Grid',
+            load: 'Load (MW)',
+            internalVoltage: 'Internal Acquired Voltage (kV)',
+            anchorPoint: 'Approximate Anchor Point',
+            networkType: 'Connect to Transmission or Distribution Network',
+            serviceProviderConsentFile: 'Service Provider Consent to Link',
+          },
+          placeholders: {
+            selectAccount: 'Select account',
+            enterLocation: 'Enter station/project location',
+            selectPurposes: 'Select district cooling purposes',
+            enterCoolingQuantity: 'Enter expected cooling quantity in tons',
+            selectPowerSource: 'Select power source',
+            enterOperationDate: 'Enter expected operation date (MM/DD/YYYY)',
+            selectWaterSource: 'Select cooling water source',
+            selectGridConnection: 'Select grid connection option',
+            enterLoad: 'Enter load in MW',
+            enterVoltage: 'Enter voltage in kV',
+            enterAnchorPoint: 'Enter approximate anchor point',
+            selectNetworkType: 'Select network type',
+          },
+          mockData: {
+            accounts: {
+              company1: 'Saudi Electricity Company',
+              company2: 'Marafiq Power and Water',
+              company3: 'District Cooling Solutions Ltd.',
+            },
+            purposes: {
+              commercial: 'Commercial Buildings',
+              residential: 'Residential Complexes',
+              industrial: 'Industrial Facilities',
+              mixed: 'Mixed Use Development',
+            },
+            powerSources: {
+              grid: 'Electricity Grid',
+              solar: 'Solar Power',
+              gas: 'Natural Gas',
+              hybrid: 'Hybrid (Grid + Solar)',
+            },
+            waterSources: {
+              seawater: 'Seawater',
+              groundwater: 'Groundwater',
+              wastewater: 'Treated Wastewater',
+              desalinated: 'Desalinated Water',
+              other: 'Other',
+            },
+            gridConnection: {
+              yes: 'Yes',
+              no: 'No',
+            },
+            networkTypes: {
+              transmission: 'Transmission Network',
+              distribution: 'Distribution Network',
+            },
+          },
+        },
       },
     },
   },
   ar: {
     translation: {
+      common: {
+        cancel: 'إلغاء',
+        ok: 'موافق',
+        exit: 'خروج',
+        error: 'خطأ',
+        save: 'حفظ',
+        submit: 'تقديم',
+        loading: 'جاري التحميل...',
+        retry: 'إعادة المحاولة',
+      },
       login: 'تسجيل الدخول',
       login_subtitle: 'التحقق من الهوية للمواطنين والمقيمين في السعودية',
       login_button: 'تسجيل الدخول عبر نفاذ',
@@ -609,6 +872,11 @@ const resources = {
         title: 'المزيد',
         language: 'عر',
         mainActions: 'الإجراءات الرئيسية',
+        sections: {
+          aboutSera: 'عن الهيئة السعودية لتنظيم الكهرباء',
+          legalAgreements: 'الاتفاقيات القانونية',
+          appSettings: 'إعدادات التطبيق',
+        },
         settings: {
           title: 'الإعدادات',
           description: 'إدارة تفضيلاتك وإعدادات حسابك',
@@ -1014,6 +1282,239 @@ const resources = {
           pending: 'معالج',
           approved: 'موافق',
           rejected: 'مرفوض',
+        },
+        powerGeneration: {
+          title: 'طلب تصريح محطة توليد الطاقة',
+          saveForLater: 'حفظ',
+          submit: 'تقديم الطلب',
+          attachFile: 'إرفاق ملف',
+          fileRequirements:
+            'الحد الأقصى: 20 ميجا | الأنواع: PDF, DOC, DOCX, XLS, XLSX, PNG, JPEG, JPG',
+          confirmExit: {
+            title: 'تأكيد الخروج',
+            message: 'هل أنت متأكد من الخروج؟ ستفقد أي تغييرات غير محفوظة.',
+          },
+          fileAttachment: {
+            title: 'إرفاق ملف',
+            message: 'اختر ملف للإرفاق',
+            select: 'اختيار ملف',
+          },
+          saveSuccess: {
+            title: 'تم الحفظ بنجاح',
+            message: 'تم حفظ طلبك لإكماله لاحقاً.',
+          },
+          saveError: {
+            message: 'فشل في حفظ الطلب. يرجى المحاولة مرة أخرى.',
+          },
+          submitSuccess: {
+            title: 'تم تقديم الطلب',
+            message: 'تم تقديم طلب التصريح بنجاح. رقم الطلب: {{permitNumber}}',
+          },
+          submitError: {
+            message: 'فشل في تقديم الطلب. يرجى المحاولة مرة أخرى.',
+          },
+          validation: {
+            requiredFields: 'يرجى ملء جميع الحقول المطلوبة.',
+          },
+          sections: {
+            basicData: '1. البيانات الأساسية للمحطة',
+            locationLayout: '2. إحداثيات ومخطط موقع المحطة/المشروع',
+            energySales: '3. معلومات بيع الطاقة',
+            gridConnection: '4. الربط بشبكة الكهرباء العامة',
+          },
+          fields: {
+            userAccount: 'حساب المستخدم',
+            stationNature: 'طبيعة منتج المحطة',
+            stationType: 'نوع المحطة المقترحة',
+            stationLocation: 'موقع المحطة/المشروع',
+            expectedPowerAC:
+              'القدرة المتوقعة للكهرباء/التيار المتردد (ميجاواط)',
+            expectedPowerDC:
+              'القدرة المتوقعة للكهرباء/التيار المستمر (ميجاواط)',
+            fuelType: 'نوع الوقود المتوقع استخدامه',
+            stationUses: 'استخدامات المحطة',
+            dualProductionCapacity:
+              'السعة المتوقعة للإنتاج المزدوج (المياه: م³/يوم)',
+            cogenerationCapacity:
+              'السعة المتوقعة للتوليد المشترك (البخار: طن/يوم)',
+            coordinatesFile: 'الإحداثيات',
+            aerialPhotosFile: 'الصور الجوية ومخطط الأرض والمباني',
+            siteOwnershipFile: 'وثيقة ملكية الموقع أو إثبات حق الاستخدام',
+            fuelAllocationFile: 'تخصيص الوقود من وزارة الطاقة',
+            energyEfficiencyFile:
+              'إثبات التنسيق مع المركز السعودي لكفاءة الطاقة',
+            energySoldTo: 'الجهة التي ستباع لها الطاقة',
+            energyPercentageSold: 'نسبة الطاقة المباعة (%)',
+            totalLoad: 'إجمالي حمولة طالب الترخيص (ميجاواط)',
+            gridConnection: 'الربط بشبكة الكهرباء العامة',
+            anchorPoint: 'نقطة الربط التقريبية',
+            connectionVoltage: 'جهد الربط المتوقع (كيلوفولت)',
+            operationDate: 'التاريخ المتوقع لبدء التشغيل التجاري',
+            initialApprovalFile:
+              'الموافقة المبدئية من مقدم خدمة الكهرباء العامة',
+          },
+          placeholders: {
+            selectAccount: 'اختر حساب المستخدم',
+            selectNature: 'اختر طبيعة المحطة',
+            selectType: 'اختر نوع المحطة',
+            enterLocation: 'أدخل موقع المحطة/المشروع',
+            enterPowerAC: 'أدخل القدرة المتوقعة للتيار المتردد بالميجاواط',
+            enterPowerDC: 'أدخل القدرة المتوقعة للتيار المستمر بالميجاواط',
+            selectFuel: 'اختر نوع الوقود',
+            selectUses: 'اختر استخدامات المحطة',
+            enterDualProduction: 'أدخل سعة الإنتاج المزدوج',
+            enterCogeneration: 'أدخل سعة التوليد المشترك',
+            enterEnergySoldTo: 'أدخل اسم الجهة',
+            enterPercentage: 'أدخل النسبة المئوية (0-100)',
+            enterTotalLoad: 'أدخل إجمالي الحمولة بالميجاواط',
+            selectGridConnection: 'اختر خيار ربط الشبكة',
+            enterAnchorPoint: 'أدخل نقطة الربط التقريبية',
+            enterVoltage: 'أدخل الجهد بالكيلوفولت',
+            enterOperationDate: 'أدخل تاريخ التشغيل المتوقع',
+          },
+          mockData: {
+            accounts: {
+              company1: 'الشركة السعودية للكهرباء',
+              company2: 'شركة كهرباء الجوف',
+              company3: 'شركة حلول الطاقة الخضراء المحدودة',
+            },
+            natures: {
+              solar: 'الطاقة الشمسية',
+              wind: 'طاقة الرياح',
+              gas: 'الغاز الطبيعي',
+              diesel: 'الديزل',
+              hybrid: 'مختلط (شمسي + رياح)',
+            },
+            types: {
+              commercial: 'تجاري',
+              industrial: 'صناعي',
+              residential: 'سكني',
+              utility: 'واسع النطاق',
+            },
+            fuels: {
+              naturalGas: 'الغاز الطبيعي',
+              diesel: 'الديزل',
+              solar: 'الطاقة الشمسية (بدون وقود)',
+              wind: 'طاقة الرياح (بدون وقود)',
+              biomass: 'الكتلة الحيوية',
+            },
+            uses: {
+              powerOnly: 'توليد الطاقة فقط',
+              cogeneration: 'التوليد المشترك (طاقة + بخار)',
+              dualProduction: 'الإنتاج المزدوج (طاقة + مياه)',
+            },
+            gridConnection: {
+              yes: 'نعم',
+              no: 'لا',
+              planned: 'مخطط',
+            },
+          },
+        },
+        districtCooling: {
+          title: 'طلب تصريح محطة تبريد المنطقة',
+          saveForLater: 'حفظ',
+          submit: 'تقديم الطلب',
+          attachFile: 'إرفاق ملف',
+          fileRequirements:
+            'الحد الأقصى: 20 ميجا | الأنواع: PDF, DOC, DOCX, XLS, XLSX, PNG, JPEG, JPG',
+          confirmExit: {
+            title: 'تأكيد الخروج',
+            message: 'هل أنت متأكد من الخروج؟ ستفقد أي تغييرات غير محفوظة.',
+          },
+          fileAttachment: {
+            title: 'إرفاق ملف',
+            message: 'اختر ملف للإرفاق',
+            select: 'اختيار ملف',
+          },
+          saveSuccess: {
+            title: 'تم الحفظ بنجاح',
+            message: 'تم حفظ طلبك لإكماله لاحقاً.',
+          },
+          saveError: {
+            message: 'فشل في حفظ الطلب. يرجى المحاولة مرة أخرى.',
+          },
+          submitSuccess: {
+            title: 'تم تقديم الطلب',
+            message: 'تم تقديم طلب التصريح بنجاح. رقم الطلب: {{permitNumber}}',
+          },
+          submitError: {
+            message: 'فشل في تقديم الطلب. يرجى المحاولة مرة أخرى.',
+          },
+          validation: {
+            requiredFields: 'يرجى ملء جميع الحقول المطلوبة.',
+          },
+          sections: {
+            basicData: '1. البيانات الأساسية للمحطة',
+            gridConnection: '2. معلومات الربط بالشبكة',
+          },
+          fields: {
+            userAccount: 'اختيار الحساب',
+            stationLocation: 'موقع المحطة/المشروع',
+            coolingPurposes: 'أغراض تبريد المنطقة',
+            expectedCoolingQuantity:
+              'الكمية المتوقعة من مياه التبريد (طن تبريد)',
+            powerSource: 'مصدر الطاقة',
+            operationDate: 'التاريخ المتوقع للتشغيل التجاري',
+            coolingWaterSource: 'مصدر مياه التبريد',
+            ministryApprovalFile: 'موافقة وزارة البيئة والمياه والزراعة',
+            landPlanFile: 'مخطط الأرض والمباني',
+            energyEfficiencyFile: 'التنسيق مع المركز السعودي لكفاءة الطاقة',
+            fuelAllocationFile: 'تخصيص الوقود من وزارة الطاقة',
+            gridConnection: 'الربط بشبكة الكهرباء العامة',
+            load: 'الحمولة (ميجاواط)',
+            internalVoltage: 'الجهد الداخلي المكتسب (كيلوفولت)',
+            anchorPoint: 'نقطة الربط التقريبية',
+            networkType: 'الربط بشبكة النقل أو التوزيع',
+            serviceProviderConsentFile: 'موافقة مقدم الخدمة على الربط',
+          },
+          placeholders: {
+            selectAccount: 'اختر الحساب',
+            enterLocation: 'أدخل موقع المحطة/المشروع',
+            selectPurposes: 'اختر أغراض تبريد المنطقة',
+            enterCoolingQuantity: 'أدخل الكمية المتوقعة بالطن',
+            selectPowerSource: 'اختر مصدر الطاقة',
+            enterOperationDate: 'أدخل تاريخ التشغيل المتوقع (MM/DD/YYYY)',
+            selectWaterSource: 'اختر مصدر مياه التبريد',
+            selectGridConnection: 'اختر خيار ربط الشبكة',
+            enterLoad: 'أدخل الحمولة بالميجاواط',
+            enterVoltage: 'أدخل الجهد بالكيلوفولت',
+            enterAnchorPoint: 'أدخل نقطة الربط التقريبية',
+            selectNetworkType: 'اختر نوع الشبكة',
+          },
+          mockData: {
+            accounts: {
+              company1: 'الشركة السعودية للكهرباء',
+              company2: 'شركة مرافق للطاقة والمياه',
+              company3: 'شركة حلول تبريد المنطقة المحدودة',
+            },
+            purposes: {
+              commercial: 'المباني التجارية',
+              residential: 'المجمعات السكنية',
+              industrial: 'المنشآت الصناعية',
+              mixed: 'التطوير المختلط الاستخدام',
+            },
+            powerSources: {
+              grid: 'شبكة الكهرباء',
+              solar: 'الطاقة الشمسية',
+              gas: 'الغاز الطبيعي',
+              hybrid: 'مختلط (شبكة + شمسي)',
+            },
+            waterSources: {
+              seawater: 'مياه البحر',
+              groundwater: 'المياه الجوفية',
+              wastewater: 'مياه الصرف المعالجة',
+              desalinated: 'المياه المحلاة',
+              other: 'أخرى',
+            },
+            gridConnection: {
+              yes: 'نعم',
+              no: 'لا',
+            },
+            networkTypes: {
+              transmission: 'شبكة النقل',
+              distribution: 'شبكة التوزيع',
+            },
+          },
         },
       },
     },

@@ -27,76 +27,94 @@ const MoreScreen = ({navigation}) => {
   const {theme, isDarkMode} = useTheme();
   const isRTL = i18n.language === 'ar';
 
-  const menuItems = [
+  const menuSections = [
     {
-      id: 1,
-      titleKey: 'more.settings.title',
-      descriptionKey: 'more.settings.description',
-      icon: Settings24Regular,
-      color: theme.colors.primary,
-      onPress: () => {
-        navigation.navigate('Settings');
-      },
+      id: 'aboutSera',
+      titleKey: 'more.sections.aboutSera',
+      items: [
+        {
+          id: 2,
+          titleKey: 'more.aboutUs.title',
+          descriptionKey: 'more.aboutUs.description',
+          icon: Info24Regular,
+          color: theme.colors.primary,
+          onPress: () => {
+            navigation.navigate('About');
+          },
+        },
+        {
+          id: 3,
+          titleKey: 'more.contactUs.title',
+          descriptionKey: 'more.contactUs.description',
+          icon: Phone24Regular,
+          color: theme.colors.primary,
+          onPress: () => {
+            navigation.navigate('Contact');
+          },
+        },
+        {
+          id: 4,
+          titleKey: 'more.news.title',
+          descriptionKey: 'more.news.description',
+          icon: News24Regular,
+          color: theme.colors.primary,
+          onPress: () => {
+            navigation.navigate('News');
+          },
+        },
+        {
+          id: 6,
+          titleKey: 'more.faq.title',
+          descriptionKey: 'more.faq.description',
+          icon: QuestionCircle24Regular,
+          color: theme.colors.primary,
+          onPress: () => {
+            navigation.navigate('FAQ');
+          },
+        },
+        {
+          id: 7,
+          titleKey: 'more.importantLinks.title',
+          descriptionKey: 'more.importantLinks.description',
+          icon: Link24Regular,
+          color: theme.colors.primary,
+          onPress: () => {
+            navigation.navigate('ImportantLinks');
+          },
+        },
+      ],
     },
     {
-      id: 2,
-      titleKey: 'more.aboutUs.title',
-      descriptionKey: 'more.aboutUs.description',
-      icon: Info24Regular,
-      color: theme.colors.primary,
-      onPress: () => {
-        navigation.navigate('About');
-      },
+      id: 'legalAgreements',
+      titleKey: 'more.sections.legalAgreements',
+      items: [
+        {
+          id: 5,
+          titleKey: 'more.policies.title',
+          descriptionKey: 'more.policies.description',
+          icon: Shield24Regular,
+          color: theme.colors.primary,
+          onPress: () => {
+            navigation.navigate('Policies');
+          },
+        },
+      ],
     },
     {
-      id: 3,
-      titleKey: 'more.contactUs.title',
-      descriptionKey: 'more.contactUs.description',
-      icon: Phone24Regular,
-      color: theme.colors.primary,
-      onPress: () => {
-        navigation.navigate('Contact');
-      },
-    },
-    {
-      id: 4,
-      titleKey: 'more.news.title',
-      descriptionKey: 'more.news.description',
-      icon: News24Regular,
-      color: theme.colors.primary,
-      onPress: () => {
-        navigation.navigate('News');
-      },
-    },
-    {
-      id: 5,
-      titleKey: 'more.policies.title',
-      descriptionKey: 'more.policies.description',
-      icon: Shield24Regular,
-      color: theme.colors.primary,
-      onPress: () => {
-        navigation.navigate('Policies');
-      },
-    },
-    {
-      id: 6,
-      titleKey: 'more.faq.title',
-      descriptionKey: 'more.faq.description',
-      icon: QuestionCircle24Regular,
-      color: theme.colors.primary,
-      onPress: () => {
-        navigation.navigate('FAQ');
-      },
-    },
-    {
-      id: 7,
-      titleKey: 'more.importantLinks.title',
-      descriptionKey: 'more.importantLinks.description',
-      icon: Link24Regular,
-      color: theme.colors.primary,
-      onPress: () => {
-        navigation.navigate('ImportantLinks');
-      },
+      id: 'appSettings',
+      titleKey: 'more.sections.appSettings',
+      items: [
+        {
+          id: 1,
+          titleKey: 'more.settings.title',
+          descriptionKey: 'more.settings.description',
+          icon: Settings24Regular,
+          color: theme.colors.primary,
+          onPress: () => {
+            navigation.navigate('Settings');
+          },
+        },
+      ],
     },
   ];
 
@@ -157,6 +175,26 @@ const MoreScreen = ({navigation}) => {
     );
   };
 
+  const renderSection = section => {
+    return (
+      <View key={section.id} style={styles.section}>
+        <Text
+          style={[
+            styles.sectionTitle,
+            {
+              textAlign: isRTL ? 'right' : 'left',
+              color: theme.colors.textSecondary,
+            },
+          ]}>
+          {t(section.titleKey)}
+        </Text>
+        <View style={styles.sectionItems}>
+          {section.items.map(item => renderMenuItem(item))}
+        </View>
+      </View>
+    );
+  };
+
   const dynamicStyles = StyleSheet.create({
     container: {
       flex: 1,
@@ -214,14 +252,21 @@ const MoreScreen = ({navigation}) => {
         <View style={styles.placeholderView} />
       </View>
 
-      {/* Menu Items */}
+      {/* Menu Sections */}
       <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}>
-        <View style={styles.menuContainer}>
-          {menuItems.map(item => renderMenuItem(item))}
-        </View>
+        {menuSections.map((section, index) => (
+          <React.Fragment key={section.id}>
+            {renderSection(section)}
+            {index < menuSections.length - 1 && (
+              <View
+                style={[styles.divider, {backgroundColor: theme.colors.border}]}
+              />
+            )}
+          </React.Fragment>
+        ))}
       </ScrollView>
     </SafeAreaView>
   );
@@ -240,8 +285,24 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 20,
   },
-  menuContainer: {
+  section: {
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 12,
+    marginTop: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  sectionItems: {
     gap: 12,
+  },
+  divider: {
+    height: 1,
+    marginVertical: 20,
+    marginHorizontal: 16,
   },
   menuItem: {
     borderRadius: 12,

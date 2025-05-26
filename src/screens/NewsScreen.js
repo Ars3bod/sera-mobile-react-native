@@ -127,17 +127,32 @@ const NewsScreen = ({navigation}) => {
         console.log('News item pressed:', item.id);
       }}>
       <View style={styles.newsContent}>
-        <View style={styles.newsHeader}>
+        <View
+          style={[
+            styles.newsHeader,
+            {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          ]}>
           <View
             style={[
               styles.newsIconContainer,
-              {backgroundColor: theme.colors.primary + '20'},
+              {
+                backgroundColor: theme.colors.primary + '20',
+                marginRight: isRTL ? 0 : 12,
+                marginLeft: isRTL ? 12 : 0,
+              },
             ]}>
             <News24Regular
               style={[styles.newsIcon, {color: theme.colors.primary}]}
             />
           </View>
-          <View style={styles.newsInfo}>
+          <View
+            style={[
+              styles.newsInfo,
+              {
+                marginRight: isRTL ? 8 : 8,
+                marginLeft: isRTL ? 8 : 0,
+              },
+            ]}>
             <Text
               style={[
                 styles.newsTitle,
@@ -149,9 +164,20 @@ const NewsScreen = ({navigation}) => {
               numberOfLines={2}>
               {i18n.language === 'ar' ? item.titleAr : item.titleEn}
             </Text>
-            <View style={styles.dateContainer}>
+            <View
+              style={[
+                styles.dateContainer,
+                {flexDirection: isRTL ? 'row-reverse' : 'row'},
+              ]}>
               <Calendar24Regular
-                style={[styles.dateIcon, {color: theme.colors.textSecondary}]}
+                style={[
+                  styles.dateIcon,
+                  {
+                    color: theme.colors.textSecondary,
+                    marginRight: isRTL ? 0 : 4,
+                    marginLeft: isRTL ? 4 : 0,
+                  },
+                ]}
               />
               <Text
                 style={[styles.newsDate, {color: theme.colors.textSecondary}]}>
@@ -332,7 +358,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   newsHeader: {
-    flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 12,
   },
@@ -342,7 +367,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
   },
   newsIcon: {
     width: 20,
@@ -350,7 +374,6 @@ const styles = StyleSheet.create({
   },
   newsInfo: {
     flex: 1,
-    marginRight: 8,
   },
   newsTitle: {
     fontSize: 16,
@@ -359,13 +382,11 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   dateContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
   },
   dateIcon: {
     width: 14,
     height: 14,
-    marginRight: 4,
   },
   newsDate: {
     fontSize: 12,

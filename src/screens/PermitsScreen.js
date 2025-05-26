@@ -42,9 +42,14 @@ const PermitsScreen = ({navigation}) => {
   };
 
   const handleNewPermitPress = permitType => {
-    // Navigate to create permit screen (to be implemented)
-    console.log('Create permit:', permitType);
-    // navigation.navigate('CreatePermit', {permitType});
+    // Navigate to specific permit creation screen based on type
+    if (permitType === 'powerGeneration') {
+      navigation.navigate('CreatePowerGenerationPermit');
+    } else if (permitType === 'districtCooling') {
+      navigation.navigate('CreateDistrictCoolingPermit');
+    } else {
+      console.log('Create permit:', permitType);
+    }
   };
 
   const handleViewPermitsPress = () => {
@@ -143,6 +148,7 @@ const PermitsScreen = ({navigation}) => {
           {
             backgroundColor: theme.colors.card,
             borderColor: theme.colors.border,
+            flexDirection: isRTL ? 'row-reverse' : 'row',
           },
         ]}
         onPress={() => handleNewPermitPress(permitType.id)}
@@ -150,7 +156,11 @@ const PermitsScreen = ({navigation}) => {
         <View
           style={[
             styles.actionIconContainer,
-            {backgroundColor: permitType.color + '20'},
+            {
+              backgroundColor: permitType.color + '20',
+              marginRight: isRTL ? 0 : 16,
+              marginLeft: isRTL ? 16 : 0,
+            },
           ]}>
           <IconComponent
             style={[styles.actionIcon, {color: permitType.color}]}
@@ -345,6 +355,7 @@ const PermitsScreen = ({navigation}) => {
             {
               backgroundColor: theme.colors.card,
               borderColor: theme.colors.border,
+              flexDirection: isRTL ? 'row-reverse' : 'row',
             },
           ]}
           onPress={handleViewPermitsPress}
@@ -352,7 +363,11 @@ const PermitsScreen = ({navigation}) => {
           <View
             style={[
               styles.viewAllIconContainer,
-              {backgroundColor: theme.colors.primary + '20'},
+              {
+                backgroundColor: theme.colors.primary + '20',
+                marginRight: isRTL ? 0 : 16,
+                marginLeft: isRTL ? 16 : 0,
+              },
             ]}>
             <Eye24Regular
               style={[styles.viewAllIcon, {color: theme.colors.primary}]}
@@ -423,7 +438,6 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   actionCard: {
-    flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
     borderRadius: 16,
@@ -443,7 +457,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
   },
   actionIcon: {
     width: 24,
@@ -500,7 +513,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   viewAllButton: {
-    flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
     borderRadius: 16,
@@ -521,7 +533,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
   },
   viewAllIcon: {
     width: 24,

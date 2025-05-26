@@ -106,11 +106,19 @@ const FAQScreen = ({navigation}) => {
           style={styles.questionContainer}
           onPress={() => toggleExpand(item.id)}
           activeOpacity={0.7}>
-          <View style={styles.questionHeader}>
+          <View
+            style={[
+              styles.questionHeader,
+              {flexDirection: isRTL ? 'row-reverse' : 'row'},
+            ]}>
             <View
               style={[
                 styles.questionIconContainer,
-                {backgroundColor: theme.colors.primary + '20'},
+                {
+                  backgroundColor: theme.colors.primary + '20',
+                  marginRight: isRTL ? 0 : 12,
+                  marginLeft: isRTL ? 12 : 0,
+                },
               ]}>
               <QuestionCircle24Regular
                 style={[styles.questionIcon, {color: theme.colors.primary}]}
@@ -123,6 +131,8 @@ const FAQScreen = ({navigation}) => {
                   textAlign: isRTL ? 'right' : 'left',
                   color: theme.colors.text,
                   flex: 1,
+                  marginRight: isRTL ? 12 : 12,
+                  marginLeft: isRTL ? 12 : 0,
                 },
               ]}>
               {item.question}
@@ -134,7 +144,14 @@ const FAQScreen = ({navigation}) => {
         </TouchableOpacity>
 
         {isExpanded && (
-          <View style={styles.answerContainer}>
+          <View
+            style={[
+              styles.answerContainer,
+              {
+                paddingLeft: isRTL ? 16 : 68,
+                paddingRight: isRTL ? 68 : 16,
+              },
+            ]}>
             <Text
               style={[
                 styles.answerText,
@@ -215,9 +232,21 @@ const FAQScreen = ({navigation}) => {
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <View style={[styles.searchBar, dynamicStyles.searchInput]}>
+        <View
+          style={[
+            styles.searchBar,
+            dynamicStyles.searchInput,
+            {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          ]}>
           <Search24Regular
-            style={[styles.searchIcon, {color: theme.colors.icon}]}
+            style={[
+              styles.searchIcon,
+              {
+                color: theme.colors.icon,
+                marginRight: isRTL ? 0 : 12,
+                marginLeft: isRTL ? 12 : 0,
+              },
+            ]}
           />
           <TextInput
             style={[styles.searchInput, dynamicStyles.searchInput]}
@@ -283,7 +312,6 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   searchBar: {
-    flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
     borderRadius: 12,
@@ -293,7 +321,6 @@ const styles = StyleSheet.create({
   searchIcon: {
     width: 20,
     height: 20,
-    marginRight: 12,
   },
   searchInput: {
     flex: 1,
@@ -342,7 +369,6 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   questionHeader: {
-    flexDirection: 'row',
     alignItems: 'center',
   },
   questionIconContainer: {
@@ -351,7 +377,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
   },
   questionIcon: {
     width: 20,
@@ -361,16 +386,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     lineHeight: 22,
-    marginRight: 12,
   },
   chevronIcon: {
     width: 20,
     height: 20,
   },
   answerContainer: {
-    paddingHorizontal: 16,
     paddingBottom: 16,
-    paddingLeft: 68, // Align with question text
   },
   answerText: {
     fontSize: 14,
