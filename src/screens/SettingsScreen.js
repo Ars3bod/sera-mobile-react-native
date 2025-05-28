@@ -24,6 +24,10 @@ import {
   ChevronRight24Regular,
 } from '@fluentui/react-native-icons';
 
+const APP_CONFIG = {
+  useNewHomeScreen: true, // تحكم في الشاشة المستخدمة
+};
+
 const SettingsScreen = ({navigation}) => {
   const {t, i18n} = useTranslation();
   const {theme, isDarkMode, toggleTheme} = useTheme();

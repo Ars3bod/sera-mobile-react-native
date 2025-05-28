@@ -20,6 +20,7 @@ import {
   QuestionCircle24Regular,
   Link24Regular,
   ChevronRight24Regular,
+  Person24Regular,
 } from '@fluentui/react-native-icons';
 
 const MoreScreen = ({navigation}) => {
@@ -104,6 +105,16 @@ const MoreScreen = ({navigation}) => {
       id: 'appSettings',
       titleKey: 'more.sections.appSettings',
       items: [
+        {
+          id: 0,
+          titleKey: 'more.profile.title',
+          descriptionKey: 'more.profile.description',
+          icon: Person24Regular,
+          color: theme.colors.primary,
+          onPress: () => {
+            navigation.navigate('Profile');
+          },
+        },
         {
           id: 1,
           titleKey: 'more.settings.title',

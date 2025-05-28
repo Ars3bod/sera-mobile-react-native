@@ -85,23 +85,21 @@ const PoliciesScreen = ({navigation}) => {
 
   const policies = [
     {
+      titleKey: 'policies.usagePolicy.title',
+      descriptionKey: 'policies.termsOfService.description',
+      icon: Document24Regular,
+      color: '#2196F3',
+      onPress: () => {
+        navigation.navigate('UsagePolicy');
+      },
+    },
+    {
       titleKey: 'policies.privacyPolicy.title',
       descriptionKey: 'policies.privacyPolicy.description',
       icon: Shield24Regular,
       color: '#4CAF50',
       onPress: () => {
-        // Navigate to privacy policy detail
-        console.log('Privacy Policy pressed');
-      },
-    },
-    {
-      titleKey: 'policies.termsOfService.title',
-      descriptionKey: 'policies.termsOfService.description',
-      icon: Document24Regular,
-      color: '#2196F3',
-      onPress: () => {
-        // Navigate to terms of service detail
-        console.log('Terms of Service pressed');
+        navigation.navigate('PrivacyPolicy');
       },
     },
     {
@@ -110,8 +108,7 @@ const PoliciesScreen = ({navigation}) => {
       icon: Lock24Regular,
       color: '#FF9800',
       onPress: () => {
-        // Navigate to data protection detail
-        console.log('Data Protection pressed');
+        navigation.navigate('DataProtection');
       },
     },
     {
@@ -120,8 +117,7 @@ const PoliciesScreen = ({navigation}) => {
       icon: Globe24Regular,
       color: '#9C27B0',
       onPress: () => {
-        // Navigate to cookie policy detail
-        console.log('Cookie Policy pressed');
+        navigation.navigate('CookiePolicy');
       },
     },
   ];
@@ -270,9 +266,7 @@ const PoliciesScreen = ({navigation}) => {
                 textAlign: isRTL ? 'right' : 'left',
               },
             ]}>
-            {isRTL
-              ? 'نلتزم بحماية خصوصيتك وأمان بياناتك. تعرف على سياساتنا وشروط استخدام خدماتنا.'
-              : 'We are committed to protecting your privacy and data security. Learn about our policies and terms of service.'}
+            {t('policies.introText')}
           </Text>
         </View>
 
@@ -291,7 +285,7 @@ const PoliciesScreen = ({navigation}) => {
                 textAlign: isRTL ? 'right' : 'left',
               },
             ]}>
-            {isRTL ? 'ملاحظة مهمة' : 'Important Note'}
+            {t('policies.footerTitle')}
           </Text>
           <Text
             style={[
@@ -301,9 +295,7 @@ const PoliciesScreen = ({navigation}) => {
                 textAlign: isRTL ? 'right' : 'left',
               },
             ]}>
-            {isRTL
-              ? 'آخر تحديث لهذه السياسات كان في يناير 2024. نوصي بمراجعة هذه السياسات بانتظام للبقاء على اطلاع بأي تغييرات.'
-              : 'These policies were last updated in January 2024. We recommend reviewing these policies regularly to stay informed of any changes.'}
+            {t('policies.footerText')}
           </Text>
         </View>
       </ScrollView>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
+  Modal,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '../context/ThemeContext';
@@ -17,12 +18,23 @@ import {
   Share24Regular,
   FolderOpen24Regular,
   ArrowLeft24Regular,
+  Clock24Regular,
+  Dismiss24Regular,
 } from '@fluentui/react-native-icons';
 
 const ServicesScreen = ({navigation}) => {
   const {t, i18n} = useTranslation();
   const {theme, isDarkMode} = useTheme();
   const isRTL = i18n.language === 'ar';
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
+
+  const handleComingSoon = () => {
+    setShowComingSoonModal(true);
+  };
+
+  const closeModal = () => {
+    setShowComingSoonModal(false);
+  };
 
   const services = [
     {
@@ -77,6 +89,18 @@ const ServicesScreen = ({navigation}) => {
     if (service.id === 1) {
       // Permit Request service
       navigation.navigate('Permits');
+      return;
+    }
+
+    // Handle Data Sharing service (id: 4)
+    if (service.id === 4) {
+      handleComingSoon();
+      return;
+    }
+
+    // Handle Freedom of Information service (id: 5)
+    if (service.id === 5) {
+      handleComingSoon();
       return;
     }
 
@@ -165,6 +189,75 @@ const ServicesScreen = ({navigation}) => {
       textAlign: 'center',
       flex: 1,
     },
+    // Modal styles
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+    },
+    modalContainer: {
+      backgroundColor: theme.colors.card,
+      borderRadius: 20,
+      padding: 24,
+      width: '100%',
+      maxWidth: 320,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 10,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 20,
+      elevation: 10,
+    },
+    modalHeader: {
+      flexDirection: isRTL ? 'row-reverse' : 'row',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    modalIcon: {
+      width: 32,
+      height: 32,
+      color: theme.colors.primary,
+      marginRight: isRTL ? 0 : 12,
+      marginLeft: isRTL ? 12 : 0,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: theme.colors.text,
+      flex: 1,
+      textAlign: isRTL ? 'right' : 'left',
+    },
+    closeButton: {
+      padding: 4,
+    },
+    closeIcon: {
+      width: 20,
+      height: 20,
+      color: theme.colors.textSecondary,
+    },
+    modalMessage: {
+      fontSize: 16,
+      color: theme.colors.textSecondary,
+      lineHeight: 24,
+      textAlign: isRTL ? 'right' : 'left',
+      marginBottom: 24,
+    },
+    modalButton: {
+      backgroundColor: theme.colors.primary,
+      borderRadius: 12,
+      paddingVertical: 14,
+      paddingHorizontal: 24,
+      alignItems: 'center',
+    },
+    modalButtonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontWeight: '600',
+    },
   });
 
   return (
@@ -219,6 +312,47 @@ const ServicesScreen = ({navigation}) => {
           })}
         </View>
       </ScrollView>
+
+      {/* Coming Soon Modal */}
+      <Modal
+        visible={showComingSoonModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={closeModal}>
+        <TouchableOpacity
+          style={dynamicStyles.modalOverlay}
+          activeOpacity={1}
+          onPress={closeModal}>
+          <TouchableOpacity
+            style={dynamicStyles.modalContainer}
+            activeOpacity={1}
+            onPress={() => {}}>
+            <View style={dynamicStyles.modalHeader}>
+              <Clock24Regular style={dynamicStyles.modalIcon} />
+              <Text style={dynamicStyles.modalTitle}>
+                {t('home.comingSoon.title')}
+              </Text>
+              <TouchableOpacity
+                style={dynamicStyles.closeButton}
+                onPress={closeModal}
+                activeOpacity={0.7}>
+                <Dismiss24Regular style={dynamicStyles.closeIcon} />
+              </TouchableOpacity>
+            </View>
+            <Text style={dynamicStyles.modalMessage}>
+              {t('home.comingSoon.message')}
+            </Text>
+            <TouchableOpacity
+              style={dynamicStyles.modalButton}
+              onPress={closeModal}
+              activeOpacity={0.8}>
+              <Text style={dynamicStyles.modalButtonText}>
+                {t('home.comingSoon.okButton')}
+              </Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
     </SafeAreaView>
   );
 };

@@ -32,27 +32,27 @@ const AboutScreen = ({navigation}) => {
       titleKey: 'about.mission.title',
       descriptionKey: 'about.mission.description',
       icon: Target24Regular,
-      color: theme.colors.primary,
+      color: '#00623B',
     },
     {
       titleKey: 'about.vision.title',
       descriptionKey: 'about.vision.description',
       icon: Eye24Regular,
-      color: '#2196F3',
+      color: '#00623B',
     },
     {
       titleKey: 'about.establishment.title',
       descriptionKey: 'about.establishment.description',
       icon: Calendar24Regular,
-      color: '#FF9800',
+      color: '#00623B',
     },
   ];
 
   const values = [
-    {key: 'transparency', color: '#4CAF50'},
-    {key: 'fairness', color: '#9C27B0'},
-    {key: 'excellence', color: '#FF5722'},
-    {key: 'innovation', color: '#00BCD4'},
+    {key: 'transparency', color: '#00623B'},
+    {key: 'fairness', color: '#00623B'},
+    {key: 'excellence', color: '#00623B'},
+    {key: 'innovation', color: '#00623B'},
   ];
 
   const renderSection = section => {

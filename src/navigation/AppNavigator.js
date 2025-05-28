@@ -6,9 +6,10 @@ import {Easing} from 'react-native-reanimated';
 // Screens
 import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreenSelector from '../components/HomeScreenSelector';
 import NafathLoginScreen from '../screens/NafathLoginScreen';
 import NafathVerificationScreen from '../screens/NafathVerificationScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 import ServicesScreen from '../screens/ServicesScreen';
 import MoreScreen from '../screens/MoreScreen';
 import SettingsScreen from '../screens/SettingsScreen';
@@ -25,6 +26,10 @@ import PermitsScreen from '../screens/PermitsScreen';
 import ViewPermitsScreen from '../screens/ViewPermitsScreen';
 import CreatePowerGenerationPermitScreen from '../screens/CreatePowerGenerationPermitScreen';
 import CreateDistrictCoolingPermitScreen from '../screens/CreateDistrictCoolingPermitScreen';
+import UsagePolicyScreen from '../screens/UsagePolicyScreen';
+import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
+import DataProtectionScreen from '../screens/DataProtectionScreen';
+import CookiePolicyScreen from '../screens/CookiePolicyScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -75,7 +80,7 @@ export default function AppNavigator() {
         />
         <Stack.Screen
           name="Home"
-          component={HomeScreen}
+          component={HomeScreenSelector}
           options={{
             animation: 'fade',
             animationDuration: 500,
@@ -205,6 +210,46 @@ export default function AppNavigator() {
         <Stack.Screen
           name="CreateDistrictCoolingPermit"
           component={CreateDistrictCoolingPermitScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="UsagePolicy"
+          component={UsagePolicyScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="PrivacyPolicy"
+          component={PrivacyPolicyScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="DataProtection"
+          component={DataProtectionScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="CookiePolicy"
+          component={CookiePolicyScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
           options={{
             animation: 'slide_from_right',
             animationDuration: 300,

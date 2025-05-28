@@ -78,6 +78,36 @@ const resources = {
           chat: 'Chat',
           more: 'More',
         },
+        comingSoon: {
+          title: 'Coming Soon',
+          message: 'This feature is coming soon. Stay tuned for updates!',
+          okButton: 'OK',
+        },
+        homeNew: {
+          lastVisit: 'Last visit',
+          accountVerified: 'Account Verified',
+          stats: {
+            activeComplaints: 'Active',
+            completed: 'Completed',
+            pending: 'Pending',
+          },
+          quickActionsTitle: 'Quick Actions',
+          quickActions: {
+            newComplaint: 'New Complaint',
+            newPermit: 'New Permit',
+            contactUs: 'Contact Us',
+            myReports: 'My Reports',
+          },
+          recentActivityTitle: 'Recent Activity',
+          activities: {
+            complaintReply: 'Your complaint received a reply',
+            permitReceived: 'Permit request received',
+            newUpdate: 'New update available',
+            twoHoursAgo: '2 hours ago',
+            yesterday: 'Yesterday',
+            threeDaysAgo: '3 days ago',
+          },
+        },
       },
       services: {
         title: 'Electronic Services',
@@ -120,6 +150,10 @@ const resources = {
         settings: {
           title: 'Settings',
           description: 'Manage your app preferences and account settings',
+        },
+        profile: {
+          title: 'Profile',
+          description: 'View and manage your personal information',
         },
         aboutUs: {
           title: 'About Us',
@@ -168,6 +202,10 @@ const resources = {
           description: 'Switch between light and dark theme',
           enabled: 'Enabled',
           disabled: 'Disabled',
+        },
+        homeScreen: {
+          title: 'New Home Screen',
+          description: 'Enable enhanced home screen experience',
         },
         biometric: {
           title: 'Biometric Login',
@@ -261,10 +299,43 @@ const resources = {
       },
       policies: {
         title: 'Policies & Terms',
+        introText:
+          'We are committed to protecting your privacy and data security. Learn about our policies and terms of service.',
+        footerTitle: 'Important Note',
+        footerText:
+          'These policies were last updated in January 2024. We recommend reviewing these policies regularly to stay informed of any changes.',
         privacyPolicy: {
           title: 'Privacy Policy',
           description:
             'Learn how we collect, use, and protect your information.',
+          introduction:
+            'We are committed to protecting your privacy and personal information. This privacy policy explains how we collect, use, and protect your information when you use our services.',
+          informationCollection: {
+            title: 'Information We Collect',
+            content:
+              'We collect information you provide directly to us, such as when you create an account, submit a complaint, or contact us. This may include personal information such as your name, email address, phone number, and identification documents.',
+          },
+          informationUse: {
+            title: 'How We Use Your Information',
+            content:
+              'We use the information we collect to provide, maintain, and improve our services, process your requests, communicate with you, and comply with legal obligations.',
+          },
+          informationProtection: {
+            title: 'How We Protect Your Information',
+            content:
+              'We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.',
+          },
+          yourRights: {
+            title: 'Your Rights',
+            content:
+              'You have the right to access, update, or delete your personal information. You may also have the right to restrict or object to certain processing of your information.',
+          },
+          contact: {
+            title: 'Contact Us',
+            content:
+              'If you have any questions about this privacy policy or our privacy practices, please contact us at info@sera.gov.sa',
+          },
+          lastUpdated: 'Last updated: January 2024',
         },
         termsOfService: {
           title: 'Terms of Service',
@@ -273,11 +344,128 @@ const resources = {
         dataProtection: {
           title: 'Data Protection',
           description: 'Information about how we protect your personal data.',
+          introduction:
+            'We are committed to protecting your personal data and ensuring your privacy rights are respected. This policy outlines how we collect, process, secure, and protect your personal information.',
+          dataCollection: {
+            title: 'Data Collection',
+            content:
+              'We collect personal data that you provide to us directly, such as when you register for an account, submit a request, or contact us. We also collect data automatically when you use our services.',
+          },
+          dataProcessing: {
+            title: 'Data Processing',
+            content:
+              'We process your personal data for legitimate purposes, including providing our services, improving user experience, complying with legal obligations, and protecting our rights.',
+          },
+          dataSecurity: {
+            title: 'Data Security',
+            content:
+              'We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction.',
+          },
+          dataSharing: {
+            title: 'Data Sharing',
+            content:
+              'We do not sell, trade, or rent your personal data to third parties. We may share your data only when required by law or with your explicit consent.',
+          },
+          dataRetention: {
+            title: 'Data Retention',
+            content:
+              'We retain your personal data only for as long as necessary to fulfill the purposes outlined in this policy or as required by law.',
+          },
+          userRights: {
+            title: 'Your Rights',
+            content:
+              'You have the right to access, update, delete, or restrict the processing of your personal data. You may also object to certain processing activities.',
+          },
+          contact: {
+            title: 'Contact Us',
+            content:
+              'If you have any questions about data protection or wish to exercise your rights, please contact us at info@sera.gov.sa',
+          },
+          lastUpdated: 'Last updated: January 2024',
         },
         cookiePolicy: {
           title: 'Cookie Policy',
           description:
             'Learn about our use of cookies and similar technologies.',
+          introduction:
+            'This Cookie Policy explains how we use cookies and similar technologies when you visit our website or use our services.',
+          whatAreCookies: {
+            title: 'What are Cookies',
+            content:
+              'Cookies are small text files that are placed on your device when you visit a website. They are widely used to make websites work more efficiently and to provide information to website owners.',
+          },
+          howWeUseCookies: {
+            title: 'How We Use Cookies',
+            content:
+              'We use cookies to improve your experience on our website, remember your preferences, analyze website traffic, and ensure security.',
+          },
+          typesOfCookies: {
+            title: 'Types of Cookies',
+            content:
+              'We use essential cookies (necessary for website function), performance cookies (to analyze usage), functional cookies (to remember preferences), and security cookies (to protect against threats).',
+          },
+          managingCookies: {
+            title: 'Managing Cookies',
+            content:
+              'You can control and manage cookies through your browser settings. You can choose to accept or reject cookies, but this may affect your experience on our website.',
+          },
+          thirdPartyCookies: {
+            title: 'Third-Party Cookies',
+            content:
+              'We may use third-party services that place their own cookies on your device. These are governed by the respective third parties privacy policies.',
+          },
+          contact: {
+            title: 'Contact Us',
+            content:
+              'If you have any questions about our use of cookies, please contact us at info@sera.gov.sa',
+          },
+          lastUpdated: 'Last updated: January 2024',
+        },
+        usagePolicy: {
+          title: 'Terms of Use',
+          introduction:
+            'This electronic portal provides information, data and services related to the work of the Saudi Electricity Regulatory Authority in the Kingdom of Saudi Arabia. By using this portal, you acknowledge refraining from the following:',
+          prohibitedActivities: {
+            title: 'Prohibited Activities',
+            intro:
+              'By using this portal, you acknowledge refraining from the following:',
+            list: [
+              'Providing or uploading files containing software, materials, data or other information that you do not own or do not have a license for.',
+              'Using this portal in any way to send any commercial or unwanted email, or any abuse of this kind.',
+              'Providing or uploading files to this portal that contain viruses or corrupted data.',
+              'Publishing, advertising, distributing or circulating materials or information containing defamation, violation of regulations, pornographic, obscene, or contrary to public morals, or any illegal materials or information through the portal.',
+              'Participating through this portal in unlawful or irregular activities in the Kingdom of Saudi Arabia.',
+              'Advertising on this portal for any product or service that puts us in a position of violating any applicable law or regulation in any field.',
+              'Using any means, program or procedure to intercept or attempt to intercept the proper operation of the portal.',
+              'Taking any action that imposes an unreasonable or inappropriately large burden on the portal infrastructure.',
+            ],
+          },
+          termination: {
+            title: 'Termination of Use',
+            content:
+              'SERA may, at its sole discretion, terminate, restrict or suspend your right to access and use the portal without notice and for any reason, including violation of the terms and conditions of use or any other conduct that we may consider at our sole discretion to be illegal or harmful to others. In the event of termination, you will not be authorized to access this portal.',
+          },
+          links: {
+            title: 'Electronic Links',
+            content:
+              'Some links are provided to sites independent of SERA electronic portal, and we are not responsible for the contents or credibility of the portals and/or sites we link to and do not endorse their contents. Use of links to access those sites or portals is at your own risk. SERA also replaces these broken electronic links with other sites, but we cannot guarantee that these links will work permanently.',
+          },
+          intellectualProperty: {
+            title: 'Intellectual Property Rights',
+            content:
+              'This portal belongs to the Saudi Electricity Regulatory Authority and all intellectual property rights and other rights related to the content of this portal are owned by SERA. You may not copy, modify, distribute, transmit, display, perform, reproduce, publish, license, create derivative works from, transfer, or sell any information, software, products or services obtained from this portal.',
+          },
+          personalInfoProtection: {
+            title: 'Personal Information Protection',
+            content:
+              'Your personal information will only be available to SERA employees who need to access it and are authorized to do so. Such information will not be available for public viewing without your consent. Furthermore, none of such information will be exchanged, traded or sold to any other party without your prior consent.',
+          },
+          cookies: {
+            title: 'Cookies',
+            content:
+              'We may store what are called "Cookies" on your device when you visit our site. Cookies are pieces of data that uniquely identify you as a user. They can also be used to improve your knowledge of this electronic portal and to better understand the user base of this portal. Most browsers are initially set to accept cookies. You can reset your browser to reject all cookies or to alert when cookies are being sent.',
+          },
+          lastUpdated: 'Last updated: August 28, 2024',
         },
       },
       faq: {
@@ -622,9 +810,9 @@ const resources = {
           },
           mockData: {
             accounts: {
-              company1: 'Saudi Electricity Company',
-              company2: 'Al Jouf Electricity Company',
-              company3: 'Green Energy Solutions Ltd.',
+              company1: 'abdullah 1st account',
+              company2: 'abdullah 2nd account',
+              company3: 'abdullah 3rd account',
             },
             natures: {
               solar: 'Solar Power',
@@ -842,6 +1030,36 @@ const resources = {
           chat: 'المحادثة',
           more: 'المزيد',
         },
+        comingSoon: {
+          title: 'قريباً',
+          message: 'هذه الميزة قادمة قريباً. ترقبوا التحديثات!',
+          okButton: 'حسناً',
+        },
+        homeNew: {
+          lastVisit: 'آخر زيارة',
+          accountVerified: 'الحساب موثق',
+          stats: {
+            activeComplaints: 'نشطة',
+            completed: 'منجزة',
+            pending: 'قيد المراجعة',
+          },
+          quickActionsTitle: 'الإجراءات السريعة',
+          quickActions: {
+            newComplaint: 'شكوى جديدة',
+            newPermit: 'تصريح جديد',
+            contactUs: 'تواصل معنا',
+            myReports: 'تقاريري',
+          },
+          recentActivityTitle: 'النشاط الأخير',
+          activities: {
+            complaintReply: 'تم الرد على شكواك',
+            permitReceived: 'تم استلام طلب التصريح',
+            newUpdate: 'تحديث جديد متاح',
+            twoHoursAgo: 'منذ ساعتين',
+            yesterday: 'أمس',
+            threeDaysAgo: 'منذ 3 أيام',
+          },
+        },
       },
       services: {
         title: 'الخدمات الإلكترونية',
@@ -880,6 +1098,10 @@ const resources = {
         settings: {
           title: 'الإعدادات',
           description: 'إدارة تفضيلاتك وإعدادات حسابك',
+        },
+        profile: {
+          title: 'الملف الشخصي',
+          description: 'مشاهدة وإدارة معلوماتك الشخصية',
         },
         aboutUs: {
           title: 'عن الهيئة',
@@ -928,6 +1150,10 @@ const resources = {
           description: 'التبديل بين الوضعين الضوئي والليلي',
           enabled: 'مفعل',
           disabled: 'غير مفعل',
+        },
+        homeScreen: {
+          title: 'الصفحة الرئيسية الجديدة',
+          description: 'تفعيل تجربة الصفحة الرئيسية المحسنة',
         },
         biometric: {
           title: 'تسجيل الدخول بصمة الإصبع أو الوجه',
@@ -1021,9 +1247,42 @@ const resources = {
       },
       policies: {
         title: 'السياسات والشروط',
+        introText:
+          'نلتزم بحماية خصوصيتك وأمان بياناتك. تعرف على سياساتنا وشروط استخدام خدماتنا.',
+        footerTitle: 'ملاحظة مهمة',
+        footerText:
+          'آخر تحديث لهذه السياسات كان في يناير 2024. نوصي بمراجعة هذه السياسات بانتظام للبقاء على اطلاع بأي تغييرات.',
         privacyPolicy: {
           title: 'سياسة الخصوصية',
           description: 'تعرف على كيفية جمع واستخدام وحماية معلوماتك.',
+          introduction:
+            'نلتزم بحماية خصوصيتك ومعلوماتك الشخصية. توضح سياسة الخصوصية هذه كيفية جمع واستخدام وحماية معلوماتك عند استخدام خدماتنا.',
+          informationCollection: {
+            title: 'المعلومات التي نجمعها',
+            content:
+              'نجمع المعلومات التي تقدمها لنا مباشرة، مثل عند إنشاء حساب أو تقديم شكوى أو التواصل معنا. قد تشمل هذه المعلومات الشخصية مثل اسمك وعنوان بريدك الإلكتروني ورقم هاتفك ووثائق الهوية.',
+          },
+          informationUse: {
+            title: 'كيف نستخدم معلوماتك',
+            content:
+              'نستخدم المعلومات التي نجمعها لتوفير خدماتنا والحفاظ عليها وتحسينها، ومعالجة طلباتك، والتواصل معك، والامتثال للالتزامات القانونية.',
+          },
+          informationProtection: {
+            title: 'كيف نحمي معلوماتك',
+            content:
+              'نطبق تدابير أمنية تقنية وتنظيمية مناسبة لحماية معلوماتك الشخصية من الوصول غير المصرح به أو التغيير أو الكشف أو التدمير.',
+          },
+          yourRights: {
+            title: 'حقوقك',
+            content:
+              'لديك الحق في الوصول إلى معلوماتك الشخصية أو تحديثها أو حذفها. قد يكون لديك أيضاً الحق في تقييد أو الاعتراض على معالجة معينة لمعلوماتك.',
+          },
+          contact: {
+            title: 'تواصل معنا',
+            content:
+              'إذا كان لديك أي أسئلة حول سياسة الخصوصية هذه أو ممارسات الخصوصية لدينا، يرجى التواصل معنا على info@sera.gov.sa',
+          },
+          lastUpdated: 'آخر تحديث: يناير 2024',
         },
         termsOfService: {
           title: 'شروط الخدمة',
@@ -1032,11 +1291,126 @@ const resources = {
         dataProtection: {
           title: 'حماية البيانات',
           description: 'معلومات عن حماية البيانات الشخصية لدينا.',
+          introduction:
+            'نلتزم بحماية بياناتك الشخصية وضمان احترام حقوق خصوصيتك. توضح هذه السياسة كيفية جمع ومعالجة وتأمين وحماية معلوماتك الشخصية.',
+          dataCollection: {
+            title: 'جمع البيانات',
+            content:
+              'نجمع البيانات الشخصية التي تقدمها لنا مباشرة، مثل عند التسجيل للحساب أو تقديم طلب أو التواصل معنا. كما نجمع البيانات تلقائياً عند استخدام خدماتنا.',
+          },
+          dataProcessing: {
+            title: 'معالجة البيانات',
+            content:
+              'نعالج بياناتك الشخصية لأغراض مشروعة، بما في ذلك تقديم خدماتنا وتحسين تجربة المستخدم والامتثال للالتزامات القانونية وحماية حقوقنا.',
+          },
+          dataSecurity: {
+            title: 'أمان البيانات',
+            content:
+              'نطبق تدابير تقنية وتنظيمية مناسبة لحماية بياناتك الشخصية من الوصول غير المصرح به أو التغيير أو الكشف أو التدمير.',
+          },
+          dataSharing: {
+            title: 'مشاركة البيانات',
+            content:
+              'لا نبيع أو نتاجر أو نؤجر بياناتك الشخصية لأطراف ثالثة. قد نشارك بياناتك فقط عند الطلب القانوني أو بموافقتك الصريحة.',
+          },
+          dataRetention: {
+            title: 'الاحتفاظ بالبيانات',
+            content:
+              'نحتفظ ببياناتك الشخصية فقط للمدة اللازمة لتحقيق الأغراض المبينة في هذه السياسة أو حسب ما يتطلبه القانون.',
+          },
+          userRights: {
+            title: 'حقوقك',
+            content:
+              'لديك الحق في الوصول إلى بياناتك الشخصية أو تحديثها أو حذفها أو تقييد معالجتها. قد تعترض أيضاً على أنشطة معالجة معينة.',
+          },
+          contact: {
+            title: 'تواصل معنا',
+            content:
+              'إذا كان لديك أي أسئلة حول حماية البيانات أو ترغب في ممارسة حقوقك، يرجى التواصل معنا على info@sera.gov.sa',
+          },
+          lastUpdated: 'آخر تحديث: يناير 2024',
         },
         cookiePolicy: {
-          title: 'سياسة الملفات المؤقتة',
-          description:
-            'تعرف على كيفية استخدامنا للملفات المؤقتة وتكنولوجيات مماثلة.',
+          title: 'سياسة الكوكيز',
+          description: 'تعرف على كيفية استخدامنا للكوكيز وتكنولوجيات مماثلة.',
+          introduction:
+            'توضح سياسة الكوكيز هذه كيفية استخدامنا للكوكيز والتقنيات المماثلة عند زيارة موقعنا الإلكتروني أو استخدام خدماتنا.',
+          whatAreCookies: {
+            title: 'ما هي الكوكيز',
+            content:
+              'الكوكيز هي ملفات نصية صغيرة يتم وضعها على جهازك عند زيارة موقع إلكتروني. تُستخدم على نطاق واسع لجعل المواقع الإلكترونية تعمل بكفاءة أكبر وتوفير معلومات لأصحاب المواقع.',
+          },
+          howWeUseCookies: {
+            title: 'كيف نستخدم الكوكيز',
+            content:
+              'نستخدم الكوكيز لتحسين تجربتك على موقعنا الإلكتروني، وتذكر تفضيلاتك، وتحليل حركة المرور على الموقع، وضمان الأمان.',
+          },
+          typesOfCookies: {
+            title: 'أنواع الكوكيز',
+            content:
+              'نستخدم الكوكيز الأساسية (الضرورية لوظيفة الموقع)، وكوكيز الأداء (لتحليل الاستخدام)، والكوكيز الوظيفية (لتذكر التفضيلات)، وكوكيز الأمان (للحماية من التهديدات).',
+          },
+          managingCookies: {
+            title: 'إدارة الكوكيز',
+            content:
+              'يمكنك التحكم في الكوكيز وإدارتها من خلال إعدادات المتصفح. يمكنك اختيار قبول أو رفض الكوكيز، ولكن هذا قد يؤثر على تجربتك على موقعنا.',
+          },
+          thirdPartyCookies: {
+            title: 'كوكيز الأطراف الثالثة',
+            content:
+              'قد نستخدم خدمات الأطراف الثالثة التي تضع كوكيز خاصة بها على جهازك. هذه تحكمها سياسات الخصوصية الخاصة بالأطراف الثالثة المعنية.',
+          },
+          contact: {
+            title: 'تواصل معنا',
+            content:
+              'إذا كان لديك أي أسئلة حول استخدامنا للكوكيز، يرجى التواصل معنا على info@sera.gov.sa',
+          },
+          lastUpdated: 'آخر تحديث: يناير 2024',
+        },
+        usagePolicy: {
+          title: 'سياسة الاستخدام',
+          introduction:
+            'توفر هذه البوابة الإلكترونية معلومات وبيانات وخدمات تتعلق بعمل الهيئة السعودية لتنظيم الكهرباء بالمملكة العربية السعودية. باستخدامك لهذه البوابة، تقر بالامتناع عما يلي:',
+          prohibitedActivities: {
+            title: 'الأنشطة المحظورة',
+            intro: 'باستخدامك لهذه البوابة، تقر بالامتناع عما يلي:',
+            list: [
+              'توفير أو تحميل ملفات تحتوى على برمجيات أو مواد أو بيانات أو معلومات أخرى ليست مملوكة لك أو لا تملك ترخيصاً بشأنها.',
+              'استخدام هذه البوابة بأي طريقة لإرسال أي بريد إلكتروني تجاري أو غير مرغوب فيه، أو أي إساءة استخدام من هذا النوع.',
+              'توفير أو تحميل ملفات على هذه البوابة تحتوى على فيروسات أو بيانات تالفة.',
+              'نشر أو إعلان أو توزيع أو تعميم مواد أو معلومات تحتوي تشويهاً للسمعة أو انتهاكاً للأنظمة، أو مواد إباحية، أو بذيئة، أو مخالفة للآداب العامة، أو أي مواد أو معلومات غير قانونية من خلال البوابة.',
+              'الاشتراك من خلال هذه البوابة في أنشطة غير مشروعة أو غير نظامية في المملكة العربية السعودية.',
+              'الإعلان على هذه البوابة عن أي منتج أو خدمة تجعلنا في وضع انتهاك لأي قانون أو نظام مطبق في أي مجال.',
+              'استخدام أي وسيلة أو برنامج أو إجراء لاعتراض أو محاولة اعتراض التشغيل الصحيح للبوابة.',
+              'القيام بأي إجراء يفرض حملاً غير معقول أو كبير بصورة غير مناسبة على البنية التحتية للبوابة.',
+            ],
+          },
+          termination: {
+            title: 'إنهاء الاستخدام',
+            content:
+              'يجوز للهيئة وحسب تقديرها المطلق إنهاء أو تقييد أو إيقاف حقك في الدخول إلى البوابة واستخدامها دون إشعار ولأي سبب، بما في ذلك مخالفة شروط وبنود الاستخدام أو أي سلوك آخر قد نعتبره حسب تقديرنا الخاص غير قانوني أو مضرًا بالآخرين، وفي حال الإنهاء، فإنه لن يكون مصرحاً لك بالدخول إلى هذه البوابة.',
+          },
+          links: {
+            title: 'الروابط الإلكترونية',
+            content:
+              'يتم توفير بعض الروابط لمواقع مستقلة عن بوابة الهيئة الإلكترونية، ونحن غير مسؤولين عن محتويات أو مصداقية البوابات و/أو المواقع التي نرتبط بها ولا نصادق على محتوياتها، واستخدام الروابط للوصول إلى تلك المواقع أو البوابات يتم على مسؤوليتك الخاصة.',
+          },
+          intellectualProperty: {
+            title: 'حقوق الملكية الفكرية',
+            content:
+              'هذه البوابة تابعة للهيئة السعودية لتنظيم الكهرباء وجميع حقوق الملكية الفكرية والحقوق الأخرى المتعلقة بمحتوى هذه البوابة مملوكة للهيئة. لا يجوز لك نسخ أو تعديل أو توزيع أو إرسال أو عرض أو تنفيذ أو استنساخ أو نشر أو ترخيص أو إنشاء أعمال مشتقة من أو نقل أو بيع أي معلومات أو برامج أو منتجات أو خدمات تم الحصول عليها من هذه البوابة.',
+          },
+          personalInfoProtection: {
+            title: 'حماية المعلومات الشخصية',
+            content:
+              'لن تكون معلوماتك الشخصية متاحة إلا لموظفي الهيئة السعودية لتنظيم الكهرباء الذين يحتاجون إلى الاطلاع عليها والمصرح لهم بذلك. ولن تكون تلك المعلومات متاحة لاطلاع الجمهور من غير موافقتك. وعلاوة على ذلك لن يتم تبادل، أو تداول أي من تلك المعلومات أو بيعها لأي طرف آخر من غير موافقتك المسبقة.',
+          },
+          cookies: {
+            title: 'ملفات تعريف الارتباط',
+            content:
+              'قد نقوم بتخزين ما يسمى بملفات تعريف الارتباط "Cookies" على الجهاز الخاص بك عندما تقوم بزيارة موقعنا. حيث أن ملفات تعريف الارتباط "Cookies" هي جزء من البيانات التي تحددك كمستخدم بشكل فريد. كما يمكن استخدامها لتحسين معرفتك بهذه البوابة الإلكترونية ولفهم قاعدة مستخدم هذه البوابة على نحو أفضل.',
+          },
+          lastUpdated: 'آخر تحديث: 28 أغسطس 2024',
         },
       },
       faq: {
@@ -1374,9 +1748,9 @@ const resources = {
           },
           mockData: {
             accounts: {
-              company1: 'الشركة السعودية للكهرباء',
-              company2: 'شركة كهرباء الجوف',
-              company3: 'شركة حلول الطاقة الخضراء المحدودة',
+              company1: 'حساب عبدالله1',
+              company2: 'حساب عبدالله2',
+              company3: 'حساب عبدالله3',
             },
             natures: {
               solar: 'الطاقة الشمسية',
