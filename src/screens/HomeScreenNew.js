@@ -910,6 +910,16 @@ export default function HomeScreenNew({navigation}) {
             </View>
           </View>
 
+          {/* Quick Actions */}
+          <Text style={dynamicStyles.sectionTitle}>
+            {translations.quickActionsTitle}
+          </Text>
+          <View style={dynamicStyles.quickActionsGrid}>
+            {quickActions.map(action => (
+              <QuickActionCard key={action.id} action={action} />
+            ))}
+          </View>
+
           {/* SERA Updates Section */}
           <View style={dynamicStyles.sectionHeader}>
             <Text style={dynamicStyles.sectionTitle}>
@@ -962,25 +972,15 @@ export default function HomeScreenNew({navigation}) {
             ))}
           </View>
 
-          {/* Quick Actions */}
-          <Text style={dynamicStyles.sectionTitle}>
-            {translations.quickActionsTitle}
-          </Text>
-          <View style={dynamicStyles.quickActionsGrid}>
-            {quickActions.map(action => (
-              <QuickActionCard key={action.id} action={action} />
-            ))}
-          </View>
-
           {/* Recent Activity */}
-          <View style={dynamicStyles.activityCard}>
+          {/* <View style={dynamicStyles.activityCard}>
             <Text style={dynamicStyles.sectionTitle}>
               {translations.recentActivityTitle}
             </Text>
             {recentActivities.map(activity => (
               <ActivityItem key={activity.id} activity={activity} />
             ))}
-          </View>
+          </View> */}
         </ScrollView>
 
         <SafeAreaView style={dynamicStyles.navBarSafeArea} edges={['bottom']}>

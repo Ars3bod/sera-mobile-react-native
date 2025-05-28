@@ -26,15 +26,23 @@ const {width, height} = Dimensions.get('window');
 // You can add Nafath logo here if available
 // const nafathLogo = require('../assets/images/nafath_logo.png');
 
-export default function NafathLoginScreen({navigation}) {
+export default function NafathLoginScreen({navigation, route}) {
   const {t, i18n} = useTranslation();
   const {theme, isDarkMode} = useTheme();
   const isArabic = i18n.language === 'ar';
   const [nationalId, setNationalId] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const {fromModal} = route.params || {};
+
   const handleGoBack = () => {
-    navigation.goBack();
+    if (fromModal) {
+      // If came from modal, navigate to LoginScreen
+      navigation.navigate('Login');
+    } else {
+      // Default behavior - go back to previous screen
+      navigation.goBack();
+    }
   };
 
   const handleContinue = async () => {

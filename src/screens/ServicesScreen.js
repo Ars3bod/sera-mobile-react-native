@@ -8,9 +8,12 @@ import {
   SafeAreaView,
   StatusBar,
   Modal,
+  ToastAndroid,
+  Platform,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '../context/ThemeContext';
+import {useUser} from '../context/UserContext';
 import {
   DocumentText24Regular,
   People24Regular,
@@ -20,13 +23,16 @@ import {
   ArrowLeft24Regular,
   Clock24Regular,
   Dismiss24Regular,
+  Person24Regular,
 } from '@fluentui/react-native-icons';
 
 const ServicesScreen = ({navigation}) => {
   const {t, i18n} = useTranslation();
   const {theme, isDarkMode} = useTheme();
+  const {isAuthenticated, isGuestMode} = useUser();
   const isRTL = i18n.language === 'ar';
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleComingSoon = () => {
     setShowComingSoonModal(true);
@@ -34,6 +40,19 @@ const ServicesScreen = ({navigation}) => {
 
   const closeModal = () => {
     setShowComingSoonModal(false);
+  };
+
+  const closeLoginModal = () => {
+    setShowLoginModal(false);
+  };
+
+  const handleLoginPress = () => {
+    setShowLoginModal(false);
+    navigation.navigate('NafathLogin', {fromModal: true});
+  };
+
+  const showLoginPrompt = () => {
+    setShowLoginModal(true);
   };
 
   const services = [
@@ -75,6 +94,12 @@ const ServicesScreen = ({navigation}) => {
   ];
 
   const handleServicePress = service => {
+    // Check if user is in guest mode
+    if (isGuestMode && !isAuthenticated) {
+      showLoginPrompt();
+      return;
+    }
+
     // Navigate to specific service screen or handle service action
     console.log('Service pressed:', t(service.titleKey));
 
@@ -250,13 +275,28 @@ const ServicesScreen = ({navigation}) => {
       backgroundColor: theme.colors.primary,
       borderRadius: 12,
       paddingVertical: 14,
-      paddingHorizontal: 24,
+      paddingHorizontal: 14,
       alignItems: 'center',
+      flex: 1,
     },
     modalButtonText: {
       color: '#FFFFFF',
       fontSize: 16,
       fontWeight: '600',
+    },
+    modalButtonsContainer: {
+      flexDirection: isRTL ? 'row-reverse' : 'row',
+      justifyContent: 'space-between',
+      gap: 12,
+    },
+    cancelButton: {
+      backgroundColor: theme.colors.surface,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      flex: 1,
+    },
+    cancelButtonText: {
+      color: theme.colors.text,
     },
   });
 
@@ -350,6 +390,63 @@ const ServicesScreen = ({navigation}) => {
                 {t('home.comingSoon.okButton')}
               </Text>
             </TouchableOpacity>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
+
+      {/* Login Required Modal */}
+      <Modal
+        visible={showLoginModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={closeLoginModal}>
+        <TouchableOpacity
+          style={dynamicStyles.modalOverlay}
+          activeOpacity={1}
+          onPress={closeLoginModal}>
+          <TouchableOpacity
+            style={dynamicStyles.modalContainer}
+            activeOpacity={1}
+            onPress={() => {}}>
+            <View style={dynamicStyles.modalHeader}>
+              <Person24Regular style={dynamicStyles.modalIcon} />
+              <Text style={dynamicStyles.modalTitle}>
+                {isRTL ? 'تسجيل الدخول مطلوب' : 'Login Required'}
+              </Text>
+              <TouchableOpacity
+                style={dynamicStyles.closeButton}
+                onPress={closeLoginModal}
+                activeOpacity={0.7}>
+                <Dismiss24Regular style={dynamicStyles.closeIcon} />
+              </TouchableOpacity>
+            </View>
+            <Text style={dynamicStyles.modalMessage}>
+              {isRTL
+                ? 'يجب تسجيل الدخول لاستخدام هذه الخدمة. هل تريد تسجيل الدخول الآن؟'
+                : 'You need to login to use this service. Would you like to login now?'}
+            </Text>
+            <View style={dynamicStyles.modalButtonsContainer}>
+              <TouchableOpacity
+                style={[dynamicStyles.modalButton, dynamicStyles.cancelButton]}
+                onPress={closeLoginModal}
+                activeOpacity={0.8}>
+                <Text
+                  style={[
+                    dynamicStyles.modalButtonText,
+                    dynamicStyles.cancelButtonText,
+                  ]}>
+                  {isRTL ? 'إلغاء' : 'Cancel'}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={dynamicStyles.modalButton}
+                onPress={handleLoginPress}
+                activeOpacity={0.8}>
+                <Text style={dynamicStyles.modalButtonText}>
+                  {isRTL ? 'تسجيل الدخول' : 'Login'}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>

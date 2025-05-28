@@ -13,6 +13,7 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '../context/ThemeContext';
+import {useUser} from '../context/UserContext';
 import {
   People24Regular,
   Briefcase24Regular,
@@ -30,6 +31,7 @@ import {
 export default function HomeScreen({navigation}) {
   const {t, i18n} = useTranslation();
   const {theme, isDarkMode} = useTheme();
+  const {isGuestMode} = useUser();
   const isRTL = i18n.language === 'ar';
 
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);

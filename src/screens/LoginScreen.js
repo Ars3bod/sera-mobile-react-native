@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '../context/ThemeContext';
+import {useUser} from '../context/UserContext';
 import {
   Globe24Regular,
   Shield24Regular,
@@ -24,6 +25,7 @@ const {width, height} = Dimensions.get('window');
 export default function LoginScreen({navigation}) {
   const {t, i18n} = useTranslation();
   const {theme, isDarkMode} = useTheme();
+  const {setGuestMode} = useUser();
   const isArabic = i18n.language === 'ar';
 
   const toggleLanguage = () => {
@@ -32,6 +34,11 @@ export default function LoginScreen({navigation}) {
 
   const handleNafathLogin = () => {
     navigation.navigate('NafathLogin');
+  };
+
+  const handleGuestLogin = () => {
+    setGuestMode(true);
+    navigation.navigate('Home');
   };
 
   const dynamicStyles = StyleSheet.create({
@@ -125,6 +132,21 @@ export default function LoginScreen({navigation}) {
       fontSize: 12,
       color: theme.colors.textSecondary,
       fontWeight: '500',
+    },
+    guestButton: {
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      borderColor: theme.colors.primary,
+      borderRadius: 16,
+      width: '100%',
+      paddingVertical: 16,
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    guestButtonText: {
+      color: theme.colors.primary,
+      fontSize: 16,
+      fontWeight: '600',
     },
     footer: {
       alignItems: 'center',
@@ -224,6 +246,16 @@ export default function LoginScreen({navigation}) {
             activeOpacity={0.8}>
             <Text style={dynamicStyles.loginButtonText}>
               {t('login_button')}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Guest Login Button */}
+          <TouchableOpacity
+            style={dynamicStyles.guestButton}
+            onPress={handleGuestLogin}
+            activeOpacity={0.8}>
+            <Text style={dynamicStyles.guestButtonText}>
+              {isArabic ? 'متابعة كضيف' : 'Continue as Guest'}
             </Text>
           </TouchableOpacity>
 

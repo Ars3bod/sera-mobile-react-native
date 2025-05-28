@@ -18,6 +18,7 @@ export const UserProvider = ({children}) => {
   const [user, setUser] = useState(null);
   const [tokens, setTokens] = useState({accessToken: null, wToken: null});
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isGuestMode, setIsGuestMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load user data and tokens from storage on app start
@@ -36,6 +37,7 @@ export const UserProvider = ({children}) => {
         const parsedUser = JSON.parse(userData);
         setUser(parsedUser);
         setIsAuthenticated(true);
+        setIsGuestMode(false);
       }
 
       if (tokenData) {
@@ -54,6 +56,7 @@ export const UserProvider = ({children}) => {
       await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
       setUser(userData);
       setIsAuthenticated(true);
+      setIsGuestMode(false);
     } catch (error) {
       console.log('Error saving user data:', error);
     }
@@ -86,8 +89,18 @@ export const UserProvider = ({children}) => {
       setUser(null);
       setTokens({accessToken: null, wToken: null});
       setIsAuthenticated(false);
+      setIsGuestMode(false);
     } catch (error) {
       console.log('Error during logout:', error);
+    }
+  };
+
+  const setGuestMode = isGuest => {
+    setIsGuestMode(isGuest);
+    if (isGuest) {
+      setIsAuthenticated(false);
+      setUser(null);
+      setTokens({accessToken: null, wToken: null});
     }
   };
 
@@ -176,6 +189,7 @@ export const UserProvider = ({children}) => {
     user,
     tokens,
     isAuthenticated,
+    isGuestMode,
     isLoading,
     saveUserData,
     saveTokens,
@@ -183,6 +197,7 @@ export const UserProvider = ({children}) => {
     logout,
     storeNafathAuthData,
     getValidateContactData,
+    setGuestMode,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
