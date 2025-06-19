@@ -1,0 +1,448 @@
+{
+  "light": {
+    "primary": {
+      "hex": "#00623B",
+      "name": "primary",
+      "usage": "Primary brand color for buttons, links, and key UI elements"
+    },
+    "primaryLight": {
+      "hex": "#00623B20",
+      "name": "primaryLight",
+      "usage": "Light variant of primary color for backgrounds and hover states"
+    },
+    "primaryDark": {
+      "hex": "#004829",
+      "name": "primaryDark",
+      "usage": "Dark variant of primary color for pressed states"
+    },
+    "background": {
+      "hex": "#f8f9fa",
+      "name": "background",
+      "usage": "Main background color for screens"
+    },
+    "surface": {
+      "hex": "#ffffff",
+      "name": "surface",
+      "usage": "Surface color for cards and elevated elements"
+    },
+    "card": {
+      "hex": "#ffffff",
+      "name": "card",
+      "usage": "Card background color"
+    },
+    "text": {
+      "hex": "#2c3e50",
+      "name": "text",
+      "usage": "Primary text color"
+    },
+    "textSecondary": {
+      "hex": "#6c757d",
+      "name": "textSecondary",
+      "usage": "Secondary text color for less important content"
+    },
+    "textInverse": {
+      "hex": "#ffffff",
+      "name": "textInverse",
+      "usage": "Inverse text color for dark backgrounds"
+    },
+    "border": {
+      "hex": "#e9ecef",
+      "name": "border",
+      "usage": "Border color for dividers and outlines"
+    },
+    "borderLight": {
+      "hex": "#f1f3f4",
+      "name": "borderLight",
+      "usage": "Light border color for subtle divisions"
+    },
+    "success": {
+      "hex": "#28a745",
+      "name": "success",
+      "usage": "Success state color for confirmations"
+    },
+    "warning": {
+      "hex": "#ffc107",
+      "name": "warning",
+      "usage": "Warning state color for cautions"
+    },
+    "error": {
+      "hex": "#dc3545",
+      "name": "error",
+      "usage": "Error state color for validation and alerts"
+    },
+    "info": {
+      "hex": "#17a2b8",
+      "name": "info",
+      "usage": "Information state color for tips and notifications"
+    },
+    "shadow": {
+      "hex": "#000000",
+      "name": "shadow",
+      "usage": "Shadow color for depth and elevation"
+    },
+    "icon": {
+      "hex": "#6c757d",
+      "name": "icon",
+      "usage": "Default icon color"
+    },
+    "iconActive": {
+      "hex": "#00623B",
+      "name": "iconActive",
+      "usage": "Active icon color"
+    },
+    "inputBackground": {
+      "hex": "#ffffff",
+      "name": "inputBackground",
+      "usage": "Input field background color"
+    },
+    "inputBorder": {
+      "hex": "#e9ecef",
+      "name": "inputBorder",
+      "usage": "Input field border color"
+    },
+    "inputText": {
+      "hex": "#2c3e50",
+      "name": "inputText",
+      "usage": "Input field text color"
+    },
+    "placeholder": {
+      "hex": "#6c757d",
+      "name": "placeholder",
+      "usage": "Placeholder text color"
+    }
+  },
+  "dark": {
+    "primary": {
+      "hex": "#00A876",
+      "name": "primary",
+      "usage": "Primary brand color for buttons, links, and key UI elements"
+    },
+    "primaryLight": {
+      "hex": "#00A87620",
+      "name": "primaryLight",
+      "usage": "Light variant of primary color for backgrounds and hover states"
+    },
+    "primaryDark": {
+      "hex": "#007A57",
+      "name": "primaryDark",
+      "usage": "Dark variant of primary color for pressed states"
+    },
+    "background": {
+      "hex": "#121212",
+      "name": "background",
+      "usage": "Main background color for screens"
+    },
+    "surface": {
+      "hex": "#1E1E1E",
+      "name": "surface",
+      "usage": "Surface color for cards and elevated elements"
+    },
+    "card": {
+      "hex": "#2D2D2D",
+      "name": "card",
+      "usage": "Card background color"
+    },
+    "text": {
+      "hex": "#FFFFFF",
+      "name": "text",
+      "usage": "Primary text color"
+    },
+    "textSecondary": {
+      "hex": "#B0B0B0",
+      "name": "textSecondary",
+      "usage": "Secondary text color for less important content"
+    },
+    "textInverse": {
+      "hex": "#000000",
+      "name": "textInverse",
+      "usage": "Inverse text color for dark backgrounds"
+    },
+    "border": {
+      "hex": "#404040",
+      "name": "border",
+      "usage": "Border color for dividers and outlines"
+    },
+    "borderLight": {
+      "hex": "#2D2D2D",
+      "name": "borderLight",
+      "usage": "Light border color for subtle divisions"
+    },
+    "success": {
+      "hex": "#4CAF50",
+      "name": "success",
+      "usage": "Success state color for confirmations"
+    },
+    "warning": {
+      "hex": "#FF9800",
+      "name": "warning",
+      "usage": "Warning state color for cautions"
+    },
+    "error": {
+      "hex": "#F44336",
+      "name": "error",
+      "usage": "Error state color for validation and alerts"
+    },
+    "info": {
+      "hex": "#2196F3",
+      "name": "info",
+      "usage": "Information state color for tips and notifications"
+    },
+    "shadow": {
+      "hex": "#000000",
+      "name": "shadow",
+      "usage": "Shadow color for depth and elevation"
+    },
+    "icon": {
+      "hex": "#B0B0B0",
+      "name": "icon",
+      "usage": "Default icon color"
+    },
+    "iconActive": {
+      "hex": "#00A876",
+      "name": "iconActive",
+      "usage": "Active icon color"
+    },
+    "inputBackground": {
+      "hex": "#2D2D2D",
+      "name": "inputBackground",
+      "usage": "Input field background color"
+    },
+    "inputBorder": {
+      "hex": "#404040",
+      "name": "inputBorder",
+      "usage": "Input field border color"
+    },
+    "inputText": {
+      "hex": "#FFFFFF",
+      "name": "inputText",
+      "usage": "Input field text color"
+    },
+    "placeholder": {
+      "hex": "#B0B0B0",
+      "name": "placeholder",
+      "usage": "Placeholder text color"
+    }
+  },
+  "swatches": [
+    {
+      "name": "SERA Light primary",
+      "color": "#00623B",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light primaryLight",
+      "color": "#00623B20",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light primaryDark",
+      "color": "#004829",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light background",
+      "color": "#f8f9fa",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light surface",
+      "color": "#ffffff",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light card",
+      "color": "#ffffff",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light text",
+      "color": "#2c3e50",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light textSecondary",
+      "color": "#6c757d",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light textInverse",
+      "color": "#ffffff",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light border",
+      "color": "#e9ecef",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light borderLight",
+      "color": "#f1f3f4",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light success",
+      "color": "#28a745",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light warning",
+      "color": "#ffc107",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light error",
+      "color": "#dc3545",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light info",
+      "color": "#17a2b8",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light shadow",
+      "color": "#000000",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light icon",
+      "color": "#6c757d",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light iconActive",
+      "color": "#00623B",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light inputBackground",
+      "color": "#ffffff",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light inputBorder",
+      "color": "#e9ecef",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light inputText",
+      "color": "#2c3e50",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Light placeholder",
+      "color": "#6c757d",
+      "category": "light-theme"
+    },
+    {
+      "name": "SERA Dark primary",
+      "color": "#00A876",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark primaryLight",
+      "color": "#00A87620",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark primaryDark",
+      "color": "#007A57",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark background",
+      "color": "#121212",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark surface",
+      "color": "#1E1E1E",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark card",
+      "color": "#2D2D2D",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark text",
+      "color": "#FFFFFF",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark textSecondary",
+      "color": "#B0B0B0",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark textInverse",
+      "color": "#000000",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark border",
+      "color": "#404040",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark borderLight",
+      "color": "#2D2D2D",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark success",
+      "color": "#4CAF50",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark warning",
+      "color": "#FF9800",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark error",
+      "color": "#F44336",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark info",
+      "color": "#2196F3",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark shadow",
+      "color": "#000000",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark icon",
+      "color": "#B0B0B0",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark iconActive",
+      "color": "#00A876",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark inputBackground",
+      "color": "#2D2D2D",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark inputBorder",
+      "color": "#404040",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark inputText",
+      "color": "#FFFFFF",
+      "category": "dark-theme"
+    },
+    {
+      "name": "SERA Dark placeholder",
+      "color": "#B0B0B0",
+      "category": "dark-theme"
+    }
+  ]
+}

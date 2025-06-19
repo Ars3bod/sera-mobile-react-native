@@ -1,0 +1,180 @@
+/* SERA Mobile Design System - CSS Variables */
+/* Generated on: 2025-06-19T07:07:44.852Z */
+
+:root {
+  /* Light Theme Colors */
+  --light-primary: #00623B;
+  --light-primary-light: #00623B20;
+  --light-primary-dark: #004829;
+  --light-background: #f8f9fa;
+  --light-surface: #ffffff;
+  --light-card: #ffffff;
+  --light-text: #2c3e50;
+  --light-text-secondary: #6c757d;
+  --light-text-inverse: #ffffff;
+  --light-border: #e9ecef;
+  --light-border-light: #f1f3f4;
+  --light-success: #28a745;
+  --light-warning: #ffc107;
+  --light-error: #dc3545;
+  --light-info: #17a2b8;
+  --light-shadow: #000000;
+  --light-icon: #6c757d;
+  --light-icon-active: #00623B;
+  --light-input-background: #ffffff;
+  --light-input-border: #e9ecef;
+  --light-input-text: #2c3e50;
+  --light-placeholder: #6c757d;
+  --dark-primary: #00A876;
+  --dark-primary-light: #00A87620;
+  --dark-primary-dark: #007A57;
+  --dark-background: #121212;
+  --dark-surface: #1E1E1E;
+  --dark-card: #2D2D2D;
+  --dark-text: #FFFFFF;
+  --dark-text-secondary: #B0B0B0;
+  --dark-text-inverse: #000000;
+  --dark-border: #404040;
+  --dark-border-light: #2D2D2D;
+  --dark-success: #4CAF50;
+  --dark-warning: #FF9800;
+  --dark-error: #F44336;
+  --dark-info: #2196F3;
+  --dark-shadow: #000000;
+  --dark-icon: #B0B0B0;
+  --dark-icon-active: #00A876;
+  --dark-input-background: #2D2D2D;
+  --dark-input-border: #404040;
+  --dark-input-text: #FFFFFF;
+  --dark-placeholder: #B0B0B0;
+
+  /* Typography */
+  --font-size-xs: 13px;
+  --font-size-sm: 15px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-xxl: 22px;
+  --font-size-xxxl: 24px;
+  --font-size-huge: 28px;
+  --font-size-massive: 32px;
+  --font-size-giant: 40px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semi-bold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-base: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 18px;
+  --spacing-xl: 20px;
+  --spacing-xxl: 24px;
+  --spacing-xxxl: 32px;
+}
+
+[data-theme="dark"] {
+  /* Dark Theme Colors */
+  --light-primary: #00A876;
+  --light-primary-light: #00A87620;
+  --light-primary-dark: #007A57;
+  --light-background: #121212;
+  --light-surface: #1E1E1E;
+  --light-card: #2D2D2D;
+  --light-text: #FFFFFF;
+  --light-text-secondary: #B0B0B0;
+  --light-text-inverse: #000000;
+  --light-border: #404040;
+  --light-border-light: #2D2D2D;
+  --light-success: #4CAF50;
+  --light-warning: #FF9800;
+  --light-error: #F44336;
+  --light-info: #2196F3;
+  --light-shadow: #000000;
+  --light-icon: #B0B0B0;
+  --light-icon-active: #00A876;
+  --light-input-background: #2D2D2D;
+  --light-input-border: #404040;
+  --light-input-text: #FFFFFF;
+  --light-placeholder: #B0B0B0;
+}
+
+/* Utility Classes */
+
+/* Color Utilities */
+.text-primary { color: var(--light-primary); }
+.bg-primary { background-color: var(--light-primary); }
+.text-primaryLight { color: var(--light-primary-light); }
+.bg-primaryLight { background-color: var(--light-primary-light); }
+.text-primaryDark { color: var(--light-primary-dark); }
+.bg-primaryDark { background-color: var(--light-primary-dark); }
+.text-background { color: var(--light-background); }
+.bg-background { background-color: var(--light-background); }
+.text-surface { color: var(--light-surface); }
+.bg-surface { background-color: var(--light-surface); }
+.text-card { color: var(--light-card); }
+.bg-card { background-color: var(--light-card); }
+.text-text { color: var(--light-text); }
+.bg-text { background-color: var(--light-text); }
+.text-textSecondary { color: var(--light-text-secondary); }
+.bg-textSecondary { background-color: var(--light-text-secondary); }
+.text-textInverse { color: var(--light-text-inverse); }
+.bg-textInverse { background-color: var(--light-text-inverse); }
+.text-border { color: var(--light-border); }
+.bg-border { background-color: var(--light-border); }
+.text-borderLight { color: var(--light-border-light); }
+.bg-borderLight { background-color: var(--light-border-light); }
+.text-success { color: var(--light-success); }
+.bg-success { background-color: var(--light-success); }
+.text-warning { color: var(--light-warning); }
+.bg-warning { background-color: var(--light-warning); }
+.text-error { color: var(--light-error); }
+.bg-error { background-color: var(--light-error); }
+.text-info { color: var(--light-info); }
+.bg-info { background-color: var(--light-info); }
+.text-shadow { color: var(--light-shadow); }
+.bg-shadow { background-color: var(--light-shadow); }
+.text-icon { color: var(--light-icon); }
+.bg-icon { background-color: var(--light-icon); }
+.text-iconActive { color: var(--light-icon-active); }
+.bg-iconActive { background-color: var(--light-icon-active); }
+.text-inputBackground { color: var(--light-input-background); }
+.bg-inputBackground { background-color: var(--light-input-background); }
+.text-inputBorder { color: var(--light-input-border); }
+.bg-inputBorder { background-color: var(--light-input-border); }
+.text-inputText { color: var(--light-input-text); }
+.bg-inputText { background-color: var(--light-input-text); }
+.text-placeholder { color: var(--light-placeholder); }
+.bg-placeholder { background-color: var(--light-placeholder); }
+
+/* Typography Utilities */
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+.text-xxl { font-size: var(--font-size-xxl); }
+.text-xxxl { font-size: var(--font-size-xxxl); }
+.text-huge { font-size: var(--font-size-huge); }
+.text-massive { font-size: var(--font-size-massive); }
+.text-giant { font-size: var(--font-size-giant); }
+
+/* Spacing Utilities */
+.m-xs { margin: var(--spacing-xs); }
+.p-xs { padding: var(--spacing-xs); }
+.m-sm { margin: var(--spacing-sm); }
+.p-sm { padding: var(--spacing-sm); }
+.m-base { margin: var(--spacing-base); }
+.p-base { padding: var(--spacing-base); }
+.m-md { margin: var(--spacing-md); }
+.p-md { padding: var(--spacing-md); }
+.m-lg { margin: var(--spacing-lg); }
+.p-lg { padding: var(--spacing-lg); }
+.m-xl { margin: var(--spacing-xl); }
+.p-xl { padding: var(--spacing-xl); }
+.m-xxl { margin: var(--spacing-xxl); }
+.p-xxl { padding: var(--spacing-xxl); }
+.m-xxxl { margin: var(--spacing-xxxl); }
+.p-xxxl { padding: var(--spacing-xxxl); }

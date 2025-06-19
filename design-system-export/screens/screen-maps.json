@@ -1,0 +1,5817 @@
+{
+  "hierarchy": [
+    {
+      "name": "Splash",
+      "component": "SplashScreen",
+      "raw": "<Stack.Screen\n          name=\"Splash\"\n          component={SplashScreen}\n          options={{\n            animation: 'fade',\n            animationDuration: 500,\n          }}\n        />"
+    },
+    {
+      "name": "Login",
+      "component": "LoginScreen",
+      "raw": "<Stack.Screen\n          name=\"Login\"\n          component={LoginScreen}\n          options={{\n            animation: 'slide_from_bottom',\n            animationDuration: 400,\n          }}\n        />"
+    },
+    {
+      "name": "NafathLogin",
+      "component": "NafathLoginScreen",
+      "raw": "<Stack.Screen\n          name=\"NafathLogin\"\n          component={NafathLoginScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "NafathVerification",
+      "component": "NafathVerificationScreen",
+      "raw": "<Stack.Screen\n          name=\"NafathVerification\"\n          component={NafathVerificationScreen}\n          options={{\n            animation: 'slide_from_right',\n            gestureEnabled: false, // Prevent going back during verification\n          }}\n        />"
+    },
+    {
+      "name": "Home",
+      "component": "HomeScreenSelector",
+      "raw": "<Stack.Screen\n          name=\"Home\"\n          component={HomeScreenSelector}\n          options={{\n            animation: 'fade',\n            animationDuration: 500,\n            gestureEnabled: false, // Prevent going back to login\n          }}\n        />"
+    },
+    {
+      "name": "Services",
+      "component": "ServicesScreen",
+      "raw": "<Stack.Screen\n          name=\"Services\"\n          component={ServicesScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "More",
+      "component": "MoreScreen",
+      "raw": "<Stack.Screen\n          name=\"More\"\n          component={MoreScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "Settings",
+      "component": "SettingsScreen",
+      "raw": "<Stack.Screen\n          name=\"Settings\"\n          component={SettingsScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "About",
+      "component": "AboutScreen",
+      "raw": "<Stack.Screen\n          name=\"About\"\n          component={AboutScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "Contact",
+      "component": "ContactScreen",
+      "raw": "<Stack.Screen\n          name=\"Contact\"\n          component={ContactScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "News",
+      "component": "NewsScreen",
+      "raw": "<Stack.Screen\n          name=\"News\"\n          component={NewsScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "Policies",
+      "component": "PoliciesScreen",
+      "raw": "<Stack.Screen\n          name=\"Policies\"\n          component={PoliciesScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "FAQ",
+      "component": "FAQScreen",
+      "raw": "<Stack.Screen\n          name=\"FAQ\"\n          component={FAQScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "ImportantLinks",
+      "component": "ImportantLinksScreen",
+      "raw": "<Stack.Screen\n          name=\"ImportantLinks\"\n          component={ImportantLinksScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "Complaints",
+      "component": "ComplaintsScreen",
+      "raw": "<Stack.Screen\n          name=\"Complaints\"\n          component={ComplaintsScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "CreateComplaint",
+      "component": "CreateComplaintScreen",
+      "raw": "<Stack.Screen\n          name=\"CreateComplaint\"\n          component={CreateComplaintScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "ViewComplaints",
+      "component": "ViewComplaintsScreen",
+      "raw": "<Stack.Screen\n          name=\"ViewComplaints\"\n          component={ViewComplaintsScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "Permits",
+      "component": "PermitsScreen",
+      "raw": "<Stack.Screen\n          name=\"Permits\"\n          component={PermitsScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "ViewPermits",
+      "component": "ViewPermitsScreen",
+      "raw": "<Stack.Screen\n          name=\"ViewPermits\"\n          component={ViewPermitsScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "CreatePowerGenerationPermit",
+      "component": "CreatePowerGenerationPermitScreen",
+      "raw": "<Stack.Screen\n          name=\"CreatePowerGenerationPermit\"\n          component={CreatePowerGenerationPermitScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "CreateDistrictCoolingPermit",
+      "component": "CreateDistrictCoolingPermitScreen",
+      "raw": "<Stack.Screen\n          name=\"CreateDistrictCoolingPermit\"\n          component={CreateDistrictCoolingPermitScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "UsagePolicy",
+      "component": "UsagePolicyScreen",
+      "raw": "<Stack.Screen\n          name=\"UsagePolicy\"\n          component={UsagePolicyScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "PrivacyPolicy",
+      "component": "PrivacyPolicyScreen",
+      "raw": "<Stack.Screen\n          name=\"PrivacyPolicy\"\n          component={PrivacyPolicyScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "DataProtection",
+      "component": "DataProtectionScreen",
+      "raw": "<Stack.Screen\n          name=\"DataProtection\"\n          component={DataProtectionScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "CookiePolicy",
+      "component": "CookiePolicyScreen",
+      "raw": "<Stack.Screen\n          name=\"CookiePolicy\"\n          component={CookiePolicyScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    },
+    {
+      "name": "Profile",
+      "component": "ProfileScreen",
+      "raw": "<Stack.Screen\n          name=\"Profile\"\n          component={ProfileScreen}\n          options={{\n            animation: 'slide_from_right',\n            animationDuration: 300,\n          }}\n        />"
+    }
+  ],
+  "screens": {
+    "AboutScreen": {
+      "name": "AboutScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/AboutScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "section": {
+            "section": "{",
+            "borderRadius": "12",
+            "padding": "20",
+            "marginBottom": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "sectionHeader": {
+            "sectionHeader": "{",
+            "alignItems": "center",
+            "marginBottom": "16"
+          },
+          "iconContainer": {
+            "iconContainer": "{",
+            "width": "48",
+            "height": "48",
+            "borderRadius": "12",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "sectionIcon": {
+            "sectionIcon": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "flex": "1"
+          },
+          "sectionDescription": {
+            "sectionDescription": "{",
+            "fontSize": "16",
+            "lineHeight": "24"
+          },
+          "valuesGrid": {
+            "valuesGrid": "{",
+            "flexDirection": "row",
+            "flexWrap": "wrap",
+            "justifyContent": "space-between"
+          },
+          "valueItem": {
+            "valueItem": "{",
+            "width": "48%",
+            "padding": "16",
+            "borderRadius": "8",
+            "borderWidth": "2",
+            "marginBottom": "12"
+          },
+          "valueText": {
+            "valueText": "{",
+            "fontSize": "16",
+            "fontWeight": "600"
+          },
+          "establishmentHighlight": {
+            "establishmentHighlight": "{",
+            "padding": "20",
+            "borderRadius": "12",
+            "marginTop": "8"
+          },
+          "establishmentYear": {
+            "establishmentYear": "{",
+            "fontSize": "18",
+            "fontWeight": "bold"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "about.values.title",
+        "about.values.${value.key}",
+        "about.title",
+        "about.establishment.year"
+      ],
+      "dependencies": [
+        "../context/ThemeContext"
+      ]
+    },
+    "ComplaintsScreen": {
+      "name": "ComplaintsScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/ComplaintsScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "welcomeCard": {
+            "welcomeCard": "{",
+            "padding": "20",
+            "borderRadius": "12",
+            "marginBottom": "24"
+          },
+          "welcomeTitle": {
+            "welcomeTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "marginBottom": "8"
+          },
+          "welcomeText": {
+            "welcomeText": "{",
+            "fontSize": "16",
+            "lineHeight": "24",
+            "fontWeight": "500"
+          },
+          "actionsSection": {
+            "actionsSection": "{",
+            "marginBottom": "24"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "16"
+          },
+          "actionCard": {
+            "actionCard": "{",
+            "borderRadius": "12",
+            "padding": "16",
+            "marginBottom": "12",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "actionIconContainer": {
+            "actionIconContainer": "{",
+            "width": "56",
+            "height": "56",
+            "borderRadius": "14",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginRight": "16"
+          },
+          "actionIcon": {
+            "actionIcon": "{",
+            "width": "28",
+            "height": "28"
+          },
+          "actionContent": {
+            "actionContent": "{",
+            "flex": "1",
+            "marginRight": "12"
+          },
+          "actionTitle": {
+            "actionTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "4"
+          },
+          "actionDescription": {
+            "actionDescription": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          },
+          "chevronIcon": {
+            "chevronIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "filtersSection": {
+            "filtersSection": "{",
+            "marginBottom": "24"
+          },
+          "filtersContainer": {
+            "filtersContainer": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "gap": "12"
+          },
+          "filterCard": {
+            "filterCard": "{",
+            "flex": "1",
+            "borderRadius": "12",
+            "padding": "16",
+            "alignItems": "center",
+            "shadowColor": "#000"
+          },
+          "filterIconContainer": {
+            "filterIconContainer": "{",
+            "width": "48",
+            "height": "48",
+            "borderRadius": "12",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginBottom": "8"
+          },
+          "filterIcon": {
+            "filterIcon": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "filterCount": {
+            "filterCount": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "marginBottom": "4"
+          },
+          "filterTitle": {
+            "filterTitle": "{",
+            "fontSize": "12",
+            "fontWeight": "500"
+          },
+          "loadingContainer": {
+            "loadingContainer": "{",
+            "flexDirection": "row",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "paddingVertical": "40",
+            "gap": "12"
+          },
+          "loadingText": {
+            "loadingText": "{",
+            "fontSize": "14",
+            "fontWeight": "500"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "complaints.title",
+        "complaints.welcomeTitle",
+        "complaints.welcomeDescription",
+        "more.mainActions",
+        "complaints.view.yourComplaints",
+        "complaints.view.loading"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "../context/UserContext",
+        "@react-navigation/native",
+        "../config/appConfig",
+        "../animations"
+      ]
+    },
+    "ContactScreen": {
+      "name": "ContactScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/ContactScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "contactItem": {
+            "contactItem": "{",
+            "alignItems": "center",
+            "borderRadius": "12",
+            "padding": "20",
+            "marginBottom": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "clickableItem": {
+            "clickableItem": "{",
+            "transform": "[{scale: 1}]"
+          },
+          "iconContainer": {
+            "iconContainer": "{",
+            "width": "56",
+            "height": "56",
+            "borderRadius": "12",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "contactIcon": {
+            "contactIcon": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "contactContent": {
+            "contactContent": "{",
+            "flex": "1"
+          },
+          "contactTitle": {
+            "contactTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "4"
+          },
+          "contactText": {
+            "contactText": "{",
+            "fontSize": "16",
+            "lineHeight": "22",
+            "marginBottom": "2"
+          },
+          "contactSubText": {
+            "contactSubText": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          },
+          "infoCard": {
+            "infoCard": "{",
+            "padding": "20",
+            "borderRadius": "12",
+            "marginTop": "8"
+          },
+          "infoTitle": {
+            "infoTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "8"
+          },
+          "infoText": {
+            "infoText": "{",
+            "fontSize": "16",
+            "lineHeight": "24"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "contact.phone.number",
+        "contact.email.address",
+        "contact.website.url",
+        "contact.title",
+        "contact.address.country"
+      ],
+      "dependencies": [
+        "../context/ThemeContext"
+      ]
+    },
+    "CookiePolicyScreen": {
+      "name": "CookiePolicyScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/CookiePolicyScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "section": {
+            "section": "{",
+            "padding": "20",
+            "borderRadius": "12",
+            "marginBottom": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "12"
+          },
+          "description": {
+            "description": "{",
+            "fontSize": "14",
+            "lineHeight": "22"
+          },
+          "footer": {
+            "footer": "{",
+            "padding": "16",
+            "borderRadius": "8",
+            "marginTop": "8"
+          },
+          "footerText": {
+            "footerText": "{",
+            "fontSize": "12",
+            "fontStyle": "italic"
+          }
+        }
+      ],
+      "icons": [
+        "View",
+        "Text",
+        "ScrollView",
+        "StyleSheet",
+        "SafeAreaView",
+        "StatusBar",
+        "TouchableOpacity",
+        ""
+      ],
+      "i18nKeys": [
+        "policies.cookiePolicy.title",
+        "policies.cookiePolicy.title",
+        "policies.cookiePolicy.introduction",
+        "policies.cookiePolicy.whatAreCookies.title",
+        "policies.cookiePolicy.whatAreCookies.content",
+        "policies.cookiePolicy.howWeUseCookies.title",
+        "policies.cookiePolicy.howWeUseCookies.content",
+        "policies.cookiePolicy.typesOfCookies.title",
+        "policies.cookiePolicy.typesOfCookies.content",
+        "policies.cookiePolicy.managingCookies.title",
+        "policies.cookiePolicy.managingCookies.content",
+        "policies.cookiePolicy.thirdPartyCookies.title",
+        "policies.cookiePolicy.thirdPartyCookies.content",
+        "policies.cookiePolicy.contact.title",
+        "policies.cookiePolicy.contact.content",
+        "policies.cookiePolicy.lastUpdated"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "@fluentui/react-native-icons"
+      ]
+    },
+    "CreateComplaintScreen": {
+      "name": "CreateComplaintScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/CreateComplaintScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          },
+          "submitButton": {
+            "submitButton": "{",
+            "backgroundColor": "loading",
+            "borderRadius": "12",
+            "paddingVertical": "16",
+            "alignItems": "center",
+            "marginTop": "24",
+            "marginBottom": "40"
+          },
+          "submitButtonText": {
+            "submitButtonText": "{",
+            "color": "theme.colors.textInverse",
+            "fontSize": "18",
+            "fontWeight": "bold"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "fieldContainer": {
+            "fieldContainer": "{",
+            "marginBottom": "20"
+          },
+          "fieldLabel": {
+            "fieldLabel": "{",
+            "fontSize": "16",
+            "fontWeight": "600",
+            "marginBottom": "8"
+          },
+          "dropdown": {
+            "dropdown": "{",
+            "borderWidth": "1",
+            "borderRadius": "12",
+            "paddingHorizontal": "16",
+            "paddingVertical": "14",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center"
+          },
+          "dropdownText": {
+            "dropdownText": "{",
+            "fontSize": "16",
+            "flex": "1"
+          },
+          "dropdownIcon": {
+            "dropdownIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "textInput": {
+            "textInput": "{",
+            "borderWidth": "1",
+            "borderRadius": "12",
+            "paddingHorizontal": "16",
+            "paddingVertical": "14",
+            "fontSize": "16"
+          },
+          "textArea": {
+            "textArea": "{",
+            "borderWidth": "1",
+            "borderRadius": "12",
+            "paddingHorizontal": "16",
+            "paddingVertical": "14",
+            "fontSize": "16",
+            "minHeight": "120"
+          },
+          "attachButton": {
+            "attachButton": "{",
+            "borderWidth": "2",
+            "borderStyle": "dashed",
+            "borderRadius": "12",
+            "paddingVertical": "20",
+            "paddingHorizontal": "16",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "justifyContent": "center"
+          },
+          "attachIcon": {
+            "attachIcon": "{",
+            "width": "24",
+            "height": "24",
+            "marginRight": "8"
+          },
+          "attachText": {
+            "attachText": "{",
+            "fontSize": "16",
+            "fontWeight": "600"
+          },
+          "attachmentsList": {
+            "attachmentsList": "{",
+            "marginTop": "12"
+          },
+          "attachmentItem": {
+            "attachmentItem": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "padding": "12",
+            "borderRadius": "8",
+            "borderWidth": "1",
+            "marginBottom": "8"
+          },
+          "attachmentIcon": {
+            "attachmentIcon": "{",
+            "width": "24",
+            "height": "24",
+            "marginRight": "12"
+          },
+          "attachmentInfo": {
+            "attachmentInfo": "{",
+            "flex": "1"
+          },
+          "attachmentName": {
+            "attachmentName": "{",
+            "fontSize": "14",
+            "fontWeight": "500",
+            "marginBottom": "2"
+          },
+          "attachmentSize": {
+            "attachmentSize": "{",
+            "fontSize": "12"
+          },
+          "removeButton": {
+            "removeButton": "{",
+            "padding": "4"
+          },
+          "removeIcon": {
+            "removeIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "attachmentNote": {
+            "attachmentNote": "{",
+            "fontSize": "12",
+            "marginTop": "8",
+            "fontStyle": "italic"
+          },
+          "modalOverlay": {
+            "modalOverlay": "{",
+            "flex": "1",
+            "backgroundColor": "rgba(0",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "padding": "20"
+          },
+          "modalContent": {
+            "modalContent": "{",
+            "width": "100%",
+            "maxHeight": "70%",
+            "borderRadius": "12",
+            "padding": "20"
+          },
+          "modalTitle": {
+            "modalTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "16"
+          },
+          "modalItem": {
+            "modalItem": "{",
+            "paddingVertical": "16",
+            "borderBottomWidth": "1"
+          },
+          "modalItemText": {
+            "modalItemText": "{",
+            "fontSize": "16"
+          },
+          "modalCloseButton": {
+            "modalCloseButton": "{",
+            "borderRadius": "8",
+            "paddingVertical": "12",
+            "alignItems": "center",
+            "marginTop": "16"
+          },
+          "modalCloseText": {
+            "modalCloseText": "{",
+            "fontSize": "16",
+            "fontWeight": "bold"
+          },
+          "loadingContainer": {
+            "loadingContainer": "{",
+            "flex": "1",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "loadingText": {
+            "loadingText": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginTop": "20"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "complaints.create.uploadFileTitle",
+        "complaints.create.uploadFileMessage",
+        "complaints.create.cancel",
+        "complaints.create.chooseFile",
+        "complaints.create.error",
+        "complaints.create.errorMessage",
+        "complaints.create.error",
+        "complaints.create.error",
+        "complaints.create.error",
+        "complaints.create.submitError",
+        "complaints.create.close",
+        "complaints.create.title",
+        "complaints.create.serviceProvider",
+        "complaints.create.serviceProviderPlaceholder",
+        "complaints.create.consumptionCategory",
+        "complaints.create.consumptionCategoryPlaceholder",
+        "complaints.create.complaintType",
+        "complaints.create.complaintTypePlaceholder",
+        "complaints.create.accountNumber",
+        "complaints.create.accountNumberPlaceholder",
+        "complaints.create.orderNumber",
+        "complaints.create.orderNumberPlaceholder",
+        "complaints.create.complaintDetails",
+        "complaints.create.complaintDetailsPlaceholder",
+        "complaints.create.attachments",
+        "complaints.create.attachFile",
+        "complaints.create.attachmentNote",
+        "complaints.create.submitting",
+        "complaints.create.submit",
+        "complaints.create.serviceProvider",
+        "complaints.create.consumptionCategory",
+        "complaints.create.complaintType"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "../context/UserContext",
+        "@react-navigation/native",
+        "../config/appConfig",
+        "../components/Toast",
+        "../animations"
+      ]
+    },
+    "CreateDistrictCoolingPermitScreen": {
+      "name": "CreateDistrictCoolingPermitScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/CreateDistrictCoolingPermitScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          },
+          "saveButton": {
+            "saveButton": "{",
+            "backgroundColor": "theme.colors.primary",
+            "paddingHorizontal": "16",
+            "paddingVertical": "8",
+            "borderRadius": "8",
+            "flexDirection": "row",
+            "alignItems": "center"
+          },
+          "saveButtonText": {
+            "saveButtonText": "{",
+            "color": "#FFFFFF",
+            "fontWeight": "600",
+            "marginLeft": "isRTL ? 0 : 8",
+            "marginRight": "isRTL ? 8 : 0"
+          },
+          "saveIcon": {
+            "saveIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "#FFFFFF"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "section": {
+            "section": "{",
+            "marginBottom": "32"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "marginBottom": "20"
+          },
+          "fieldContainer": {
+            "fieldContainer": "{",
+            "marginBottom": "20"
+          },
+          "fieldLabel": {
+            "fieldLabel": "{",
+            "fontSize": "16",
+            "fontWeight": "600",
+            "marginBottom": "8"
+          },
+          "dropdownContainer": {
+            "dropdownContainer": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "justifyContent": "space-between",
+            "paddingHorizontal": "16",
+            "paddingVertical": "12",
+            "borderRadius": "12",
+            "borderWidth": "1"
+          },
+          "dropdownText": {
+            "dropdownText": "{",
+            "fontSize": "16",
+            "flex": "1"
+          },
+          "dropdownIcon": {
+            "dropdownIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "textInput": {
+            "textInput": "{",
+            "paddingHorizontal": "16",
+            "paddingVertical": "12",
+            "borderRadius": "12",
+            "borderWidth": "1",
+            "fontSize": "16"
+          },
+          "textAreaInput": {
+            "textAreaInput": "{",
+            "paddingHorizontal": "16",
+            "paddingVertical": "12",
+            "borderRadius": "12",
+            "borderWidth": "1",
+            "fontSize": "16",
+            "height": "100",
+            "textAlignVertical": "top"
+          },
+          "attachmentButton": {
+            "attachmentButton": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "paddingHorizontal": "16",
+            "paddingVertical": "12",
+            "borderRadius": "12",
+            "borderWidth": "1",
+            "borderStyle": "dashed"
+          },
+          "attachmentIcon": {
+            "attachmentIcon": "{",
+            "width": "20",
+            "height": "20",
+            "marginRight": "8"
+          },
+          "attachmentText": {
+            "attachmentText": "{",
+            "fontSize": "16"
+          },
+          "fileContainer": {
+            "fileContainer": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "justifyContent": "space-between",
+            "paddingHorizontal": "16",
+            "paddingVertical": "12",
+            "borderRadius": "12",
+            "borderWidth": "1"
+          },
+          "fileInfo": {
+            "fileInfo": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "flex": "1"
+          },
+          "fileIcon": {
+            "fileIcon": "{",
+            "width": "20",
+            "height": "20",
+            "marginRight": "8"
+          },
+          "fileDetails": {
+            "fileDetails": "{",
+            "flex": "1"
+          },
+          "fileName": {
+            "fileName": "{",
+            "fontSize": "14",
+            "fontWeight": "600"
+          },
+          "fileSize": {
+            "fileSize": "{",
+            "fontSize": "12",
+            "marginTop": "2"
+          },
+          "removeFileButton": {
+            "removeFileButton": "{",
+            "padding": "4"
+          },
+          "removeFileIcon": {
+            "removeFileIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "fileHint": {
+            "fileHint": "{",
+            "fontSize": "12",
+            "marginTop": "4",
+            "fontStyle": "italic"
+          },
+          "submitButton": {
+            "submitButton": "{",
+            "paddingVertical": "16",
+            "borderRadius": "12",
+            "alignItems": "center",
+            "marginTop": "20",
+            "marginBottom": "40"
+          },
+          "submitButtonText": {
+            "submitButtonText": "{",
+            "color": "#FFFFFF",
+            "fontSize": "18",
+            "fontWeight": "bold"
+          },
+          "modalOverlay": {
+            "modalOverlay": "{",
+            "flex": "1",
+            "backgroundColor": "rgba(0",
+            "justifyContent": "flex-end"
+          },
+          "modalContent": {
+            "modalContent": "{",
+            "borderTopLeftRadius": "20",
+            "borderTopRightRadius": "20",
+            "paddingTop": "20",
+            "maxHeight": "80%"
+          },
+          "modalTitle": {
+            "modalTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "paddingHorizontal": "20",
+            "marginBottom": "16"
+          },
+          "modalOptions": {
+            "modalOptions": "{",
+            "maxHeight": "300"
+          },
+          "modalOption": {
+            "modalOption": "{",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "borderBottomWidth": "1"
+          },
+          "modalOptionText": {
+            "modalOptionText": "{",
+            "fontSize": "16"
+          },
+          "modalCloseButton": {
+            "modalCloseButton": "{",
+            "margin": "20",
+            "paddingVertical": "16",
+            "borderRadius": "12",
+            "alignItems": "center"
+          },
+          "modalCloseText": {
+            "modalCloseText": "{",
+            "fontSize": "16",
+            "fontWeight": "600"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "permits.districtCooling.confirmExit.title",
+        "permits.districtCooling.confirmExit.message",
+        "common.cancel",
+        "common.exit",
+        "permits.districtCooling.fileAttachment.title",
+        "permits.districtCooling.fileAttachment.message",
+        "common.cancel",
+        "permits.districtCooling.fileAttachment.select",
+        "permits.districtCooling.saveSuccess.title",
+        "permits.districtCooling.saveSuccess.message",
+        "common.ok",
+        "common.error",
+        "permits.districtCooling.saveError.message",
+        "common.error",
+        "permits.districtCooling.validation.requiredFields",
+        "permits.districtCooling.submitSuccess.title",
+        "common.ok",
+        "common.error",
+        "permits.districtCooling.submitError.message",
+        "permits.districtCooling.attachFile",
+        "permits.districtCooling.fileRequirements",
+        "permits.districtCooling.title",
+        "permits.districtCooling.saveForLater",
+        "permits.districtCooling.sections.basicData",
+        "permits.districtCooling.fields.userAccount",
+        "permits.districtCooling.placeholders.selectAccount",
+        "permits.districtCooling.fields.stationLocation",
+        "permits.districtCooling.placeholders.enterLocation",
+        "permits.districtCooling.fields.coolingPurposes",
+        "permits.districtCooling.placeholders.selectPurposes",
+        "permits.districtCooling.fields.expectedCoolingQuantity",
+        "permits.districtCooling.placeholders.enterCoolingQuantity",
+        "permits.districtCooling.fields.powerSource",
+        "permits.districtCooling.placeholders.selectPowerSource",
+        "permits.districtCooling.fields.operationDate",
+        "permits.districtCooling.placeholders.enterOperationDate",
+        "permits.districtCooling.fields.coolingWaterSource",
+        "permits.districtCooling.placeholders.selectWaterSource",
+        "permits.districtCooling.fields.landPlanFile",
+        "permits.districtCooling.sections.gridConnection",
+        "permits.districtCooling.fields.gridConnection",
+        "permits.districtCooling.placeholders.selectGridConnection",
+        "permits.districtCooling.fields.load",
+        "permits.districtCooling.placeholders.enterLoad",
+        "permits.districtCooling.fields.internalVoltage",
+        "permits.districtCooling.placeholders.enterVoltage",
+        "permits.districtCooling.fields.anchorPoint",
+        "permits.districtCooling.placeholders.enterAnchorPoint",
+        "permits.districtCooling.fields.networkType",
+        "permits.districtCooling.placeholders.selectNetworkType",
+        "permits.districtCooling.submit",
+        "common.cancel"
+      ],
+      "dependencies": [
+        "../context/ThemeContext"
+      ]
+    },
+    "CreatePowerGenerationPermitScreen": {
+      "name": "CreatePowerGenerationPermitScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/CreatePowerGenerationPermitScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          },
+          "saveButton": {
+            "saveButton": "{",
+            "backgroundColor": "theme.colors.primary",
+            "paddingHorizontal": "16",
+            "paddingVertical": "8",
+            "borderRadius": "8",
+            "flexDirection": "row",
+            "alignItems": "center"
+          },
+          "saveButtonText": {
+            "saveButtonText": "{",
+            "color": "#FFFFFF",
+            "fontWeight": "600",
+            "marginLeft": "isRTL ? 0 : 8",
+            "marginRight": "isRTL ? 8 : 0"
+          },
+          "saveIcon": {
+            "saveIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "#FFFFFF"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "section": {
+            "section": "{",
+            "marginBottom": "32"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "marginBottom": "20"
+          },
+          "fieldContainer": {
+            "fieldContainer": "{",
+            "marginBottom": "20"
+          },
+          "fieldLabel": {
+            "fieldLabel": "{",
+            "fontSize": "16",
+            "fontWeight": "600",
+            "marginBottom": "8"
+          },
+          "dropdownContainer": {
+            "dropdownContainer": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "justifyContent": "space-between",
+            "paddingHorizontal": "16",
+            "paddingVertical": "12",
+            "borderRadius": "12",
+            "borderWidth": "1"
+          },
+          "dropdownText": {
+            "dropdownText": "{",
+            "fontSize": "16",
+            "flex": "1"
+          },
+          "dropdownIcon": {
+            "dropdownIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "textInput": {
+            "textInput": "{",
+            "paddingHorizontal": "16",
+            "paddingVertical": "12",
+            "borderRadius": "12",
+            "borderWidth": "1",
+            "fontSize": "16"
+          },
+          "textAreaInput": {
+            "textAreaInput": "{",
+            "paddingHorizontal": "16",
+            "paddingVertical": "12",
+            "borderRadius": "12",
+            "borderWidth": "1",
+            "fontSize": "16",
+            "height": "100",
+            "textAlignVertical": "top"
+          },
+          "attachmentButton": {
+            "attachmentButton": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "paddingHorizontal": "16",
+            "paddingVertical": "12",
+            "borderRadius": "12",
+            "borderWidth": "1",
+            "borderStyle": "dashed"
+          },
+          "attachmentIcon": {
+            "attachmentIcon": "{",
+            "width": "20",
+            "height": "20",
+            "marginRight": "8"
+          },
+          "attachmentText": {
+            "attachmentText": "{",
+            "fontSize": "16"
+          },
+          "fileContainer": {
+            "fileContainer": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "justifyContent": "space-between",
+            "paddingHorizontal": "16",
+            "paddingVertical": "12",
+            "borderRadius": "12",
+            "borderWidth": "1"
+          },
+          "fileInfo": {
+            "fileInfo": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "flex": "1"
+          },
+          "fileIcon": {
+            "fileIcon": "{",
+            "width": "20",
+            "height": "20",
+            "marginRight": "8"
+          },
+          "fileDetails": {
+            "fileDetails": "{",
+            "flex": "1"
+          },
+          "fileName": {
+            "fileName": "{",
+            "fontSize": "14",
+            "fontWeight": "600"
+          },
+          "fileSize": {
+            "fileSize": "{",
+            "fontSize": "12",
+            "marginTop": "2"
+          },
+          "removeFileButton": {
+            "removeFileButton": "{",
+            "padding": "4"
+          },
+          "removeFileIcon": {
+            "removeFileIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "fileHint": {
+            "fileHint": "{",
+            "fontSize": "12",
+            "marginTop": "4",
+            "fontStyle": "italic"
+          },
+          "submitButton": {
+            "submitButton": "{",
+            "paddingVertical": "16",
+            "borderRadius": "12",
+            "alignItems": "center",
+            "marginTop": "20",
+            "marginBottom": "40"
+          },
+          "submitButtonText": {
+            "submitButtonText": "{",
+            "color": "#FFFFFF",
+            "fontSize": "18",
+            "fontWeight": "bold"
+          },
+          "modalOverlay": {
+            "modalOverlay": "{",
+            "flex": "1",
+            "backgroundColor": "rgba(0",
+            "justifyContent": "flex-end"
+          },
+          "modalContent": {
+            "modalContent": "{",
+            "borderTopLeftRadius": "20",
+            "borderTopRightRadius": "20",
+            "paddingTop": "20",
+            "maxHeight": "80%"
+          },
+          "modalTitle": {
+            "modalTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "paddingHorizontal": "20",
+            "marginBottom": "16"
+          },
+          "modalOptions": {
+            "modalOptions": "{",
+            "maxHeight": "300"
+          },
+          "modalOption": {
+            "modalOption": "{",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "borderBottomWidth": "1"
+          },
+          "modalOptionText": {
+            "modalOptionText": "{",
+            "fontSize": "16"
+          },
+          "modalCloseButton": {
+            "modalCloseButton": "{",
+            "margin": "20",
+            "paddingVertical": "16",
+            "borderRadius": "12",
+            "alignItems": "center"
+          },
+          "modalCloseText": {
+            "modalCloseText": "{",
+            "fontSize": "16",
+            "fontWeight": "600"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "permits.powerGeneration.confirmExit.title",
+        "permits.powerGeneration.confirmExit.message",
+        "common.cancel",
+        "common.exit",
+        "permits.powerGeneration.fileAttachment.title",
+        "permits.powerGeneration.fileAttachment.message",
+        "common.cancel",
+        "permits.powerGeneration.fileAttachment.select",
+        "permits.powerGeneration.saveSuccess.title",
+        "permits.powerGeneration.saveSuccess.message",
+        "common.ok",
+        "common.error",
+        "permits.powerGeneration.saveError.message",
+        "common.error",
+        "permits.powerGeneration.validation.requiredFields",
+        "permits.powerGeneration.submitSuccess.title",
+        "common.ok",
+        "common.error",
+        "permits.powerGeneration.submitError.message",
+        "permits.powerGeneration.attachFile",
+        "permits.powerGeneration.fileRequirements",
+        "permits.powerGeneration.title",
+        "permits.powerGeneration.saveForLater",
+        "permits.powerGeneration.sections.basicData",
+        "permits.powerGeneration.fields.userAccount",
+        "permits.powerGeneration.placeholders.selectAccount",
+        "permits.powerGeneration.fields.stationNature",
+        "permits.powerGeneration.placeholders.selectNature",
+        "permits.powerGeneration.fields.stationType",
+        "permits.powerGeneration.placeholders.selectType",
+        "permits.powerGeneration.sections.locationLayout",
+        "permits.powerGeneration.fields.stationLocation",
+        "permits.powerGeneration.placeholders.enterLocation",
+        "permits.powerGeneration.fields.expectedPowerAC",
+        "permits.powerGeneration.placeholders.enterPowerAC",
+        "permits.powerGeneration.fields.expectedPowerDC",
+        "permits.powerGeneration.placeholders.enterPowerDC",
+        "permits.powerGeneration.fields.fuelType",
+        "permits.powerGeneration.placeholders.selectFuel",
+        "permits.powerGeneration.fields.stationUses",
+        "permits.powerGeneration.placeholders.selectUses",
+        "permits.powerGeneration.fields.dualProductionCapacity",
+        "permits.powerGeneration.placeholders.enterDualProduction",
+        "permits.powerGeneration.fields.cogenerationCapacity",
+        "permits.powerGeneration.placeholders.enterCogeneration",
+        "permits.powerGeneration.fields.coordinatesFile",
+        "permits.powerGeneration.fields.aerialPhotosFile",
+        "permits.powerGeneration.fields.siteOwnershipFile",
+        "permits.powerGeneration.fields.fuelAllocationFile",
+        "permits.powerGeneration.fields.energyEfficiencyFile",
+        "permits.powerGeneration.sections.energySales",
+        "permits.powerGeneration.fields.energySoldTo",
+        "permits.powerGeneration.placeholders.enterEnergySoldTo",
+        "permits.powerGeneration.fields.energyPercentageSold",
+        "permits.powerGeneration.placeholders.enterPercentage",
+        "permits.powerGeneration.fields.totalLoad",
+        "permits.powerGeneration.placeholders.enterTotalLoad",
+        "permits.powerGeneration.sections.gridConnection",
+        "permits.powerGeneration.fields.gridConnection",
+        "permits.powerGeneration.placeholders.selectGridConnection",
+        "permits.powerGeneration.fields.anchorPoint",
+        "permits.powerGeneration.placeholders.enterAnchorPoint",
+        "permits.powerGeneration.fields.connectionVoltage",
+        "permits.powerGeneration.placeholders.enterVoltage",
+        "permits.powerGeneration.fields.operationDate",
+        "permits.powerGeneration.placeholders.enterOperationDate",
+        "permits.powerGeneration.fields.initialApprovalFile",
+        "permits.powerGeneration.submit",
+        "common.cancel"
+      ],
+      "dependencies": [
+        "../context/ThemeContext"
+      ]
+    },
+    "DataProtectionScreen": {
+      "name": "DataProtectionScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/DataProtectionScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "section": {
+            "section": "{",
+            "padding": "20",
+            "borderRadius": "12",
+            "marginBottom": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "12"
+          },
+          "description": {
+            "description": "{",
+            "fontSize": "14",
+            "lineHeight": "22"
+          },
+          "footer": {
+            "footer": "{",
+            "padding": "16",
+            "borderRadius": "8",
+            "marginTop": "8"
+          },
+          "footerText": {
+            "footerText": "{",
+            "fontSize": "12",
+            "fontStyle": "italic"
+          }
+        }
+      ],
+      "icons": [
+        "View",
+        "Text",
+        "ScrollView",
+        "StyleSheet",
+        "SafeAreaView",
+        "StatusBar",
+        "TouchableOpacity",
+        ""
+      ],
+      "i18nKeys": [
+        "policies.dataProtection.title",
+        "policies.dataProtection.title",
+        "policies.dataProtection.introduction",
+        "policies.dataProtection.dataCollection.title",
+        "policies.dataProtection.dataCollection.content",
+        "policies.dataProtection.dataProcessing.title",
+        "policies.dataProtection.dataProcessing.content",
+        "policies.dataProtection.dataSecurity.title",
+        "policies.dataProtection.dataSecurity.content",
+        "policies.dataProtection.dataSharing.title",
+        "policies.dataProtection.dataSharing.content",
+        "policies.dataProtection.dataRetention.title",
+        "policies.dataProtection.dataRetention.content",
+        "policies.dataProtection.userRights.title",
+        "policies.dataProtection.userRights.content",
+        "policies.dataProtection.contact.title",
+        "policies.dataProtection.contact.content",
+        "policies.dataProtection.lastUpdated"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "@fluentui/react-native-icons"
+      ]
+    },
+    "FAQScreen": {
+      "name": "FAQScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/FAQScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          },
+          "searchInput": {
+            "searchInput": "{",
+            "backgroundColor": "theme.colors.inputBackground",
+            "borderColor": "theme.colors.inputBorder",
+            "color": "theme.colors.inputText"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "searchContainer": {
+            "searchContainer": "{",
+            "padding": "20",
+            "paddingBottom": "0"
+          },
+          "searchBar": {
+            "searchBar": "{",
+            "alignItems": "center",
+            "borderWidth": "1",
+            "borderRadius": "12",
+            "paddingHorizontal": "16",
+            "paddingVertical": "12"
+          },
+          "searchIcon": {
+            "searchIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "searchInput": {
+            "searchInput": "{",
+            "flex": "1",
+            "fontSize": "16",
+            "padding": "0"
+          },
+          "categoriesContainer": {
+            "categoriesContainer": "{",
+            "paddingVertical": "16"
+          },
+          "categoriesContent": {
+            "categoriesContent": "{",
+            "paddingHorizontal": "20",
+            "gap": "12"
+          },
+          "categoryButton": {
+            "categoryButton": "{",
+            "paddingHorizontal": "20",
+            "paddingVertical": "10",
+            "borderRadius": "20",
+            "borderWidth": "1",
+            "minWidth": "80"
+          },
+          "categoryButtonText": {
+            "categoryButtonText": "{",
+            "fontSize": "14",
+            "fontWeight": "600",
+            "textAlign": "center"
+          },
+          "faqList": {
+            "faqList": "{",
+            "flex": "1"
+          },
+          "faqListContent": {
+            "faqListContent": "{",
+            "padding": "20"
+          },
+          "faqItem": {
+            "faqItem": "{",
+            "borderRadius": "12",
+            "marginBottom": "12",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3",
+            "overflow": "hidden"
+          },
+          "questionContainer": {
+            "questionContainer": "{",
+            "padding": "16"
+          },
+          "questionHeader": {
+            "questionHeader": "{",
+            "alignItems": "center"
+          },
+          "questionIconContainer": {
+            "questionIconContainer": "{",
+            "width": "40",
+            "height": "40",
+            "borderRadius": "8",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "questionIcon": {
+            "questionIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "questionText": {
+            "questionText": "{",
+            "fontSize": "16",
+            "fontWeight": "600",
+            "lineHeight": "22"
+          },
+          "chevronIcon": {
+            "chevronIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "answerContainer": {
+            "answerContainer": "{",
+            "paddingBottom": "16"
+          },
+          "answerText": {
+            "answerText": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          },
+          "emptyContainer": {
+            "emptyContainer": "{",
+            "flex": "1",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "padding": "40"
+          },
+          "emptyIcon": {
+            "emptyIcon": "{",
+            "width": "48",
+            "height": "48",
+            "marginBottom": "16"
+          },
+          "emptyText": {
+            "emptyText": "{",
+            "fontSize": "16",
+            "lineHeight": "24"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "faq.title",
+        "faq.searchPlaceholder",
+        "faq.noResults"
+      ],
+      "dependencies": [
+        "../context/ThemeContext"
+      ]
+    },
+    "HomeScreen": {
+      "name": "HomeScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/HomeScreen.js",
+      "styles": [
+        {
+          "safeArea": {
+            "safeArea": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20",
+            "paddingBottom": "20"
+          },
+          "headerText": {
+            "headerText": "{",
+            "color": "theme.colors.primary",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "textAlign": "isRTL ? right : left",
+            "marginBottom": "8",
+            "marginTop": "12"
+          },
+          "subHeaderText": {
+            "subHeaderText": "{",
+            "color": "theme.colors.text",
+            "fontSize": "15",
+            "textAlign": "isRTL ? right : left",
+            "marginBottom": "18",
+            "lineHeight": "22"
+          },
+          "mainCardsRow": {
+            "mainCardsRow": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "marginBottom": "18"
+          },
+          "mainCard": {
+            "mainCard": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "14",
+            "borderWidth": "1",
+            "borderColor": "theme.colors.border",
+            "alignItems": "center",
+            "paddingVertical": "18",
+            "marginHorizontal": "4",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "10",
+            "shadowOpacity": "0.25",
+            "shadowRadius": "20",
+            "elevation": "10"
+          },
+          "mainCardIcon": {
+            "mainCardIcon": "{",
+            "color": "theme.colors.primary",
+            "marginBottom": "8",
+            "width": "32",
+            "height": "32"
+          },
+          "mainCardText": {
+            "mainCardText": "{",
+            "color": "theme.colors.text",
+            "fontSize": "16",
+            "fontWeight": "bold",
+            "textAlign": "center"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "color": "theme.colors.primary",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "textAlign": "isRTL ? right : left",
+            "marginBottom": "8",
+            "marginTop": "18"
+          },
+          "sectionDescription": {
+            "sectionDescription": "{",
+            "color": "theme.colors.text",
+            "fontSize": "15",
+            "textAlign": "isRTL ? right : left",
+            "marginBottom": "16",
+            "lineHeight": "22"
+          },
+          "infoCard": {
+            "infoCard": "{",
+            "flexDirection": "isRTL ? row : row-reverse",
+            "alignItems": "center",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "14",
+            "padding": "16",
+            "marginBottom": "12",
+            "shadowColor": "#000"
+          },
+          "infoCardIcon": {
+            "infoCardIcon": "{",
+            "color": "theme.colors.primary",
+            "marginLeft": "isRTL ? 0 : 12",
+            "marginRight": "isRTL ? 12 : 0",
+            "width": "24",
+            "height": "24"
+          },
+          "infoCardTitle": {
+            "infoCardTitle": "{",
+            "color": "theme.colors.text",
+            "fontSize": "16",
+            "fontWeight": "bold",
+            "textAlign": "isRTL ? right : left",
+            "marginBottom": "4"
+          },
+          "secondaryText": {
+            "secondaryText": "{",
+            "color": "theme.colors.textSecondary",
+            "fontSize": "15",
+            "textAlign": "isRTL ? right : left"
+          },
+          "navBarSafeArea": {
+            "navBarSafeArea": "{",
+            "backgroundColor": "theme.colors.surface"
+          },
+          "navBar": {
+            "navBar": "{",
+            "flexDirection": "isRTL ? row-reverse : row",
+            "backgroundColor": "theme.colors.surface",
+            "borderTopWidth": "1",
+            "borderTopColor": "theme.colors.border",
+            "paddingVertical": "8"
+          },
+          "navTab": {
+            "navTab": "{",
+            "flex": "1",
+            "alignItems": "center",
+            "paddingVertical": "4"
+          },
+          "navIcon": {
+            "navIcon": "{",
+            "marginBottom": "2",
+            "width": "20",
+            "height": "20"
+          },
+          "navIconActive": {
+            "navIconActive": "{",
+            "color": "theme.colors.primary"
+          },
+          "navIconInactive": {
+            "navIconInactive": "{",
+            "color": "theme.colors.icon"
+          },
+          "navLabel": {
+            "navLabel": "{",
+            "fontSize": "13",
+            "textAlign": "center"
+          },
+          "navLabelActive": {
+            "navLabelActive": "{",
+            "color": "theme.colors.primary",
+            "fontWeight": "600"
+          },
+          "navLabelInactive": {
+            "navLabelInactive": "{",
+            "color": "theme.colors.textSecondary"
+          },
+          "modalOverlay": {
+            "modalOverlay": "{",
+            "flex": "1",
+            "backgroundColor": "rgba(0",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "paddingHorizontal": "20"
+          },
+          "modalContainer": {
+            "modalContainer": "{",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "20",
+            "padding": "24",
+            "width": "100%",
+            "maxWidth": "320",
+            "shadowColor": "#000"
+          },
+          "modalHeader": {
+            "modalHeader": "{",
+            "flexDirection": "isRTL ? row-reverse : row",
+            "alignItems": "center",
+            "marginBottom": "16"
+          },
+          "modalIcon": {
+            "modalIcon": "{",
+            "width": "32",
+            "height": "32",
+            "color": "theme.colors.primary",
+            "marginRight": "isRTL ? 0 : 12",
+            "marginLeft": "isRTL ? 12 : 0"
+          },
+          "modalTitle": {
+            "modalTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "flex": "1",
+            "textAlign": "isRTL ? right : left"
+          },
+          "closeButton": {
+            "closeButton": "{",
+            "padding": "4"
+          },
+          "closeIcon": {
+            "closeIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "theme.colors.textSecondary"
+          },
+          "modalMessage": {
+            "modalMessage": "{",
+            "fontSize": "16",
+            "color": "theme.colors.textSecondary",
+            "lineHeight": "24",
+            "textAlign": "isRTL ? right : left",
+            "marginBottom": "24"
+          },
+          "modalButton": {
+            "modalButton": "{",
+            "backgroundColor": "theme.colors.primary",
+            "borderRadius": "12",
+            "paddingVertical": "14",
+            "paddingHorizontal": "24",
+            "alignItems": "center"
+          },
+          "modalButtonText": {
+            "modalButtonText": "{",
+            "color": "#FFFFFF",
+            "fontSize": "16",
+            "fontWeight": "600"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "home.mainCards.consumer",
+        "home.mainCards.investor",
+        "home.mainCards.serviceProvider",
+        "home.infoCards.rightsTitle",
+        "home.infoCards.rightsDesc",
+        "home.infoCards.compensationTitle",
+        "home.infoCards.compensationDesc",
+        "home.tabs.main",
+        "home.tabs.services",
+        "home.tabs.chat",
+        "home.tabs.more",
+        "home.header",
+        "home.subHeader",
+        "home.sectionTitle",
+        "home.sectionDesc",
+        "home.comingSoon.title",
+        "home.comingSoon.message",
+        "home.comingSoon.okButton"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "../context/UserContext"
+      ]
+    },
+    "HomeScreenNew": {
+      "name": "HomeScreenNew",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/HomeScreenNew.js",
+      "styles": [
+        {
+          "safeArea": {
+            "safeArea": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20",
+            "paddingTop": "0",
+            "paddingBottom": "20"
+          },
+          "welcomeCard": {
+            "welcomeCard": "{",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "16",
+            "padding": "20",
+            "marginBottom": "20",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{width: 0",
+            "shadowOpacity": "0.25",
+            "shadowRadius": "20",
+            "elevation": "10"
+          },
+          "greetingText": {
+            "greetingText": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "isRTL ? right : left",
+            "marginBottom": "4"
+          },
+          "lastVisitText": {
+            "lastVisitText": "{",
+            "fontSize": "14",
+            "color": "theme.colors.textSecondary",
+            "textAlign": "isRTL ? right : left",
+            "marginBottom": "16"
+          },
+          "statusBadge": {
+            "statusBadge": "{",
+            "backgroundColor": "#2ECC71",
+            "paddingHorizontal": "12",
+            "paddingVertical": "6",
+            "borderRadius": "20",
+            "alignSelf": "isRTL ? flex-end : flex-start",
+            "marginBottom": "16"
+          },
+          "statusText": {
+            "statusText": "{",
+            "color": "#FFFFFF",
+            "fontSize": "12",
+            "fontWeight": "600"
+          },
+          "statsRow": {
+            "statsRow": "{",
+            "flexDirection": "isRTL ? row-reverse : row",
+            "justifyContent": "space-between"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "textAlign": "isRTL ? right : left",
+            "marginBottom": "16",
+            "marginTop": "8"
+          },
+          "sectionHeader": {
+            "sectionHeader": "{",
+            "flexDirection": "isRTL ? row-reverse : row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "marginBottom": "0"
+          },
+          "updatesCard": {
+            "updatesCard": "{",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "16",
+            "padding": "16",
+            "marginBottom": "20",
+            "shadowColor": "#000"
+          },
+          "quickActionsGrid": {
+            "quickActionsGrid": "{",
+            "flexDirection": "row",
+            "flexWrap": "wrap",
+            "justifyContent": "space-between",
+            "marginBottom": "24"
+          },
+          "activityCard": {
+            "activityCard": "{",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "16",
+            "padding": "20",
+            "marginBottom": "20",
+            "shadowColor": "#000"
+          },
+          "navBarSafeArea": {
+            "navBarSafeArea": "{",
+            "backgroundColor": "theme.colors.surface"
+          },
+          "navBar": {
+            "navBar": "{",
+            "flexDirection": "isRTL ? row-reverse : row",
+            "backgroundColor": "theme.colors.surface",
+            "borderTopWidth": "1",
+            "borderTopColor": "theme.colors.border",
+            "paddingVertical": "8"
+          },
+          "navTab": {
+            "navTab": "{",
+            "flex": "1",
+            "alignItems": "center",
+            "paddingVertical": "4"
+          },
+          "navIcon": {
+            "navIcon": "{",
+            "marginBottom": "2",
+            "width": "20",
+            "height": "20"
+          },
+          "navIconActive": {
+            "navIconActive": "{",
+            "color": "theme.colors.primary"
+          },
+          "navIconInactive": {
+            "navIconInactive": "{",
+            "color": "theme.colors.icon"
+          },
+          "navLabel": {
+            "navLabel": "{",
+            "fontSize": "13",
+            "textAlign": "center"
+          },
+          "navLabelActive": {
+            "navLabelActive": "{",
+            "color": "theme.colors.primary",
+            "fontWeight": "600"
+          },
+          "navLabelInactive": {
+            "navLabelInactive": "{",
+            "color": "theme.colors.textSecondary"
+          },
+          "modalOverlay": {
+            "modalOverlay": "{",
+            "flex": "1",
+            "backgroundColor": "rgba(0",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "paddingHorizontal": "20"
+          },
+          "modalContainer": {
+            "modalContainer": "{",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "20",
+            "padding": "24",
+            "width": "100%",
+            "maxWidth": "320",
+            "shadowColor": "#000"
+          },
+          "modalHeader": {
+            "modalHeader": "{",
+            "flexDirection": "isRTL ? row-reverse : row",
+            "alignItems": "center",
+            "marginBottom": "16"
+          },
+          "modalIcon": {
+            "modalIcon": "{",
+            "width": "32",
+            "height": "32",
+            "color": "theme.colors.primary",
+            "marginRight": "isRTL ? 0 : 12",
+            "marginLeft": "isRTL ? 12 : 0"
+          },
+          "modalTitle": {
+            "modalTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "flex": "1",
+            "textAlign": "isRTL ? right : left"
+          },
+          "closeButton": {
+            "closeButton": "{",
+            "padding": "4"
+          },
+          "closeIcon": {
+            "closeIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "theme.colors.textSecondary"
+          },
+          "modalMessage": {
+            "modalMessage": "{",
+            "fontSize": "16",
+            "color": "theme.colors.textSecondary",
+            "lineHeight": "24",
+            "textAlign": "isRTL ? right : left",
+            "marginBottom": "24"
+          },
+          "modalButton": {
+            "modalButton": "{",
+            "backgroundColor": "theme.colors.primary",
+            "borderRadius": "12",
+            "paddingVertical": "14",
+            "paddingHorizontal": "24",
+            "alignItems": "center"
+          },
+          "modalButtonText": {
+            "modalButtonText": "{",
+            "color": "#FFFFFF",
+            "fontSize": "16",
+            "fontWeight": "600"
+          }
+        },
+        {
+          "statCard": {
+            "statCard": "{",
+            "alignItems": "center",
+            "flex": "1",
+            "marginHorizontal": "4",
+            "paddingVertical": "12",
+            "borderRadius": "12"
+          },
+          "statIconContainer": {
+            "statIconContainer": "{",
+            "width": "36",
+            "height": "36",
+            "borderRadius": "8",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginBottom": "8"
+          },
+          "statIconComponent": {
+            "statIconComponent": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "statValue": {
+            "statValue": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "2"
+          },
+          "statLabel": {
+            "statLabel": "{",
+            "fontSize": "12",
+            "textAlign": "center"
+          },
+          "quickActionCard": {
+            "quickActionCard": "{",
+            "width": "48%",
+            "borderRadius": "12",
+            "padding": "16",
+            "marginBottom": "12",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{width: 0",
+            "shadowOpacity": "0.05",
+            "shadowRadius": "4",
+            "elevation": "2"
+          },
+          "quickActionIcon": {
+            "quickActionIcon": "{",
+            "width": "48",
+            "height": "48",
+            "borderRadius": "12",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginBottom": "8"
+          },
+          "quickActionIconComponent": {
+            "quickActionIconComponent": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "quickActionText": {
+            "quickActionText": "{",
+            "fontSize": "14",
+            "fontWeight": "600",
+            "textAlign": "center"
+          },
+          "activityItem": {
+            "activityItem": "{",
+            "alignItems": "center",
+            "marginBottom": "16"
+          },
+          "activityIcon": {
+            "activityIcon": "{",
+            "width": "40",
+            "height": "40",
+            "borderRadius": "10",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginRight": "12",
+            "marginLeft": "12"
+          },
+          "activityIconComponent": {
+            "activityIconComponent": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "activityContent": {
+            "activityContent": "{",
+            "flex": "1"
+          },
+          "activityTitle": {
+            "activityTitle": "{",
+            "fontSize": "14",
+            "fontWeight": "600",
+            "marginBottom": "2"
+          },
+          "activityTime": {
+            "activityTime": "{",
+            "fontSize": "12"
+          },
+          "avatarContainer": {
+            "avatarContainer": "{",
+            "alignItems": "center"
+          },
+          "avatar": {
+            "avatar": "{",
+            "width": "48",
+            "height": "48",
+            "borderRadius": "24",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginLeft": "8",
+            "marginRight": "8"
+          },
+          "avatarText": {
+            "avatarText": "{",
+            "color": "#FFFFFF",
+            "fontSize": "16",
+            "fontWeight": "bold"
+          },
+          "topAvatarContainer": {
+            "topAvatarContainer": "{",
+            "paddingHorizontal": "5",
+            "paddingTop": "20",
+            "paddingBottom": "10"
+          },
+          "welcomeHeader": {
+            "welcomeHeader": "{",
+            "alignItems": "flex-start",
+            "marginBottom": "16"
+          },
+          "welcomeTextContainer": {
+            "welcomeTextContainer": "{",
+            "flex": "1"
+          },
+          "seeAllButton": {
+            "seeAllButton": "{",
+            "paddingVertical": "4",
+            "paddingHorizontal": "8"
+          },
+          "seeAllText": {
+            "seeAllText": "{",
+            "fontSize": "14",
+            "fontWeight": "600"
+          },
+          "updateItem": {
+            "updateItem": "{",
+            "paddingVertical": "12",
+            "alignItems": "flex-start",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "#F0F0F0"
+          },
+          "updateIcon": {
+            "updateIcon": "{",
+            "width": "36",
+            "height": "36",
+            "borderRadius": "8",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginRight": "12",
+            "marginLeft": "12"
+          },
+          "updateIconComponent": {
+            "updateIconComponent": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "updateContent": {
+            "updateContent": "{",
+            "flex": "1",
+            "marginRight": "8",
+            "marginLeft": "8"
+          },
+          "updateHeader": {
+            "updateHeader": "{",
+            "alignItems": "flex-start",
+            "marginBottom": "4"
+          },
+          "updateTitle": {
+            "updateTitle": "{",
+            "fontSize": "14",
+            "fontWeight": "600",
+            "lineHeight": "20"
+          },
+          "updateDescription": {
+            "updateDescription": "{",
+            "fontSize": "12",
+            "lineHeight": "16",
+            "marginBottom": "4"
+          },
+          "updateTime": {
+            "updateTime": "{",
+            "fontSize": "11"
+          },
+          "newBadge": {
+            "newBadge": "{",
+            "backgroundColor": "#E74C3C",
+            "paddingHorizontal": "6",
+            "paddingVertical": "2",
+            "borderRadius": "10",
+            "marginLeft": "8",
+            "marginRight": "8"
+          },
+          "newBadgeText": {
+            "newBadgeText": "{",
+            "color": "#FFFFFF",
+            "fontSize": "10",
+            "fontWeight": "600"
+          },
+          "chevronIcon": {
+            "chevronIcon": "{",
+            "width": "16",
+            "height": "16",
+            "marginLeft": "8",
+            "marginRight": "8"
+          },
+          "compensationCard": {
+            "compensationCard": "{",
+            "padding": "16",
+            "borderRadius": "12",
+            "marginBottom": "12",
+            "shadowColor": "#000"
+          },
+          "compensationHeader": {
+            "compensationHeader": "{",
+            "alignItems": "flex-start",
+            "marginBottom": "0"
+          },
+          "compensationIcon": {
+            "compensationIcon": "{",
+            "width": "40",
+            "height": "40",
+            "borderRadius": "10",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginRight": "12",
+            "marginLeft": "12",
+            "alignSelf": "flex-start"
+          },
+          "compensationIconComponent": {
+            "compensationIconComponent": "{",
+            "width": "22",
+            "height": "22"
+          },
+          "compensationHeaderText": {
+            "compensationHeaderText": "{",
+            "flex": "1",
+            "alignItems": "flex-start"
+          },
+          "compensationTitle": {
+            "compensationTitle": "{",
+            "fontSize": "15",
+            "fontWeight": "600",
+            "marginBottom": "6",
+            "lineHeight": "20"
+          },
+          "compensationAmountRow": {
+            "compensationAmountRow": "{",
+            "flexDirection": "row",
+            "alignItems": "baseline"
+          },
+          "compensationAmount": {
+            "compensationAmount": "{",
+            "fontSize": "18",
+            "fontWeight": "bold"
+          },
+          "compensationLabel": {
+            "compensationLabel": "{",
+            "fontSize": "13",
+            "fontWeight": "500"
+          },
+          "compensationChevron": {
+            "compensationChevron": "{",
+            "width": "18",
+            "height": "18",
+            "marginLeft": "8",
+            "marginRight": "8",
+            "alignSelf": "flex-start",
+            "marginTop": "2"
+          },
+          "compensationDetails": {
+            "compensationDetails": "{",
+            "paddingTop": "16",
+            "marginTop": "12",
+            "borderTopWidth": "1",
+            "borderTopColor": "#F0F0F0"
+          },
+          "compensationDetailRow": {
+            "compensationDetailRow": "{",
+            "flexDirection": "column",
+            "marginBottom": "12"
+          },
+          "compensationDetailLabel": {
+            "compensationDetailLabel": "{",
+            "fontSize": "12",
+            "fontWeight": "600",
+            "marginBottom": "4"
+          },
+          "compensationDetailValue": {
+            "compensationDetailValue": "{",
+            "fontSize": "14",
+            "lineHeight": "18"
+          },
+          "sectionSubtitle": {
+            "sectionSubtitle": "{",
+            "fontSize": "12",
+            "fontWeight": "400",
+            "marginBottom": "16"
+          },
+          "sectionTitleContainer": {
+            "sectionTitleContainer": "{",
+            "flex": "1"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [],
+      "dependencies": [
+        "../context/ThemeContext",
+        "../context/UserContext"
+      ]
+    },
+    "ImportantLinksScreen": {
+      "name": "ImportantLinksScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/ImportantLinksScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "introCard": {
+            "introCard": "{",
+            "padding": "20",
+            "borderRadius": "12",
+            "marginBottom": "24"
+          },
+          "introText": {
+            "introText": "{",
+            "fontSize": "16",
+            "lineHeight": "24",
+            "fontWeight": "500"
+          },
+          "categorySection": {
+            "categorySection": "{",
+            "marginBottom": "24"
+          },
+          "categoryHeader": {
+            "categoryHeader": "{",
+            "alignItems": "center",
+            "marginBottom": "16"
+          },
+          "categoryIconContainer": {
+            "categoryIconContainer": "{",
+            "width": "48",
+            "height": "48",
+            "borderRadius": "12",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "categoryIcon": {
+            "categoryIcon": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "categoryTitle": {
+            "categoryTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "flex": "1"
+          },
+          "linksContainer": {
+            "linksContainer": "{",
+            "gap": "8"
+          },
+          "linkItem": {
+            "linkItem": "{",
+            "borderRadius": "12",
+            "padding": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "linkContent": {
+            "linkContent": "{",
+            "alignItems": "center"
+          },
+          "linkIconContainer": {
+            "linkIconContainer": "{",
+            "width": "40",
+            "height": "40",
+            "borderRadius": "8",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "linkIcon": {
+            "linkIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "linkTextContainer": {
+            "linkTextContainer": "{",
+            "flex": "1"
+          },
+          "linkTitle": {
+            "linkTitle": "{",
+            "fontSize": "16",
+            "fontWeight": "600",
+            "marginBottom": "2"
+          },
+          "linkUrl": {
+            "linkUrl": "{",
+            "fontSize": "12",
+            "opacity": "0.8"
+          },
+          "chevronIcon": {
+            "chevronIcon": "{",
+            "width": "16",
+            "height": "16"
+          },
+          "disclaimerCard": {
+            "disclaimerCard": "{",
+            "padding": "20",
+            "borderRadius": "12",
+            "marginTop": "8",
+            "shadowColor": "#000"
+          },
+          "disclaimerTitle": {
+            "disclaimerTitle": "{",
+            "fontSize": "16",
+            "fontWeight": "bold",
+            "marginBottom": "8"
+          },
+          "disclaimerText": {
+            "disclaimerText": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "importantLinks.title"
+      ],
+      "dependencies": [
+        "../context/ThemeContext"
+      ]
+    },
+    "LoginScreen": {
+      "name": "LoginScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/LoginScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "gradientOverlay": {
+            "gradientOverlay": "{",
+            "position": "absolute",
+            "top": "0",
+            "left": "0",
+            "right": "0",
+            "height": "height * 0.6",
+            "backgroundColor": "`${theme.colors.primary}08`"
+          },
+          "langIcon": {
+            "langIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "theme.colors.primary",
+            "marginRight": "isArabic ? 0 : 8",
+            "marginLeft": "isArabic ? 8 : 0"
+          },
+          "langText": {
+            "langText": "{",
+            "fontSize": "14",
+            "color": "theme.colors.primary",
+            "fontWeight": "600"
+          },
+          "welcomeTitle": {
+            "welcomeTitle": "{",
+            "fontSize": "28",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "marginBottom": "8",
+            "textAlign": "isArabic ? right : left"
+          },
+          "welcomeSubtitle": {
+            "welcomeSubtitle": "{",
+            "fontSize": "16",
+            "color": "theme.colors.textSecondary",
+            "marginBottom": "12",
+            "textAlign": "isArabic ? right : left",
+            "lineHeight": "24"
+          },
+          "loginTitle": {
+            "loginTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "marginBottom": "8",
+            "textAlign": "isArabic ? right : left"
+          },
+          "loginSubtitle": {
+            "loginSubtitle": "{",
+            "fontSize": "15",
+            "color": "theme.colors.textSecondary",
+            "marginBottom": "32",
+            "textAlign": "isArabic ? right : left",
+            "lineHeight": "22"
+          },
+          "loginButton": {
+            "loginButton": "{",
+            "backgroundColor": "theme.colors.primary",
+            "borderRadius": "16",
+            "width": "100%",
+            "paddingVertical": "18",
+            "alignItems": "center",
+            "shadowColor": "theme.colors.primary"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{width: 0",
+            "shadowOpacity": "0.3",
+            "shadowRadius": "12",
+            "elevation": "8",
+            "marginBottom": "20"
+          },
+          "loginButtonText": {
+            "loginButtonText": "{",
+            "color": "theme.colors.textInverse",
+            "fontSize": "18",
+            "fontWeight": "bold"
+          },
+          "securityBadge": {
+            "securityBadge": "{",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "alignItems": "center",
+            "backgroundColor": "theme.colors.surface",
+            "paddingHorizontal": "16",
+            "paddingVertical": "10",
+            "borderRadius": "12",
+            "alignSelf": "center"
+          },
+          "securityIcon": {
+            "securityIcon": "{",
+            "width": "16",
+            "height": "16",
+            "color": "theme.colors.primary",
+            "marginRight": "isArabic ? 0 : 6",
+            "marginLeft": "isArabic ? 6 : 0"
+          },
+          "securityText": {
+            "securityText": "{",
+            "fontSize": "12",
+            "color": "theme.colors.textSecondary",
+            "fontWeight": "500"
+          },
+          "guestButton": {
+            "guestButton": "{",
+            "backgroundColor": "transparent",
+            "borderWidth": "2",
+            "borderColor": "theme.colors.primary",
+            "borderRadius": "16",
+            "width": "100%",
+            "paddingVertical": "16",
+            "alignItems": "center",
+            "marginBottom": "20"
+          },
+          "guestButtonText": {
+            "guestButtonText": "{",
+            "color": "theme.colors.primary",
+            "fontSize": "16",
+            "fontWeight": "600"
+          },
+          "footer": {
+            "footer": "{",
+            "alignItems": "center",
+            "paddingBottom": "20"
+          },
+          "footerText": {
+            "footerText": "{",
+            "fontSize": "12",
+            "color": "theme.colors.textSecondary",
+            "textAlign": "center",
+            "lineHeight": "18"
+          },
+          "decorativeElement": {
+            "decorativeElement": "{",
+            "position": "absolute",
+            "top": "60",
+            "right": "isArabic ? undefined : 30",
+            "left": "isArabic ? 30 : undefined",
+            "opacity": "0.1"
+          },
+          "sparkleIcon": {
+            "sparkleIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          }
+        },
+        {
+          "scrollContainer": {
+            "scrollContainer": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20",
+            "minHeight": "height - 100"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "marginBottom": "30",
+            "paddingTop": "10"
+          },
+          "langSwitcher": {
+            "langSwitcher": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "backgroundColor": "rgba(255",
+            "paddingHorizontal": "12",
+            "paddingVertical": "8",
+            "borderRadius": "20",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{width: 0",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "4",
+            "elevation": "2"
+          },
+          "logoSection": {
+            "logoSection": "{",
+            "alignItems": "center",
+            "marginBottom": "40"
+          },
+          "logo": {
+            "logo": "{",
+            "width": "200",
+            "height": "70",
+            "marginBottom": "20"
+          },
+          "welcomeContainer": {
+            "welcomeContainer": "{",
+            "width": "100%",
+            "alignItems": "flex-start",
+            "paddingHorizontal": "24"
+          },
+          "loginSection": {
+            "loginSection": "{",
+            "width": "100%",
+            "alignItems": "flex-start",
+            "paddingHorizontal": "24",
+            "marginBottom": "40"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "window",
+        "login",
+        "login_button"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "../context/UserContext"
+      ]
+    },
+    "MoreScreen": {
+      "name": "MoreScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/MoreScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "section": {
+            "section": "{",
+            "marginBottom": "8"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "16",
+            "fontWeight": "600",
+            "marginBottom": "12",
+            "marginTop": "8",
+            "textTransform": "uppercase",
+            "letterSpacing": "0.5"
+          },
+          "sectionItems": {
+            "sectionItems": "{",
+            "gap": "12"
+          },
+          "divider": {
+            "divider": "{",
+            "height": "1",
+            "marginVertical": "20",
+            "marginHorizontal": "16"
+          },
+          "menuItem": {
+            "menuItem": "{",
+            "borderRadius": "12",
+            "padding": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3",
+            "alignItems": "center",
+            "justifyContent": "space-between"
+          },
+          "iconContainer": {
+            "iconContainer": "{",
+            "width": "48",
+            "height": "48",
+            "borderRadius": "12",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginRight": "7",
+            "marginLeft": "0"
+          },
+          "menuIcon": {
+            "menuIcon": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "textContainer": {
+            "textContainer": "{",
+            "flex": "1",
+            "marginHorizontal": "12"
+          },
+          "menuTitle": {
+            "menuTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "600",
+            "marginBottom": "4"
+          },
+          "menuDescription": {
+            "menuDescription": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          },
+          "chevronIcon": {
+            "chevronIcon": "{",
+            "width": "20",
+            "height": "20"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "more.title"
+      ],
+      "dependencies": [
+        "../context/ThemeContext"
+      ]
+    },
+    "NafathLoginScreen": {
+      "name": "NafathLoginScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/NafathLoginScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backButton": {
+            "backButton": "{",
+            "padding": "8",
+            "marginRight": "isArabic ? 0 : 12",
+            "marginLeft": "isArabic ? 12 : 0"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary",
+            "transform": "[{scaleX: isArabic ? -1 : 1}]"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "flex": "1",
+            "textAlign": "isArabic ? right : left"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20",
+            "minHeight": "height - 200"
+          },
+          "logoSection": {
+            "logoSection": "{",
+            "alignItems": "center",
+            "marginBottom": "30"
+          },
+          "nafathTitle": {
+            "nafathTitle": "{",
+            "fontSize": "32",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "marginBottom": "8"
+          },
+          "nafathSubtitle": {
+            "nafathSubtitle": "{",
+            "fontSize": "16",
+            "color": "theme.colors.textSecondary",
+            "textAlign": "center",
+            "lineHeight": "24"
+          },
+          "mainCard": {
+            "mainCard": "{",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "20",
+            "padding": "24",
+            "marginBottom": "24",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{width: 0",
+            "shadowOpacity": "0.3",
+            "shadowRadius": "10",
+            "elevation": "6"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "marginBottom": "8",
+            "textAlign": "isArabic ? right : left"
+          },
+          "sectionDescription": {
+            "sectionDescription": "{",
+            "fontSize": "14",
+            "color": "theme.colors.textSecondary",
+            "marginBottom": "24",
+            "textAlign": "isArabic ? right : left",
+            "lineHeight": "20"
+          },
+          "inputLabel": {
+            "inputLabel": "{",
+            "fontSize": "16",
+            "fontWeight": "600",
+            "color": "theme.colors.text",
+            "marginBottom": "8",
+            "textAlign": "isArabic ? right : left"
+          },
+          "inputContainer": {
+            "inputContainer": "{",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "alignItems": "center",
+            "backgroundColor": "theme.colors.surface",
+            "borderRadius": "12",
+            "paddingHorizontal": "16",
+            "paddingVertical": "4",
+            "borderWidth": "2",
+            "borderColor": "theme.colors.border",
+            "marginBottom": "20"
+          },
+          "inputIcon": {
+            "inputIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "theme.colors.primary",
+            "marginRight": "isArabic ? 0 : 12",
+            "marginLeft": "isArabic ? 12 : 0"
+          },
+          "textInput": {
+            "textInput": "{",
+            "flex": "1",
+            "fontSize": "16",
+            "color": "theme.colors.text",
+            "paddingVertical": "16",
+            "textAlign": "isArabic ? right : left"
+          },
+          "continueButton": {
+            "continueButton": "{",
+            "backgroundColor": "theme.colors.primary",
+            "borderRadius": "16",
+            "paddingVertical": "18",
+            "alignItems": "center",
+            "shadowColor": "theme.colors.primary"
+          },
+          "disabledButton": {
+            "disabledButton": "{",
+            "backgroundColor": "theme.colors.border",
+            "shadowOpacity": "0",
+            "elevation": "0"
+          },
+          "buttonText": {
+            "buttonText": "{",
+            "color": "theme.colors.textInverse",
+            "fontSize": "18",
+            "fontWeight": "bold"
+          },
+          "disabledButtonText": {
+            "disabledButtonText": "{",
+            "color": "theme.colors.textSecondary"
+          },
+          "loadingContainer": {
+            "loadingContainer": "{",
+            "paddingVertical": "20",
+            "alignItems": "center"
+          },
+          "infoSection": {
+            "infoSection": "{",
+            "backgroundColor": "theme.colors.primary + 10",
+            "borderRadius": "12",
+            "padding": "16",
+            "marginTop": "20",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "alignItems": "flex-start"
+          },
+          "infoIcon": {
+            "infoIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "theme.colors.primary",
+            "marginRight": "isArabic ? 0 : 12",
+            "marginLeft": "isArabic ? 12 : 0",
+            "marginTop": "2"
+          },
+          "infoText": {
+            "infoText": "{",
+            "flex": "1",
+            "fontSize": "12",
+            "color": "theme.colors.primary",
+            "textAlign": "isArabic ? right : left",
+            "lineHeight": "18"
+          }
+        },
+        {
+          "flex": {
+            "flex": "1"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "window"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "../services/nafathService",
+        "../animations"
+      ]
+    },
+    "NafathVerificationScreen": {
+      "name": "NafathVerificationScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/NafathVerificationScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backButton": {
+            "backButton": "{",
+            "padding": "8",
+            "marginRight": "isArabic ? 0 : 12",
+            "marginLeft": "isArabic ? 12 : 0"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary",
+            "transform": "[{scaleX: isArabic ? -1 : 1}]"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "flex": "1",
+            "textAlign": "isArabic ? right : left"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20",
+            "minHeight": "height - 200"
+          },
+          "logoSection": {
+            "logoSection": "{",
+            "alignItems": "center",
+            "marginBottom": "30"
+          },
+          "nafathTitle": {
+            "nafathTitle": "{",
+            "fontSize": "28",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "marginBottom": "8"
+          },
+          "nafathSubtitle": {
+            "nafathSubtitle": "{",
+            "fontSize": "14",
+            "color": "theme.colors.textSecondary",
+            "textAlign": "center",
+            "lineHeight": "20"
+          },
+          "mainCard": {
+            "mainCard": "{",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "20",
+            "padding": "24",
+            "marginBottom": "24",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{width: 0",
+            "shadowOpacity": "0.3",
+            "shadowRadius": "10",
+            "elevation": "6",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "justifyContent": "center"
+          },
+          "stepIndicator": {
+            "stepIndicator": "{",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "alignItems": "center",
+            "marginBottom": "24",
+            "padding": "16",
+            "backgroundColor": "theme.colors.primary + 10",
+            "borderRadius": "12"
+          },
+          "stepIcon": {
+            "stepIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary",
+            "marginRight": "isArabic ? 0 : 12",
+            "marginLeft": "isArabic ? 12 : 0"
+          },
+          "stepText": {
+            "stepText": "{",
+            "flex": "1",
+            "fontSize": "14",
+            "color": "theme.colors.primary",
+            "fontWeight": "600",
+            "textAlign": "isArabic ? right : left"
+          },
+          "verificationTitle": {
+            "verificationTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "marginBottom": "12",
+            "textAlign": "isArabic ? right : left"
+          },
+          "verificationDescription": {
+            "verificationDescription": "{",
+            "fontSize": "14",
+            "color": "theme.colors.textSecondary",
+            "marginBottom": "24",
+            "textAlign": "isArabic ? right : left",
+            "lineHeight": "20"
+          },
+          "randomCodeSection": {
+            "randomCodeSection": "{",
+            "alignItems": "center",
+            "marginBottom": "24"
+          },
+          "randomCodeLabel": {
+            "randomCodeLabel": "{",
+            "fontSize": "14",
+            "color": "theme.colors.textSecondary",
+            "marginBottom": "8",
+            "textAlign": "center"
+          },
+          "randomCodeBox": {
+            "randomCodeBox": "{",
+            "backgroundColor": "theme.colors.primary + 15",
+            "borderRadius": "16",
+            "paddingVertical": "20",
+            "paddingHorizontal": "32",
+            "borderWidth": "2",
+            "borderColor": "theme.colors.primary + 30",
+            "marginBottom": "12"
+          },
+          "randomCodeText": {
+            "randomCodeText": "{",
+            "fontSize": "32",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "letterSpacing": "4"
+          },
+          "timerSection": {
+            "timerSection": "{",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "alignItems": "center",
+            "justifyContent": "center",
+            "marginBottom": "24",
+            "padding": "12",
+            "backgroundColor": "theme.colors.surface",
+            "borderRadius": "12"
+          },
+          "timerIcon": {
+            "timerIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "theme.colors.textSecondary",
+            "marginRight": "isArabic ? 0 : 8",
+            "marginLeft": "isArabic ? 8 : 0"
+          },
+          "timerText": {
+            "timerText": "{",
+            "fontSize": "16",
+            "color": "theme.colors.text",
+            "fontWeight": "600"
+          },
+          "statusSection": {
+            "statusSection": "{",
+            "alignItems": "center",
+            "marginBottom": "24"
+          },
+          "statusText": {
+            "statusText": "{",
+            "fontSize": "14",
+            "color": "loading",
+            "textAlign": "center",
+            "marginBottom": "16"
+          },
+          "loadingContainer": {
+            "loadingContainer": "{",
+            "alignItems": "center",
+            "paddingVertical": "12"
+          },
+          "resendButton": {
+            "resendButton": "{",
+            "backgroundColor": "theme.colors.surface",
+            "borderRadius": "12",
+            "paddingVertical": "12",
+            "paddingHorizontal": "16",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "alignItems": "center",
+            "justifyContent": "center",
+            "alignSelf": "center"
+          },
+          "resendButtonDisabled": {
+            "resendButtonDisabled": "{",
+            "opacity": "0.5"
+          },
+          "resendIcon": {
+            "resendIcon": "{",
+            "width": "16",
+            "height": "16",
+            "color": "theme.colors.primary",
+            "marginRight": "isArabic ? 0 : 6",
+            "marginLeft": "isArabic ? 6 : 0"
+          },
+          "resendText": {
+            "resendText": "{",
+            "fontSize": "14",
+            "color": "theme.colors.primary",
+            "fontWeight": "600"
+          },
+          "openAppButton": {
+            "openAppButton": "{",
+            "backgroundColor": "theme.colors.primary",
+            "borderRadius": "16",
+            "paddingVertical": "18",
+            "marginTop": "24",
+            "marginBottom": "20",
+            "alignItems": "center",
+            "shadowColor": "theme.colors.primary"
+          },
+          "openAppIcon": {
+            "openAppIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "theme.colors.textInverse",
+            "marginRight": "isArabic ? 0 : 8",
+            "marginLeft": "isArabic ? 8 : 0"
+          },
+          "openAppText": {
+            "openAppText": "{",
+            "color": "theme.colors.textInverse",
+            "fontSize": "18",
+            "fontWeight": "bold"
+          },
+          "infoSection": {
+            "infoSection": "{",
+            "backgroundColor": "theme.colors.primary + 10",
+            "borderRadius": "12",
+            "padding": "16",
+            "marginTop": "20",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "alignItems": "flex-start"
+          },
+          "infoIcon": {
+            "infoIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "theme.colors.primary",
+            "marginRight": "isArabic ? 0 : 12",
+            "marginLeft": "isArabic ? 12 : 0",
+            "marginTop": "2"
+          },
+          "infoText": {
+            "infoText": "{",
+            "flex": "1",
+            "fontSize": "12",
+            "color": "theme.colors.primary",
+            "textAlign": "isArabic ? right : left",
+            "lineHeight": "18"
+          }
+        },
+        {
+          "flex": {
+            "flex": "1"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "window"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "../context/UserContext",
+        "../services/nafathService",
+        "../animations",
+        "../services/deepLinkService"
+      ]
+    },
+    "NewsScreen": {
+      "name": "NewsScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/NewsScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "categoriesContainer": {
+            "categoriesContainer": "{",
+            "paddingVertical": "16",
+            "backgroundColor": "transparent"
+          },
+          "categoriesContent": {
+            "categoriesContent": "{",
+            "paddingHorizontal": "20",
+            "gap": "12"
+          },
+          "categoryButton": {
+            "categoryButton": "{",
+            "paddingHorizontal": "20",
+            "paddingVertical": "10",
+            "borderRadius": "20",
+            "borderWidth": "1",
+            "minWidth": "80"
+          },
+          "categoryButtonText": {
+            "categoryButtonText": "{",
+            "fontSize": "14",
+            "fontWeight": "600",
+            "textAlign": "center"
+          },
+          "newsList": {
+            "newsList": "{",
+            "flex": "1"
+          },
+          "newsListContent": {
+            "newsListContent": "{",
+            "padding": "20"
+          },
+          "newsItem": {
+            "newsItem": "{",
+            "borderRadius": "12",
+            "padding": "16",
+            "marginBottom": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "newsContent": {
+            "newsContent": "{",
+            "flex": "1"
+          },
+          "newsHeader": {
+            "newsHeader": "{",
+            "alignItems": "flex-start",
+            "marginBottom": "12"
+          },
+          "newsIconContainer": {
+            "newsIconContainer": "{",
+            "width": "40",
+            "height": "40",
+            "borderRadius": "8",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "newsIcon": {
+            "newsIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "newsInfo": {
+            "newsInfo": "{",
+            "flex": "1"
+          },
+          "newsTitle": {
+            "newsTitle": "{",
+            "fontSize": "16",
+            "fontWeight": "bold",
+            "marginBottom": "4",
+            "lineHeight": "22"
+          },
+          "dateContainer": {
+            "dateContainer": "{",
+            "alignItems": "center"
+          },
+          "dateIcon": {
+            "dateIcon": "{",
+            "width": "14",
+            "height": "14"
+          },
+          "newsDate": {
+            "newsDate": "{",
+            "fontSize": "12"
+          },
+          "chevronIcon": {
+            "chevronIcon": "{",
+            "width": "16",
+            "height": "16"
+          },
+          "newsSummary": {
+            "newsSummary": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          },
+          "emptyContainer": {
+            "emptyContainer": "{",
+            "flex": "1",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "padding": "40"
+          },
+          "emptyIcon": {
+            "emptyIcon": "{",
+            "width": "48",
+            "height": "48",
+            "marginBottom": "16"
+          },
+          "emptyText": {
+            "emptyText": "{",
+            "fontSize": "16",
+            "lineHeight": "24"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "news.title",
+        "news.noNews"
+      ],
+      "dependencies": [
+        "../context/ThemeContext"
+      ]
+    },
+    "PermitsScreen": {
+      "name": "PermitsScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/PermitsScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "welcomeSection": {
+            "welcomeSection": "{",
+            "marginBottom": "32"
+          },
+          "welcomeTitle": {
+            "welcomeTitle": "{",
+            "fontSize": "28",
+            "fontWeight": "bold",
+            "marginBottom": "12"
+          },
+          "welcomeDescription": {
+            "welcomeDescription": "{",
+            "fontSize": "16",
+            "lineHeight": "24"
+          },
+          "section": {
+            "section": "{",
+            "marginBottom": "32"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "marginBottom": "16"
+          },
+          "actionsContainer": {
+            "actionsContainer": "{",
+            "gap": "16"
+          },
+          "actionCard": {
+            "actionCard": "{",
+            "alignItems": "center",
+            "padding": "20",
+            "borderRadius": "16",
+            "borderWidth": "1",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "actionIconContainer": {
+            "actionIconContainer": "{",
+            "width": "56",
+            "height": "56",
+            "borderRadius": "16",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "actionIcon": {
+            "actionIcon": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "actionContent": {
+            "actionContent": "{",
+            "flex": "1"
+          },
+          "actionTitle": {
+            "actionTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "4"
+          },
+          "actionDescription": {
+            "actionDescription": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          },
+          "overviewGrid": {
+            "overviewGrid": "{",
+            "flexDirection": "row",
+            "flexWrap": "wrap",
+            "justifyContent": "space-between",
+            "gap": "12"
+          },
+          "overviewItem": {
+            "overviewItem": "{",
+            "width": "48%",
+            "padding": "16",
+            "borderRadius": "12",
+            "borderWidth": "1",
+            "alignItems": "center",
+            "shadowColor": "#000"
+          },
+          "overviewIconContainer": {
+            "overviewIconContainer": "{",
+            "width": "48",
+            "height": "48",
+            "borderRadius": "12",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginBottom": "8"
+          },
+          "overviewCount": {
+            "overviewCount": "{",
+            "fontSize": "20",
+            "fontWeight": "bold"
+          },
+          "overviewTitle": {
+            "overviewTitle": "{",
+            "fontSize": "14",
+            "fontWeight": "600",
+            "textAlign": "center"
+          },
+          "viewAllButton": {
+            "viewAllButton": "{",
+            "alignItems": "center",
+            "padding": "20",
+            "borderRadius": "16",
+            "borderWidth": "1",
+            "marginTop": "16",
+            "shadowColor": "#000"
+          },
+          "viewAllIconContainer": {
+            "viewAllIconContainer": "{",
+            "width": "56",
+            "height": "56",
+            "borderRadius": "16",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "viewAllIcon": {
+            "viewAllIcon": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "viewAllContent": {
+            "viewAllContent": "{",
+            "flex": "1"
+          },
+          "viewAllTitle": {
+            "viewAllTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "4"
+          },
+          "viewAllDescription": {
+            "viewAllDescription": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "permits.title",
+        "permits.welcomeTitle",
+        "permits.welcomeDescription",
+        "permits.newPermit.title",
+        "permits.overview.title",
+        "permits.viewPermits.title",
+        "permits.viewPermits.description"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "@react-navigation/native"
+      ]
+    },
+    "PoliciesScreen": {
+      "name": "PoliciesScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/PoliciesScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "introCard": {
+            "introCard": "{",
+            "padding": "20",
+            "borderRadius": "12",
+            "marginBottom": "24"
+          },
+          "introText": {
+            "introText": "{",
+            "fontSize": "16",
+            "lineHeight": "24",
+            "fontWeight": "500"
+          },
+          "policiesContainer": {
+            "policiesContainer": "{",
+            "marginBottom": "24"
+          },
+          "policyItem": {
+            "policyItem": "{",
+            "borderRadius": "12",
+            "padding": "16",
+            "marginBottom": "12",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "policyContent": {
+            "policyContent": "{",
+            "alignItems": "center"
+          },
+          "iconContainer": {
+            "iconContainer": "{",
+            "width": "48",
+            "height": "48",
+            "borderRadius": "12",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "policyIcon": {
+            "policyIcon": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "textContainer": {
+            "textContainer": "{",
+            "flex": "1"
+          },
+          "policyTitle": {
+            "policyTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "4"
+          },
+          "policyDescription": {
+            "policyDescription": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          },
+          "chevronIcon": {
+            "chevronIcon": "{",
+            "width": "20",
+            "height": "20"
+          },
+          "footerCard": {
+            "footerCard": "{",
+            "padding": "20",
+            "borderRadius": "12",
+            "shadowColor": "#000"
+          },
+          "footerTitle": {
+            "footerTitle": "{",
+            "fontSize": "16",
+            "fontWeight": "bold",
+            "marginBottom": "8"
+          },
+          "footerText": {
+            "footerText": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "policies.title",
+        "policies.introText",
+        "policies.footerTitle",
+        "policies.footerText"
+      ],
+      "dependencies": [
+        "../context/ThemeContext"
+      ]
+    },
+    "PrivacyPolicyScreen": {
+      "name": "PrivacyPolicyScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/PrivacyPolicyScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "section": {
+            "section": "{",
+            "padding": "20",
+            "borderRadius": "12",
+            "marginBottom": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "12"
+          },
+          "description": {
+            "description": "{",
+            "fontSize": "14",
+            "lineHeight": "22"
+          },
+          "footer": {
+            "footer": "{",
+            "padding": "16",
+            "borderRadius": "8",
+            "marginTop": "8"
+          },
+          "footerText": {
+            "footerText": "{",
+            "fontSize": "12",
+            "fontStyle": "italic"
+          }
+        }
+      ],
+      "icons": [
+        "View",
+        "Text",
+        "ScrollView",
+        "StyleSheet",
+        "SafeAreaView",
+        "StatusBar",
+        "TouchableOpacity",
+        ""
+      ],
+      "i18nKeys": [
+        "policies.privacyPolicy.title",
+        "policies.privacyPolicy.title",
+        "policies.privacyPolicy.introduction",
+        "policies.privacyPolicy.informationCollection.title",
+        "policies.privacyPolicy.informationCollection.content",
+        "policies.privacyPolicy.informationUse.title",
+        "policies.privacyPolicy.informationUse.content",
+        "policies.privacyPolicy.informationProtection.title",
+        "policies.privacyPolicy.informationProtection.content",
+        "policies.privacyPolicy.yourRights.title",
+        "policies.privacyPolicy.yourRights.content",
+        "policies.privacyPolicy.contact.title",
+        "policies.privacyPolicy.contact.content",
+        "policies.privacyPolicy.lastUpdated"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "@fluentui/react-native-icons"
+      ]
+    },
+    "ProfileScreen": {
+      "name": "ProfileScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/ProfileScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backButton": {
+            "backButton": "{",
+            "padding": "8",
+            "marginRight": "isArabic ? 0 : 12",
+            "marginLeft": "isArabic ? 12 : 0"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary",
+            "transform": "[{scaleX: isArabic ? -1 : 1}]"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "flex": "1",
+            "textAlign": "isArabic ? right : left"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "profileHeader": {
+            "profileHeader": "{",
+            "alignItems": "center",
+            "marginBottom": "30",
+            "padding": "24",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "20",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{width: 0",
+            "shadowOpacity": "0.05",
+            "shadowRadius": "4",
+            "elevation": "2"
+          },
+          "avatarContainer": {
+            "avatarContainer": "{",
+            "width": "80",
+            "height": "80",
+            "borderRadius": "40",
+            "backgroundColor": "theme.colors.primary + 20",
+            "alignItems": "center",
+            "justifyContent": "center",
+            "marginBottom": "16"
+          },
+          "avatarIcon": {
+            "avatarIcon": "{",
+            "width": "40",
+            "height": "40",
+            "color": "theme.colors.primary"
+          },
+          "profileName": {
+            "profileName": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "textAlign": "center",
+            "marginBottom": "8"
+          },
+          "profileId": {
+            "profileId": "{",
+            "fontSize": "16",
+            "color": "theme.colors.textSecondary",
+            "textAlign": "center"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "marginBottom": "16",
+            "marginTop": "8",
+            "textAlign": "isArabic ? right : left"
+          },
+          "infoCard": {
+            "infoCard": "{",
+            "flexDirection": "isArabic ? row-reverse : row",
+            "alignItems": "center",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "16",
+            "padding": "16",
+            "marginBottom": "12",
+            "shadowColor": "#000"
+          },
+          "infoIconContainer": {
+            "infoIconContainer": "{",
+            "width": "48",
+            "height": "48",
+            "borderRadius": "24",
+            "backgroundColor": "theme.colors.primary + 15",
+            "alignItems": "center",
+            "justifyContent": "center",
+            "marginRight": "isArabic ? 0 : 16",
+            "marginLeft": "isArabic ? 16 : 0"
+          },
+          "infoIcon": {
+            "infoIcon": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "infoContent": {
+            "infoContent": "{",
+            "flex": "1"
+          },
+          "infoTitle": {
+            "infoTitle": "{",
+            "fontSize": "12",
+            "color": "theme.colors.textSecondary",
+            "marginBottom": "4",
+            "textAlign": "isArabic ? right : left"
+          },
+          "infoValue": {
+            "infoValue": "{",
+            "fontSize": "16",
+            "color": "theme.colors.text",
+            "fontWeight": "600",
+            "textAlign": "isArabic ? right : left"
+          },
+          "notLoggedInContainer": {
+            "notLoggedInContainer": "{",
+            "flex": "1",
+            "alignItems": "center",
+            "justifyContent": "center",
+            "padding": "40"
+          },
+          "notLoggedInText": {
+            "notLoggedInText": "{",
+            "fontSize": "16",
+            "color": "theme.colors.textSecondary",
+            "textAlign": "center",
+            "lineHeight": "24"
+          }
+        },
+        {
+          "flex": {
+            "flex": "1"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "window"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "../context/UserContext"
+      ]
+    },
+    "ServicesScreen": {
+      "name": "ServicesScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/ServicesScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          },
+          "modalOverlay": {
+            "modalOverlay": "{",
+            "flex": "1",
+            "backgroundColor": "rgba(0",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "paddingHorizontal": "20"
+          },
+          "modalContainer": {
+            "modalContainer": "{",
+            "backgroundColor": "theme.colors.card",
+            "borderRadius": "20",
+            "padding": "24",
+            "width": "100%",
+            "maxWidth": "320",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "10",
+            "shadowOpacity": "0.25",
+            "shadowRadius": "20",
+            "elevation": "10"
+          },
+          "modalHeader": {
+            "modalHeader": "{",
+            "flexDirection": "isRTL ? row-reverse : row",
+            "alignItems": "center",
+            "marginBottom": "16"
+          },
+          "modalIcon": {
+            "modalIcon": "{",
+            "width": "32",
+            "height": "32",
+            "color": "theme.colors.primary",
+            "marginRight": "isRTL ? 0 : 12",
+            "marginLeft": "isRTL ? 12 : 0"
+          },
+          "modalTitle": {
+            "modalTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.text",
+            "flex": "1",
+            "textAlign": "isRTL ? right : left"
+          },
+          "closeButton": {
+            "closeButton": "{",
+            "padding": "4"
+          },
+          "closeIcon": {
+            "closeIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "theme.colors.textSecondary"
+          },
+          "modalMessage": {
+            "modalMessage": "{",
+            "fontSize": "16",
+            "color": "theme.colors.textSecondary",
+            "lineHeight": "24",
+            "textAlign": "isRTL ? right : left",
+            "marginBottom": "24"
+          },
+          "modalButton": {
+            "modalButton": "{",
+            "backgroundColor": "theme.colors.primary",
+            "borderRadius": "12",
+            "paddingVertical": "14",
+            "paddingHorizontal": "14",
+            "alignItems": "center",
+            "flex": "1"
+          },
+          "modalButtonText": {
+            "modalButtonText": "{",
+            "color": "#FFFFFF",
+            "fontSize": "16",
+            "fontWeight": "600"
+          },
+          "modalButtonsContainer": {
+            "modalButtonsContainer": "{",
+            "flexDirection": "isRTL ? row-reverse : row",
+            "justifyContent": "space-between",
+            "gap": "12"
+          },
+          "cancelButton": {
+            "cancelButton": "{",
+            "backgroundColor": "theme.colors.surface",
+            "borderWidth": "1",
+            "borderColor": "theme.colors.border",
+            "flex": "1"
+          },
+          "cancelButtonText": {
+            "cancelButtonText": "{",
+            "color": "theme.colors.text"
+          }
+        },
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "#f8f9fa"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "#fff",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "#e9ecef"
+          },
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "servicesGrid": {
+            "servicesGrid": "{",
+            "flexDirection": "row",
+            "flexWrap": "wrap",
+            "justifyContent": "space-between"
+          },
+          "serviceCard": {
+            "serviceCard": "{",
+            "width": "48%",
+            "borderRadius": "12",
+            "marginBottom": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "fullWidthCardContainer": {
+            "fullWidthCardContainer": "{",
+            "width": "100%"
+          },
+          "cardContent": {
+            "cardContent": "{",
+            "padding": "20"
+          },
+          "iconContainer": {
+            "iconContainer": "{",
+            "width": "56",
+            "height": "56",
+            "borderRadius": "12",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginBottom": "16"
+          },
+          "serviceIcon": {
+            "serviceIcon": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "serviceTitle": {
+            "serviceTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "8",
+            "alignSelf": "stretch"
+          },
+          "serviceDescription": {
+            "serviceDescription": "{",
+            "fontSize": "14",
+            "lineHeight": "20",
+            "alignSelf": "stretch"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "services.title",
+        "home.comingSoon.title",
+        "home.comingSoon.message",
+        "home.comingSoon.okButton"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "../context/UserContext"
+      ]
+    },
+    "SettingsScreen": {
+      "name": "SettingsScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/SettingsScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "#f8f9fa"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "#fff",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "#e9ecef"
+          },
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "#00623B"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "#00623B",
+            "textAlign": "center",
+            "flex": "1"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20",
+            "gap": "12"
+          },
+          "settingItem": {
+            "settingItem": "{",
+            "backgroundColor": "#fff",
+            "borderRadius": "12",
+            "padding": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3",
+            "alignItems": "center",
+            "justifyContent": "space-between",
+            "marginBottom": "12"
+          },
+          "iconContainer": {
+            "iconContainer": "{",
+            "width": "48",
+            "height": "48",
+            "borderRadius": "12",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "marginRight": "7",
+            "marginLeft": "0"
+          },
+          "settingIcon": {
+            "settingIcon": "{",
+            "width": "24",
+            "height": "24"
+          },
+          "textContainer": {
+            "textContainer": "{",
+            "flex": "1",
+            "marginHorizontal": "12"
+          },
+          "settingTitle": {
+            "settingTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "600",
+            "color": "#2c3e50",
+            "marginBottom": "4"
+          },
+          "settingDescription": {
+            "settingDescription": "{",
+            "fontSize": "14",
+            "color": "#6c757d",
+            "lineHeight": "20"
+          },
+          "switch": {
+            "switch": "{",
+            "transform": "[{scaleX: 1.1}"
+          },
+          "chevronIcon": {
+            "chevronIcon": "{",
+            "width": "20",
+            "height": "20",
+            "color": "#6c757d"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "settings.logout.confirmTitle",
+        "settings.logout.confirmMessage",
+        "settings.logout.cancel",
+        "settings.logout.confirm",
+        "settings.title"
+      ],
+      "dependencies": [
+        "../context/ThemeContext"
+      ]
+    },
+    "SplashScreen": {
+      "name": "SplashScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/SplashScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "#000",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "backgroundVideo": {
+            "backgroundVideo": "{",
+            "position": "absolute",
+            "top": "0",
+            "left": "0",
+            "bottom": "0",
+            "right": "0",
+            "width": "width",
+            "height": "height"
+          },
+          "overlay": {
+            "overlay": "{",
+            "backgroundColor": "rgba(0"
+          },
+          "logoContainer": {
+            "logoContainer": "{",
+            "flex": "1",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "zIndex": "2"
+          },
+          "logo": {
+            "logo": "{",
+            "width": "width * 0.6",
+            "height": "height * 0.25",
+            "maxWidth": "300",
+            "maxHeight": "200"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "window"
+      ],
+      "dependencies": []
+    },
+    "UsagePolicyScreen": {
+      "name": "UsagePolicyScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/UsagePolicyScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "section": {
+            "section": "{",
+            "padding": "20",
+            "borderRadius": "12",
+            "marginBottom": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "sectionTitle": {
+            "sectionTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "12"
+          },
+          "description": {
+            "description": "{",
+            "fontSize": "14",
+            "lineHeight": "22"
+          },
+          "listItem": {
+            "listItem": "{",
+            "marginTop": "8",
+            "alignItems": "flex-start"
+          },
+          "listNumber": {
+            "listNumber": "{",
+            "fontSize": "14",
+            "fontWeight": "bold",
+            "minWidth": "20"
+          },
+          "listText": {
+            "listText": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          },
+          "footer": {
+            "footer": "{",
+            "padding": "16",
+            "borderRadius": "8",
+            "marginTop": "8"
+          },
+          "footerText": {
+            "footerText": "{",
+            "fontSize": "12",
+            "fontStyle": "italic"
+          }
+        }
+      ],
+      "icons": [
+        "View",
+        "Text",
+        "ScrollView",
+        "StyleSheet",
+        "SafeAreaView",
+        "StatusBar",
+        "TouchableOpacity",
+        ""
+      ],
+      "i18nKeys": [
+        "policies.usagePolicy.title",
+        "policies.usagePolicy.title",
+        "policies.usagePolicy.introduction",
+        "policies.usagePolicy.prohibitedActivities.title",
+        "policies.usagePolicy.prohibitedActivities.intro",
+        "policies.usagePolicy.termination.title",
+        "policies.usagePolicy.termination.content",
+        "policies.usagePolicy.links.title",
+        "policies.usagePolicy.links.content",
+        "policies.usagePolicy.intellectualProperty.title",
+        "policies.usagePolicy.intellectualProperty.content",
+        "policies.usagePolicy.personalInfoProtection.title",
+        "policies.usagePolicy.personalInfoProtection.content",
+        "policies.usagePolicy.lastUpdated"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "@fluentui/react-native-icons"
+      ]
+    },
+    "ViewComplaintsScreen": {
+      "name": "ViewComplaintsScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/ViewComplaintsScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "filtersContainer": {
+            "filtersContainer": "{",
+            "backgroundColor": "transparent",
+            "paddingVertical": "16"
+          },
+          "filtersContent": {
+            "filtersContent": "{",
+            "paddingHorizontal": "20",
+            "gap": "12"
+          },
+          "filterButton": {
+            "filterButton": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "paddingHorizontal": "16",
+            "paddingVertical": "8",
+            "borderRadius": "20",
+            "borderWidth": "1",
+            "marginRight": "8"
+          },
+          "filterIcon": {
+            "filterIcon": "{",
+            "width": "16",
+            "height": "16",
+            "marginRight": "6"
+          },
+          "filterText": {
+            "filterText": "{",
+            "fontSize": "14",
+            "fontWeight": "500"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "loadingContainer": {
+            "loadingContainer": "{",
+            "flex": "1",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "paddingVertical": "40"
+          },
+          "loadingText": {
+            "loadingText": "{",
+            "marginTop": "16",
+            "fontSize": "16"
+          },
+          "errorContainer": {
+            "errorContainer": "{",
+            "flex": "1",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "paddingVertical": "40"
+          },
+          "errorText": {
+            "errorText": "{",
+            "fontSize": "16",
+            "textAlign": "center",
+            "marginBottom": "16"
+          },
+          "retryButton": {
+            "retryButton": "{",
+            "paddingHorizontal": "20",
+            "paddingVertical": "10",
+            "borderRadius": "8"
+          },
+          "retryButtonText": {
+            "retryButtonText": "{",
+            "color": "white",
+            "fontSize": "16",
+            "fontWeight": "bold"
+          },
+          "emptyContainer": {
+            "emptyContainer": "{",
+            "flex": "1",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "paddingVertical": "40"
+          },
+          "emptyIcon": {
+            "emptyIcon": "{",
+            "width": "48",
+            "height": "48",
+            "marginBottom": "16"
+          },
+          "emptyTitle": {
+            "emptyTitle": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "8"
+          },
+          "emptyDescription": {
+            "emptyDescription": "{",
+            "fontSize": "14",
+            "lineHeight": "20"
+          },
+          "complaintsContainer": {
+            "complaintsContainer": "{",
+            "gap": "16"
+          },
+          "complaintCard": {
+            "complaintCard": "{",
+            "borderRadius": "12",
+            "padding": "16",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "complaintHeader": {
+            "complaintHeader": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "flex-start",
+            "marginBottom": "8"
+          },
+          "complaintTitleContainer": {
+            "complaintTitleContainer": "{",
+            "flex": "1",
+            "marginRight": "12"
+          },
+          "complaintTitle": {
+            "complaintTitle": "{",
+            "fontSize": "16",
+            "fontWeight": "bold",
+            "marginBottom": "4"
+          },
+          "complaintNumber": {
+            "complaintNumber": "{",
+            "fontSize": "12",
+            "fontWeight": "500"
+          },
+          "statusContainer": {
+            "statusContainer": "{",
+            "alignItems": "flex-end"
+          },
+          "statusBadge": {
+            "statusBadge": "{",
+            "paddingHorizontal": "8",
+            "paddingVertical": "4",
+            "borderRadius": "12"
+          },
+          "statusText": {
+            "statusText": "{",
+            "fontSize": "12",
+            "fontWeight": "bold"
+          },
+          "complaintDescription": {
+            "complaintDescription": "{",
+            "fontSize": "14",
+            "lineHeight": "20",
+            "marginBottom": "12"
+          },
+          "complaintFooter": {
+            "complaintFooter": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center"
+          },
+          "complaintDate": {
+            "complaintDate": "{",
+            "fontSize": "12"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "complaints.view.invalidDate",
+        " ",
+        "/",
+        ":",
+        "complaints.view.invalidDate",
+        "complaints.view.invalidDate",
+        "complaints.view.status.${complaint.status}",
+        "complaints.view.title",
+        "complaints.view.loading",
+        "retry",
+        "complaints.view.noComplaints",
+        "complaints.view.noComplaintsMessage"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "../context/UserContext",
+        "@react-navigation/native",
+        "../animations",
+        "../config/appConfig"
+      ]
+    },
+    "ViewPermitsScreen": {
+      "name": "ViewPermitsScreen",
+      "type": "screens",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/screens/ViewPermitsScreen.js",
+      "styles": [
+        {
+          "container": {
+            "container": "{",
+            "flex": "1",
+            "backgroundColor": "theme.colors.background"
+          },
+          "header": {
+            "header": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "backgroundColor": "theme.colors.surface",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "theme.colors.border"
+          },
+          "backIcon": {
+            "backIcon": "{",
+            "width": "24",
+            "height": "24",
+            "color": "theme.colors.primary"
+          },
+          "headerTitle": {
+            "headerTitle": "{",
+            "fontSize": "24",
+            "fontWeight": "bold",
+            "color": "theme.colors.primary",
+            "textAlign": "center",
+            "flex": "1"
+          }
+        },
+        {
+          "backButton": {
+            "backButton": "{",
+            "padding": "8"
+          },
+          "placeholderView": {
+            "placeholderView": "{",
+            "width": "40"
+          },
+          "loadingContainer": {
+            "loadingContainer": "{",
+            "flex": "1",
+            "justifyContent": "center",
+            "alignItems": "center"
+          },
+          "loadingText": {
+            "loadingText": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginTop": "20"
+          },
+          "filtersContainer": {
+            "filtersContainer": "{",
+            "paddingVertical": "16",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "#E0E0E0"
+          },
+          "filtersContent": {
+            "filtersContent": "{",
+            "paddingHorizontal": "20",
+            "gap": "12"
+          },
+          "filterButton": {
+            "filterButton": "{",
+            "paddingHorizontal": "16",
+            "paddingVertical": "8",
+            "borderRadius": "20",
+            "borderWidth": "1"
+          },
+          "filterButtonText": {
+            "filterButtonText": "{",
+            "fontSize": "14",
+            "fontWeight": "600"
+          },
+          "content": {
+            "content": "{",
+            "flex": "1"
+          },
+          "scrollContent": {
+            "scrollContent": "{",
+            "padding": "20"
+          },
+          "listTitle": {
+            "listTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "marginBottom": "16"
+          },
+          "permitsList": {
+            "permitsList": "{",
+            "gap": "16"
+          },
+          "permitCard": {
+            "permitCard": "{",
+            "borderRadius": "16",
+            "borderWidth": "1",
+            "overflow": "hidden",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.1",
+            "shadowRadius": "8",
+            "elevation": "3"
+          },
+          "cardHeader": {
+            "cardHeader": "{",
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "padding": "16",
+            "borderBottomWidth": "1",
+            "borderBottomColor": "#F0F0F0"
+          },
+          "cardHeaderLeft": {
+            "cardHeaderLeft": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "flex": "1"
+          },
+          "cardIcon": {
+            "cardIcon": "{",
+            "width": "20",
+            "height": "20",
+            "marginRight": "8"
+          },
+          "requestNumber": {
+            "requestNumber": "{",
+            "fontSize": "16",
+            "fontWeight": "bold"
+          },
+          "statusBadge": {
+            "statusBadge": "{",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "paddingHorizontal": "12",
+            "paddingVertical": "6",
+            "borderRadius": "20"
+          },
+          "statusIcon": {
+            "statusIcon": "{",
+            "width": "16",
+            "height": "16",
+            "marginRight": "6"
+          },
+          "statusText": {
+            "statusText": "{",
+            "fontSize": "12",
+            "fontWeight": "600"
+          },
+          "cardContent": {
+            "cardContent": "{",
+            "padding": "16"
+          },
+          "requestName": {
+            "requestName": "{",
+            "fontSize": "18",
+            "fontWeight": "bold",
+            "marginBottom": "8"
+          },
+          "requestStage": {
+            "requestStage": "{",
+            "fontSize": "14",
+            "marginBottom": "4"
+          },
+          "cardFooter": {
+            "cardFooter": "{",
+            "paddingHorizontal": "16",
+            "paddingBottom": "16"
+          },
+          "requestDate": {
+            "requestDate": "{",
+            "fontSize": "12"
+          },
+          "emptyContainer": {
+            "emptyContainer": "{",
+            "flex": "1",
+            "justifyContent": "center",
+            "alignItems": "center",
+            "paddingHorizontal": "40"
+          },
+          "emptyIcon": {
+            "emptyIcon": "{",
+            "width": "64",
+            "height": "64",
+            "marginBottom": "16"
+          },
+          "emptyTitle": {
+            "emptyTitle": "{",
+            "fontSize": "20",
+            "fontWeight": "bold",
+            "marginBottom": "8"
+          },
+          "emptyMessage": {
+            "emptyMessage": "{",
+            "fontSize": "16",
+            "lineHeight": "24"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [
+        "permits.view.invalidDate",
+        "permits.view.invalidDate",
+        "permits.status.${permit.requestStatus}",
+        "permits.view.title",
+        "permits.view.loading",
+        "permits.view.title",
+        "permits.status.all",
+        "permits.status.completed",
+        "permits.status.processing",
+        "permits.status.unacceptable",
+        "permits.status.unsent",
+        "permits.status.returned",
+        "permits.view.noPermits",
+        "permits.view.noPermitsMessage",
+        "permits.view.yourPermits"
+      ],
+      "dependencies": [
+        "../context/ThemeContext",
+        "../context/UserContext",
+        "@react-navigation/native",
+        "../animations",
+        "../config/appConfig"
+      ]
+    }
+  },
+  "userFlows": [
+    {
+      "name": "Authentication Flow",
+      "screens": [
+        "Login",
+        "NafathLogin",
+        "NafathVerification"
+      ],
+      "description": "User authentication via Nafath system"
+    },
+    {
+      "name": "Complaints Management",
+      "screens": [
+        "Complaints",
+        "CreateComplaint",
+        "ViewComplaints"
+      ],
+      "description": "Submit and manage complaints"
+    },
+    {
+      "name": "Permits & Licensing",
+      "screens": [
+        "Permits",
+        "ViewPermits",
+        "CreatePowerGenerationPermit",
+        "CreateDistrictCoolingPermit"
+      ],
+      "description": "Apply for and manage permits"
+    }
+  ]
+}

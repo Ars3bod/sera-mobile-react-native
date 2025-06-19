@@ -1,0 +1,15 @@
+{
+  "metadata": {
+    "totalScreens": 0,
+    "screenTypes": {},
+    "commonPatterns": {
+      "hasScrolling": 0,
+      "hasForms": 0,
+      "hasNavigation": 0,
+      "hasImages": 0,
+      "isRTL": 0
+    },
+    "generatedAt": "2025-06-19T08:05:24.223Z"
+  },
+  "screens": {}
+}

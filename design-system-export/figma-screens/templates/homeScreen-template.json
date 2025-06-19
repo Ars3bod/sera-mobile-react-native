@@ -1,0 +1,42 @@
+{
+  "name": "Home Screen Template",
+  "description": "Template for dashboard and home screens",
+  "figmaSpecs": {
+    "frame": {
+      "width": 375,
+      "height": 812
+    },
+    "layers": [
+      {
+        "type": "header",
+        "hasLogo": true,
+        "hasProfile": true
+      },
+      {
+        "type": "quickActions",
+        "layout": "grid",
+        "columns": 2
+      },
+      {
+        "type": "recentActivity",
+        "maxItems": 5
+      },
+      {
+        "type": "tabBar",
+        "position": "bottom"
+      }
+    ]
+  },
+  "components": [
+    "Logo",
+    "ProfileAvatar",
+    "QuickActionCard",
+    "ActivityItem",
+    "TabBar"
+  ],
+  "states": [
+    "default",
+    "loading",
+    "empty"
+  ]
+}

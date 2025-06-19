@@ -1,0 +1,349 @@
+{
+  "name": "SERA Mobile Design System",
+  "description": "Official design tokens for Saudi Electricity Regulatory Authority mobile app",
+  "version": "1.0.0",
+  "tokens": {
+    "color": {
+      "light": {
+        "primary": {
+          "value": "#00623B",
+          "type": "color",
+          "description": "light theme primary color"
+        },
+        "primaryLight": {
+          "value": "#00623B20",
+          "type": "color",
+          "description": "light theme primaryLight color"
+        },
+        "primaryDark": {
+          "value": "#004829",
+          "type": "color",
+          "description": "light theme primaryDark color"
+        },
+        "background": {
+          "value": "#f8f9fa",
+          "type": "color",
+          "description": "light theme background color"
+        },
+        "surface": {
+          "value": "#ffffff",
+          "type": "color",
+          "description": "light theme surface color"
+        },
+        "card": {
+          "value": "#ffffff",
+          "type": "color",
+          "description": "light theme card color"
+        },
+        "text": {
+          "value": "#2c3e50",
+          "type": "color",
+          "description": "light theme text color"
+        },
+        "textSecondary": {
+          "value": "#6c757d",
+          "type": "color",
+          "description": "light theme textSecondary color"
+        },
+        "textInverse": {
+          "value": "#ffffff",
+          "type": "color",
+          "description": "light theme textInverse color"
+        },
+        "border": {
+          "value": "#e9ecef",
+          "type": "color",
+          "description": "light theme border color"
+        },
+        "borderLight": {
+          "value": "#f1f3f4",
+          "type": "color",
+          "description": "light theme borderLight color"
+        },
+        "success": {
+          "value": "#28a745",
+          "type": "color",
+          "description": "light theme success color"
+        },
+        "warning": {
+          "value": "#ffc107",
+          "type": "color",
+          "description": "light theme warning color"
+        },
+        "error": {
+          "value": "#dc3545",
+          "type": "color",
+          "description": "light theme error color"
+        },
+        "info": {
+          "value": "#17a2b8",
+          "type": "color",
+          "description": "light theme info color"
+        },
+        "shadow": {
+          "value": "#000000",
+          "type": "color",
+          "description": "light theme shadow color"
+        },
+        "icon": {
+          "value": "#6c757d",
+          "type": "color",
+          "description": "light theme icon color"
+        },
+        "iconActive": {
+          "value": "#00623B",
+          "type": "color",
+          "description": "light theme iconActive color"
+        },
+        "inputBackground": {
+          "value": "#ffffff",
+          "type": "color",
+          "description": "light theme inputBackground color"
+        },
+        "inputBorder": {
+          "value": "#e9ecef",
+          "type": "color",
+          "description": "light theme inputBorder color"
+        },
+        "inputText": {
+          "value": "#2c3e50",
+          "type": "color",
+          "description": "light theme inputText color"
+        },
+        "placeholder": {
+          "value": "#6c757d",
+          "type": "color",
+          "description": "light theme placeholder color"
+        }
+      },
+      "dark": {
+        "primary": {
+          "value": "#00A876",
+          "type": "color",
+          "description": "dark theme primary color"
+        },
+        "primaryLight": {
+          "value": "#00A87620",
+          "type": "color",
+          "description": "dark theme primaryLight color"
+        },
+        "primaryDark": {
+          "value": "#007A57",
+          "type": "color",
+          "description": "dark theme primaryDark color"
+        },
+        "background": {
+          "value": "#121212",
+          "type": "color",
+          "description": "dark theme background color"
+        },
+        "surface": {
+          "value": "#1E1E1E",
+          "type": "color",
+          "description": "dark theme surface color"
+        },
+        "card": {
+          "value": "#2D2D2D",
+          "type": "color",
+          "description": "dark theme card color"
+        },
+        "text": {
+          "value": "#FFFFFF",
+          "type": "color",
+          "description": "dark theme text color"
+        },
+        "textSecondary": {
+          "value": "#B0B0B0",
+          "type": "color",
+          "description": "dark theme textSecondary color"
+        },
+        "textInverse": {
+          "value": "#000000",
+          "type": "color",
+          "description": "dark theme textInverse color"
+        },
+        "border": {
+          "value": "#404040",
+          "type": "color",
+          "description": "dark theme border color"
+        },
+        "borderLight": {
+          "value": "#2D2D2D",
+          "type": "color",
+          "description": "dark theme borderLight color"
+        },
+        "success": {
+          "value": "#4CAF50",
+          "type": "color",
+          "description": "dark theme success color"
+        },
+        "warning": {
+          "value": "#FF9800",
+          "type": "color",
+          "description": "dark theme warning color"
+        },
+        "error": {
+          "value": "#F44336",
+          "type": "color",
+          "description": "dark theme error color"
+        },
+        "info": {
+          "value": "#2196F3",
+          "type": "color",
+          "description": "dark theme info color"
+        },
+        "shadow": {
+          "value": "#000000",
+          "type": "color",
+          "description": "dark theme shadow color"
+        },
+        "icon": {
+          "value": "#B0B0B0",
+          "type": "color",
+          "description": "dark theme icon color"
+        },
+        "iconActive": {
+          "value": "#00A876",
+          "type": "color",
+          "description": "dark theme iconActive color"
+        },
+        "inputBackground": {
+          "value": "#2D2D2D",
+          "type": "color",
+          "description": "dark theme inputBackground color"
+        },
+        "inputBorder": {
+          "value": "#404040",
+          "type": "color",
+          "description": "dark theme inputBorder color"
+        },
+        "inputText": {
+          "value": "#FFFFFF",
+          "type": "color",
+          "description": "dark theme inputText color"
+        },
+        "placeholder": {
+          "value": "#B0B0B0",
+          "type": "color",
+          "description": "dark theme placeholder color"
+        }
+      }
+    },
+    "typography": {
+      "xs": {
+        "value": 13,
+        "type": "fontSizes",
+        "description": "Font size xs"
+      },
+      "sm": {
+        "value": 15,
+        "type": "fontSizes",
+        "description": "Font size sm"
+      },
+      "base": {
+        "value": 16,
+        "type": "fontSizes",
+        "description": "Font size base"
+      },
+      "lg": {
+        "value": 18,
+        "type": "fontSizes",
+        "description": "Font size lg"
+      },
+      "xl": {
+        "value": 20,
+        "type": "fontSizes",
+        "description": "Font size xl"
+      },
+      "xxl": {
+        "value": 22,
+        "type": "fontSizes",
+        "description": "Font size xxl"
+      },
+      "xxxl": {
+        "value": 24,
+        "type": "fontSizes",
+        "description": "Font size xxxl"
+      },
+      "huge": {
+        "value": 28,
+        "type": "fontSizes",
+        "description": "Font size huge"
+      },
+      "massive": {
+        "value": 32,
+        "type": "fontSizes",
+        "description": "Font size massive"
+      },
+      "giant": {
+        "value": 40,
+        "type": "fontSizes",
+        "description": "Font size giant"
+      },
+      "fontWeight-normal": {
+        "value": "400",
+        "type": "fontSizes",
+        "description": "Font weight normal"
+      },
+      "fontWeight-medium": {
+        "value": "500",
+        "type": "fontSizes",
+        "description": "Font weight medium"
+      },
+      "fontWeight-semiBold": {
+        "value": "600",
+        "type": "fontSizes",
+        "description": "Font weight semiBold"
+      },
+      "fontWeight-bold": {
+        "value": "700",
+        "type": "fontSizes",
+        "description": "Font weight bold"
+      }
+    },
+    "spacing": {
+      "xs": {
+        "value": 4,
+        "type": "spacing",
+        "description": "Spacing xs"
+      },
+      "sm": {
+        "value": 8,
+        "type": "spacing",
+        "description": "Spacing sm"
+      },
+      "base": {
+        "value": 12,
+        "type": "spacing",
+        "description": "Spacing base"
+      },
+      "md": {
+        "value": 16,
+        "type": "spacing",
+        "description": "Spacing md"
+      },
+      "lg": {
+        "value": 18,
+        "type": "spacing",
+        "description": "Spacing lg"
+      },
+      "xl": {
+        "value": 20,
+        "type": "spacing",
+        "description": "Spacing xl"
+      },
+      "xxl": {
+        "value": 24,
+        "type": "spacing",
+        "description": "Spacing xxl"
+      },
+      "xxxl": {
+        "value": 32,
+        "type": "spacing",
+        "description": "Spacing xxxl"
+      }
+    },
+    "borderRadius": {},
+    "shadow": {}
+  }
+}

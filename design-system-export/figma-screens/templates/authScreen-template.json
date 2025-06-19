@@ -1,0 +1,42 @@
+{
+  "name": "Authentication Screen Template",
+  "description": "Template for login and authentication screens",
+  "figmaSpecs": {
+    "frame": {
+      "width": 375,
+      "height": 812
+    },
+    "layers": [
+      {
+        "type": "header",
+        "height": 120,
+        "content": "SERA Logo"
+      },
+      {
+        "type": "form",
+        "components": [
+          "input",
+          "input",
+          "button"
+        ],
+        "spacing": 16
+      },
+      {
+        "type": "footer",
+        "content": "Alternative login options"
+      }
+    ]
+  },
+  "components": [
+    "Logo",
+    "InputField",
+    "PrimaryButton",
+    "SecondaryButton",
+    "Link"
+  ],
+  "states": [
+    "default",
+    "loading",
+    "error"
+  ]
+}

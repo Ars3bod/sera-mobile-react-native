@@ -1,0 +1,36 @@
+{
+  "name": "Detail Screen Template",
+  "description": "Template for showing detailed information",
+  "figmaSpecs": {
+    "frame": {
+      "width": 375,
+      "height": 812
+    },
+    "layers": [
+      {
+        "type": "navigation",
+        "hasBackButton": true,
+        "hasActions": true
+      },
+      {
+        "type": "scrollContent",
+        "sections": [
+          "hero",
+          "details",
+          "actions"
+        ]
+      }
+    ]
+  },
+  "components": [
+    "Header",
+    "HeroSection",
+    "InfoCard",
+    "ActionButton"
+  ],
+  "states": [
+    "default",
+    "loading",
+    "error"
+  ]
+}

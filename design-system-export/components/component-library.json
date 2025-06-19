@@ -1,0 +1,442 @@
+{
+  "metadata": {
+    "name": "SERA Mobile Component Library",
+    "description": "Government-compliant component library for Saudi Electricity Regulatory Authority",
+    "version": "1.0.0",
+    "extractedAt": "2025-06-19T07:04:31.132Z"
+  },
+  "components": {
+    "HomeScreenSelector": {
+      "name": "HomeScreenSelector",
+      "type": "components",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/components/HomeScreenSelector.js",
+      "styles": [],
+      "icons": [],
+      "i18nKeys": [],
+      "dependencies": [
+        "../context/HomeScreenContext",
+        "../context/UserContext",
+        "../screens/HomeScreen",
+        "../screens/HomeScreenNew"
+      ]
+    },
+    "Toast": {
+      "name": "Toast",
+      "type": "components",
+      "path": "/Users/sera/Desktop/Workspaces/sera-mobile-react-native/src/components/Toast.js",
+      "styles": [
+        {
+          "overlay": {
+            "overlay": "{",
+            "position": "absolute",
+            "top": "0",
+            "left": "0",
+            "right": "0",
+            "zIndex": "9999"
+          },
+          "toast": {
+            "toast": "{",
+            "marginHorizontal": "16",
+            "marginTop": "StatusBar.currentHeight || 44",
+            "paddingHorizontal": "20",
+            "paddingVertical": "16",
+            "borderRadius": "12",
+            "shadowColor": "#000"
+          },
+          "shadowOffset": {
+            "shadowOffset": "{",
+            "width": "0",
+            "height": "2",
+            "shadowOpacity": "0.25",
+            "shadowRadius": "8",
+            "elevation": "5"
+          },
+          "toastText": {
+            "toastText": "{",
+            "color": "white",
+            "fontSize": "16",
+            "fontWeight": "600",
+            "textAlign": "center"
+          }
+        }
+      ],
+      "icons": [],
+      "i18nKeys": [],
+      "dependencies": [
+        "../context/ThemeContext"
+      ]
+    }
+  },
+  "designTokens": {
+    "colors": {
+      "light": {
+        "primary": {
+          "value": "#00623B",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "primaryLight": {
+          "value": "#00623B20",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "primaryDark": {
+          "value": "#004829",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "background": {
+          "value": "#f8f9fa",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "surface": {
+          "value": "#ffffff",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "card": {
+          "value": "#ffffff",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "text": {
+          "value": "#2c3e50",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "textSecondary": {
+          "value": "#6c757d",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "textInverse": {
+          "value": "#ffffff",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "border": {
+          "value": "#e9ecef",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "borderLight": {
+          "value": "#f1f3f4",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "success": {
+          "value": "#28a745",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "warning": {
+          "value": "#ffc107",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "error": {
+          "value": "#dc3545",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "info": {
+          "value": "#17a2b8",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "shadow": {
+          "value": "#000000",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "icon": {
+          "value": "#6c757d",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "iconActive": {
+          "value": "#00623B",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "inputBackground": {
+          "value": "#ffffff",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "inputBorder": {
+          "value": "#e9ecef",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "inputText": {
+          "value": "#2c3e50",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "placeholder": {
+          "value": "#6c757d",
+          "type": "color",
+          "figmaType": "PAINT"
+        }
+      },
+      "dark": {
+        "primary": {
+          "value": "#00A876",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "primaryLight": {
+          "value": "#00A87620",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "primaryDark": {
+          "value": "#007A57",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "background": {
+          "value": "#121212",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "surface": {
+          "value": "#1E1E1E",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "card": {
+          "value": "#2D2D2D",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "text": {
+          "value": "#FFFFFF",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "textSecondary": {
+          "value": "#B0B0B0",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "textInverse": {
+          "value": "#000000",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "border": {
+          "value": "#404040",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "borderLight": {
+          "value": "#2D2D2D",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "success": {
+          "value": "#4CAF50",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "warning": {
+          "value": "#FF9800",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "error": {
+          "value": "#F44336",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "info": {
+          "value": "#2196F3",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "shadow": {
+          "value": "#000000",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "icon": {
+          "value": "#B0B0B0",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "iconActive": {
+          "value": "#00A876",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "inputBackground": {
+          "value": "#2D2D2D",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "inputBorder": {
+          "value": "#404040",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "inputText": {
+          "value": "#FFFFFF",
+          "type": "color",
+          "figmaType": "PAINT"
+        },
+        "placeholder": {
+          "value": "#B0B0B0",
+          "type": "color",
+          "figmaType": "PAINT"
+        }
+      }
+    },
+    "typography": {
+      "sizes": {
+        "xs": {
+          "value": 13,
+          "type": "number",
+          "figmaType": "FLOAT"
+        },
+        "sm": {
+          "value": 15,
+          "type": "number",
+          "figmaType": "FLOAT"
+        },
+        "base": {
+          "value": 16,
+          "type": "number",
+          "figmaType": "FLOAT"
+        },
+        "lg": {
+          "value": 18,
+          "type": "number",
+          "figmaType": "FLOAT"
+        },
+        "xl": {
+          "value": 20,
+          "type": "number",
+          "figmaType": "FLOAT"
+        },
+        "xxl": {
+          "value": 22,
+          "type": "number",
+          "figmaType": "FLOAT"
+        },
+        "xxxl": {
+          "value": 24,
+          "type": "number",
+          "figmaType": "FLOAT"
+        },
+        "huge": {
+          "value": 28,
+          "type": "number",
+          "figmaType": "FLOAT"
+        },
+        "massive": {
+          "value": 32,
+          "type": "number",
+          "figmaType": "FLOAT"
+        },
+        "giant": {
+          "value": 40,
+          "type": "number",
+          "figmaType": "FLOAT"
+        }
+      },
+      "weights": {
+        "normal": {
+          "value": "400",
+          "type": "string",
+          "figmaType": "STRING"
+        },
+        "medium": {
+          "value": "500",
+          "type": "string",
+          "figmaType": "STRING"
+        },
+        "semiBold": {
+          "value": "600",
+          "type": "string",
+          "figmaType": "STRING"
+        },
+        "bold": {
+          "value": "700",
+          "type": "string",
+          "figmaType": "STRING"
+        }
+      },
+      "lineHeights": {
+        "tight": {
+          "value": 22,
+          "type": "number",
+          "figmaType": "FLOAT"
+        },
+        "normal": {
+          "value": 24,
+          "type": "number",
+          "figmaType": "FLOAT"
+        },
+        "relaxed": {
+          "value": 28,
+          "type": "number",
+          "figmaType": "FLOAT"
+        }
+      }
+    },
+    "spacing": {
+      "xs": {
+        "value": 4,
+        "type": "number",
+        "figmaType": "FLOAT"
+      },
+      "sm": {
+        "value": 8,
+        "type": "number",
+        "figmaType": "FLOAT"
+      },
+      "base": {
+        "value": 12,
+        "type": "number",
+        "figmaType": "FLOAT"
+      },
+      "md": {
+        "value": 16,
+        "type": "number",
+        "figmaType": "FLOAT"
+      },
+      "lg": {
+        "value": 18,
+        "type": "number",
+        "figmaType": "FLOAT"
+      },
+      "xl": {
+        "value": 20,
+        "type": "number",
+        "figmaType": "FLOAT"
+      },
+      "xxl": {
+        "value": 24,
+        "type": "number",
+        "figmaType": "FLOAT"
+      },
+      "xxxl": {
+        "value": 32,
+        "type": "number",
+        "figmaType": "FLOAT"
+      }
+    },
+    "shadows": {
+      "small": {
+        "small": "{",
+        "shadowColor": "'#000'"
+      },
+      "shadowOffset": {
+        "shadowOffset": "{width: 0"
+      }
+    }
+  }
+}
