@@ -31,5 +31,14 @@ target 'seraApp' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+    
+    # Fix for specific module map issues
+    installer.pods_project.targets.each do |target|
+      if ['lottie-ios', 'lottie-react-native', 'react-native-video'].include?(target.name)
+        target.build_configurations.each do |config|
+          config.build_settings['DEFINES_MODULE'] = 'NO'
+        end
+      end
+    end
   end
 end

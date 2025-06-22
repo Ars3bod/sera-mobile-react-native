@@ -100,10 +100,19 @@ android {
             keyPassword 'android'
         }
         release {
-            keyAlias keystoreProperties['keyAlias'] ?: System.getenv('KEY_ALIAS')
-            keyPassword keystoreProperties['keyPassword'] ?: System.getenv('KEY_PASSWORD')
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword'] ?: System.getenv('KEYSTORE_PASSWORD')
+            // Use debug keystore for release builds if no release keystore is configured
+            if (keystoreProperties['storeFile'] || System.getenv('KEYSTORE_PASSWORD')) {
+                keyAlias keystoreProperties['keyAlias'] ?: System.getenv('KEY_ALIAS')
+                keyPassword keystoreProperties['keyPassword'] ?: System.getenv('KEY_PASSWORD')
+                storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+                storePassword keystoreProperties['storePassword'] ?: System.getenv('KEYSTORE_PASSWORD')
+            } else {
+                // Fallback to debug keystore for unsigned release builds
+                storeFile file('debug.keystore')
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
         }
     }
     buildTypes {
@@ -111,8 +120,8 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            // استخدام signing config للـ release أو fallback إلى debug
-            signingConfig signingConfigs.release ?: signingConfigs.debug
+            // Use release signing config
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
