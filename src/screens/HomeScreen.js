@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,28 +10,25 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {useUser} from '../context/UserContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 import {
   People24Regular,
   Briefcase24Regular,
   Settings24Regular,
   CheckmarkCircle24Regular,
   Money24Regular,
-  Home24Regular,
-  Apps24Regular,
-  Chat24Regular,
-  MoreHorizontal24Regular,
   Clock24Regular,
   Dismiss24Regular,
 } from '@fluentui/react-native-icons';
+import NavigationBar from '../components/NavigationBar';
 
-export default function HomeScreen({navigation}) {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
-  const {isGuestMode} = useUser();
+export default function HomeScreen({ navigation }) {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
+  const { isGuestMode } = useUser();
   const isRTL = i18n.language === 'ar';
 
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
@@ -45,9 +42,9 @@ export default function HomeScreen({navigation}) {
   };
 
   const mainCards = [
-    {title: t('home.mainCards.consumer'), icon: People24Regular},
-    {title: t('home.mainCards.investor'), icon: Briefcase24Regular},
-    {title: t('home.mainCards.serviceProvider'), icon: Settings24Regular},
+    { title: t('home.mainCards.consumer'), icon: People24Regular },
+    { title: t('home.mainCards.investor'), icon: Briefcase24Regular },
+    { title: t('home.mainCards.serviceProvider'), icon: Settings24Regular },
   ];
 
   const infoCards = [
@@ -63,32 +60,7 @@ export default function HomeScreen({navigation}) {
     },
   ];
 
-  const navTabs = [
-    {
-      label: t('home.tabs.main'),
-      icon: Home24Regular,
-      action: () => {},
-      isActive: true,
-    },
-    {
-      label: t('home.tabs.services'),
-      icon: Apps24Regular,
-      action: () => navigation.navigate('Services'),
-      isActive: false,
-    },
-    {
-      label: t('home.tabs.chat'),
-      icon: Chat24Regular,
-      action: handleChatPress,
-      isActive: false,
-    },
-    {
-      label: t('home.tabs.more'),
-      icon: MoreHorizontal24Regular,
-      action: () => navigation.navigate('More'),
-      isActive: false,
-    },
-  ];
+
 
   const dynamicStyles = StyleSheet.create({
     safeArea: {
@@ -133,7 +105,7 @@ export default function HomeScreen({navigation}) {
       paddingVertical: 18,
       marginHorizontal: 4,
       shadowColor: '#000',
-      shadowOffset: {width: 0, height: 2},
+      shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.06,
       shadowRadius: 6,
       elevation: 2,
@@ -173,7 +145,7 @@ export default function HomeScreen({navigation}) {
       padding: 16,
       marginBottom: 12,
       shadowColor: '#000',
-      shadowOffset: {width: 0, height: 2},
+      shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.04,
       shadowRadius: 4,
       elevation: 1,
@@ -197,43 +169,7 @@ export default function HomeScreen({navigation}) {
       fontSize: 15,
       textAlign: isRTL ? 'right' : 'left',
     },
-    navBarSafeArea: {
-      backgroundColor: theme.colors.surface,
-    },
-    navBar: {
-      flexDirection: isRTL ? 'row-reverse' : 'row',
-      backgroundColor: theme.colors.surface,
-      borderTopWidth: 1,
-      borderTopColor: theme.colors.border,
-      paddingVertical: 8,
-    },
-    navTab: {
-      flex: 1,
-      alignItems: 'center',
-      paddingVertical: 4,
-    },
-    navIcon: {
-      marginBottom: 2,
-      width: 20,
-      height: 20,
-    },
-    navIconActive: {
-      color: theme.colors.primary,
-    },
-    navIconInactive: {
-      color: theme.colors.icon,
-    },
-    navLabel: {
-      fontSize: 13,
-      textAlign: 'center',
-    },
-    navLabelActive: {
-      color: theme.colors.primary,
-      fontWeight: '600',
-    },
-    navLabelInactive: {
-      color: theme.colors.textSecondary,
-    },
+
     // Modal styles
     modalOverlay: {
       flex: 1,
@@ -322,7 +258,7 @@ export default function HomeScreen({navigation}) {
                 <View key={card.title} style={dynamicStyles.mainCard}>
                   <IconComponent style={dynamicStyles.mainCardIcon} />
                   <Text
-                    style={[dynamicStyles.mainCardText, {textAlign: 'center'}]}
+                    style={[dynamicStyles.mainCardText, { textAlign: 'center' }]}
                     numberOfLines={2}>
                     {card.title}
                   </Text>
@@ -341,7 +277,7 @@ export default function HomeScreen({navigation}) {
             return (
               <View key={card.title} style={dynamicStyles.infoCard}>
                 <IconComponent style={dynamicStyles.infoCardIcon} />
-                <View style={{flex: 1}}>
+                <View style={{ flex: 1 }}>
                   <Text style={dynamicStyles.infoCardTitle}>{card.title}</Text>
                   <Text style={dynamicStyles.secondaryText}>{card.desc}</Text>
                 </View>
@@ -349,38 +285,13 @@ export default function HomeScreen({navigation}) {
             );
           })}
         </ScrollView>
-        <SafeAreaView style={dynamicStyles.navBarSafeArea} edges={['bottom']}>
-          <View style={dynamicStyles.navBar}>
-            {navTabs.map((tab, idx) => {
-              const IconComponent = tab.icon;
-              return (
-                <TouchableOpacity
-                  key={tab.label}
-                  style={dynamicStyles.navTab}
-                  onPress={tab.action}
-                  activeOpacity={0.7}>
-                  <IconComponent
-                    style={[
-                      dynamicStyles.navIcon,
-                      tab.isActive
-                        ? dynamicStyles.navIconActive
-                        : dynamicStyles.navIconInactive,
-                    ]}
-                  />
-                  <Text
-                    style={[
-                      dynamicStyles.navLabel,
-                      tab.isActive
-                        ? dynamicStyles.navLabelActive
-                        : dynamicStyles.navLabelInactive,
-                    ]}>
-                    {tab.label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </SafeAreaView>
+        {/* Navigation Bar */}
+        <NavigationBar
+          navigation={navigation}
+          activeTab="home"
+          onComingSoon={handleChatPress}
+          showComplaints={true}
+        />
       </View>
 
       {/* Coming Soon Modal */}
@@ -396,7 +307,7 @@ export default function HomeScreen({navigation}) {
           <TouchableOpacity
             style={dynamicStyles.modalContainer}
             activeOpacity={1}
-            onPress={() => {}}>
+            onPress={() => { }}>
             <View style={dynamicStyles.modalHeader}>
               <Clock24Regular style={dynamicStyles.modalIcon} />
               <Text style={dynamicStyles.modalTitle}>

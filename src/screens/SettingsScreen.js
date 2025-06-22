@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,8 @@ import {
   Switch,
   Alert,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
 import {
   ArrowLeft24Regular,
   LocalLanguage24Regular,
@@ -28,9 +28,9 @@ const APP_CONFIG = {
   useNewHomeScreen: true, // تحكم في الشاشة المستخدمة
 };
 
-const SettingsScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode, toggleTheme} = useTheme();
+const SettingsScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode, toggleTheme } = useTheme();
   const isRTL = i18n.language === 'ar';
 
   // State for toggle settings
@@ -51,7 +51,7 @@ const SettingsScreen = ({navigation}) => {
       'Clear Cache',
       'Are you sure you want to clear the cache? This will free up storage space.',
       [
-        {text: 'Cancel', style: 'cancel'},
+        { text: 'Cancel', style: 'cancel' },
         {
           text: 'Clear',
           style: 'destructive',
@@ -69,7 +69,7 @@ const SettingsScreen = ({navigation}) => {
       t('settings.logout.confirmTitle'),
       t('settings.logout.confirmMessage'),
       [
-        {text: t('settings.logout.cancel'), style: 'cancel'},
+        { text: t('settings.logout.cancel'), style: 'cancel' },
         {
           text: t('settings.logout.confirm'),
           style: 'destructive',
@@ -77,7 +77,7 @@ const SettingsScreen = ({navigation}) => {
             // Add logout logic here
             navigation.reset({
               index: 0,
-              routes: [{name: 'Login'}],
+              routes: [{ name: 'Login' }],
             });
           },
         },
@@ -103,8 +103,8 @@ const SettingsScreen = ({navigation}) => {
             backgroundColor: theme.colors.card,
           },
         ]}>
-        <View style={[styles.iconContainer, {backgroundColor: color + '15'}]}>
-          <IconComponent style={[styles.settingIcon, {color}]} />
+        <View style={[styles.iconContainer, { backgroundColor: color + '15' }]}>
+          <IconComponent style={[styles.settingIcon, { color }]} />
         </View>
         <View style={styles.textContainer}>
           <Text
@@ -131,7 +131,7 @@ const SettingsScreen = ({navigation}) => {
         <Switch
           value={value}
           onValueChange={onValueChange}
-          trackColor={{false: theme.colors.border, true: color + '40'}}
+          trackColor={{ false: theme.colors.border, true: color + '40' }}
           thumbColor={value ? color : theme.colors.surface}
           ios_backgroundColor={theme.colors.border}
           style={styles.switch}
@@ -160,8 +160,8 @@ const SettingsScreen = ({navigation}) => {
         ]}
         onPress={onPress}
         activeOpacity={0.7}>
-        <View style={[styles.iconContainer, {backgroundColor: color + '15'}]}>
-          <IconComponent style={[styles.settingIcon, {color}]} />
+        <View style={[styles.iconContainer, { backgroundColor: color + '15' }]}>
+          <IconComponent style={[styles.settingIcon, { color }]} />
         </View>
         <View style={styles.textContainer}>
           <Text
@@ -190,7 +190,7 @@ const SettingsScreen = ({navigation}) => {
             style={[
               styles.chevronIcon,
               {
-                transform: [{scaleX: isRTL ? -1 : 1}],
+                transform: [{ scaleX: isRTL ? -1 : 1 }],
                 color: theme.colors.icon,
               },
             ]}
@@ -240,7 +240,7 @@ const SettingsScreen = ({navigation}) => {
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -249,7 +249,7 @@ const SettingsScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -289,21 +289,21 @@ const SettingsScreen = ({navigation}) => {
         )}
 
         {/* Biometric Toggle */}
-        {renderToggleSetting(
+        {/* {renderToggleSetting(
           Fingerprint24Regular,
           'settings.biometric.title',
           'settings.biometric.description',
           biometricEnabled,
           setBiometricEnabled,
-        )}
+        )} */}
 
         {/* Font Size Setting */}
-        {renderActionSetting(
+        {/* {renderActionSetting(
           TextFont24Regular,
           'settings.fontSize.title',
           'settings.fontSize.description',
           () => console.log('Font size pressed'),
-        )}
+        )} */}
 
         {/* Clear Cache */}
         {renderActionSetting(
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   switch: {
-    transform: [{scaleX: 1.1}, {scaleY: 1.1}],
+    transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }],
   },
   chevronIcon: {
     width: 20,

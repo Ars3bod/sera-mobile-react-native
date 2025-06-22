@@ -1,5 +1,5 @@
 import i18n from 'i18next';
-import {initReactI18next} from 'react-i18next';
+import { initReactI18next } from 'react-i18next';
 
 const resources = {
   en: {
@@ -13,6 +13,12 @@ const resources = {
         submit: 'Submit',
         loading: 'Loading...',
         retry: 'Retry',
+      },
+      auth: {
+        login: 'Login',
+        cancel: 'Cancel',
+        loginRequired: 'Login Required',
+        loginRequiredMessage: 'You need to login to access this feature. Please login with your Nafath account to continue.',
       },
       login: 'Login',
       login_subtitle:
@@ -112,6 +118,11 @@ const resources = {
       services: {
         title: 'Electronic Services',
         language: 'عر',
+        comingSoon: 'Coming Soon',
+        description: {
+          title: 'Digital Government Services',
+          subtitle: 'Access SERA\'s digital services anytime, anywhere. Submit requests, track applications, and manage your account with ease and security.',
+        },
         permitRequest: {
           title: 'Permit Request',
           description:
@@ -182,6 +193,10 @@ const resources = {
         complaints: {
           title: 'Complaints',
           description: 'Submit and track your complaints easily',
+        },
+        compensationStandards: {
+          title: 'Compensation Standards',
+          description: 'Learn about your consumer rights and compensation',
         },
       },
       settings: {
@@ -971,6 +986,12 @@ const resources = {
         loading: 'جاري التحميل...',
         retry: 'إعادة المحاولة',
       },
+      auth: {
+        login: 'تسجيل الدخول',
+        cancel: 'إلغاء',
+        loginRequired: 'تسجيل الدخول مطلوب',
+        loginRequiredMessage: 'تحتاج إلى تسجيل الدخول للوصول إلى هذه الميزة. يرجى تسجيل الدخول باستخدام حساب نفاذ للمتابعة.',
+      },
       login: 'تسجيل الدخول',
       login_subtitle: 'التحقق من الهوية للمواطنين والمقيمين في السعودية',
       login_button: 'تسجيل الدخول عبر نفاذ',
@@ -1064,6 +1085,11 @@ const resources = {
       services: {
         title: 'الخدمات الإلكترونية',
         language: 'EN',
+        comingSoon: 'قريباً',
+        description: {
+          title: 'الخدمات الحكومية الرقمية',
+          subtitle: 'اطلع على الخدمات الرقمية للهيئة في أي وقت ومن أي مكان. قدم طلباتك، تابع حالة المعاملات، وأدر حسابك بسهولة وأمان.',
+        },
         permitRequest: {
           title: 'طلب تصريح',
           description: 'يمكن طلب التصريح للاستفادة من التقديم الإلكتروني ...',
@@ -1130,6 +1156,10 @@ const resources = {
         complaints: {
           title: 'الشكاوى',
           description: 'تقديم ومتابعة شكاويك بسهولة',
+        },
+        compensationStandards: {
+          title: 'معايير التعويضات',
+          description: 'تعرف على حقوقك كمستهلك ومعايير التعويض',
         },
       },
       settings: {

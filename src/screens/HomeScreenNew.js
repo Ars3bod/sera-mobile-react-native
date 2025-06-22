@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,20 +9,16 @@ import {
   Modal,
   Animated,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {useUser} from '../context/UserContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 import {
   People24Regular,
   Briefcase24Regular,
   Settings24Regular,
   CheckmarkCircle24Regular,
   Money24Regular,
-  Home24Regular,
-  Apps24Regular,
-  Chat24Regular,
-  MoreHorizontal24Regular,
   Clock24Regular,
   Dismiss24Regular,
   DocumentText24Regular,
@@ -39,11 +35,12 @@ import {
   Calendar24Regular,
   Share24Regular,
 } from '@fluentui/react-native-icons';
+import NavigationBar from '../components/NavigationBar';
 
-export default function HomeScreenNew({navigation}) {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
-  const {user, isAuthenticated} = useUser();
+export default function HomeScreenNew({ navigation }) {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
+  const { user, isAuthenticated } = useUser();
   const isRTL = i18n.language === 'ar';
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
@@ -66,8 +63,8 @@ export default function HomeScreenNew({navigation}) {
     avatar: user
       ? getEnglishInitials(user.enFirst, user.enFather)
       : isRTL
-      ? 'مس'
-      : 'US', // First two letters of English names for avatar
+        ? 'مس'
+        : 'US', // First two letters of English names for avatar
   };
 
   // Hardcoded translations for now
@@ -314,61 +311,36 @@ export default function HomeScreenNew({navigation}) {
     },
   ];
 
-  const navTabs = [
-    {
-      label: translations.tabs.main,
-      icon: Home24Regular,
-      action: () => {},
-      isActive: true,
-    },
-    {
-      label: translations.tabs.services,
-      icon: Apps24Regular,
-      action: () => navigation.navigate('Services'),
-      isActive: false,
-    },
-    {
-      label: translations.tabs.chat,
-      icon: Chat24Regular,
-      action: handleComingSoon,
-      isActive: false,
-    },
-    {
-      label: translations.tabs.more,
-      icon: MoreHorizontal24Regular,
-      action: () => navigation.navigate('More'),
-      isActive: false,
-    },
-  ];
 
-  const StatCard = ({IconComponent, value, label, color}) => (
-    <View style={[styles.statCard, {backgroundColor: theme.colors.card}]}>
-      <View style={[styles.statIconContainer, {backgroundColor: color + '20'}]}>
-        <IconComponent style={[styles.statIconComponent, {color}]} />
+
+  const StatCard = ({ IconComponent, value, label, color }) => (
+    <View style={[styles.statCard, { backgroundColor: theme.colors.card }]}>
+      <View style={[styles.statIconContainer, { backgroundColor: color + '20' }]}>
+        <IconComponent style={[styles.statIconComponent, { color }]} />
       </View>
-      <Text style={[styles.statValue, {color: theme.colors.text}]}>
+      <Text style={[styles.statValue, { color: theme.colors.text }]}>
         {value}
       </Text>
-      <Text style={[styles.statLabel, {color: theme.colors.textSecondary}]}>
+      <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
         {label}
       </Text>
     </View>
   );
 
-  const QuickActionCard = ({action}) => {
+  const QuickActionCard = ({ action }) => {
     const IconComponent = action.icon;
     return (
       <TouchableOpacity
-        style={[styles.quickActionCard, {backgroundColor: theme.colors.card}]}
+        style={[styles.quickActionCard, { backgroundColor: theme.colors.card }]}
         onPress={action.onPress}
         activeOpacity={0.7}>
         <View
           style={[
             styles.quickActionIcon,
-            {backgroundColor: action.color + '20'},
+            { backgroundColor: action.color + '20' },
           ]}>
           <IconComponent
-            style={[styles.quickActionIconComponent, {color: action.color}]}
+            style={[styles.quickActionIconComponent, { color: action.color }]}
           />
         </View>
         <Text
@@ -391,27 +363,27 @@ export default function HomeScreenNew({navigation}) {
       style={styles.avatarContainer}
       onPress={() => navigation.navigate('Profile')}
       activeOpacity={0.7}>
-      <View style={[styles.avatar, {backgroundColor: '#00623B'}]}>
+      <View style={[styles.avatar, { backgroundColor: '#00623B' }]}>
         <Text style={styles.avatarText}>{userData.avatar}</Text>
       </View>
     </TouchableOpacity>
   );
 
-  const ActivityItem = ({activity}) => {
+  const ActivityItem = ({ activity }) => {
     const IconComponent = activity.icon;
     return (
       <View
         style={[
           styles.activityItem,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <View
           style={[
             styles.activityIcon,
-            {backgroundColor: activity.color + '20'},
+            { backgroundColor: activity.color + '20' },
           ]}>
           <IconComponent
-            style={[styles.activityIconComponent, {color: activity.color}]}
+            style={[styles.activityIconComponent, { color: activity.color }]}
           />
         </View>
         <View style={styles.activityContent}>
@@ -440,25 +412,25 @@ export default function HomeScreenNew({navigation}) {
     );
   };
 
-  const SeraUpdateItem = ({update}) => {
+  const SeraUpdateItem = ({ update }) => {
     const IconComponent = update.icon;
     return (
       <TouchableOpacity
         style={[
           styles.updateItem,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}
         activeOpacity={0.7}>
-        <View style={[styles.updateIcon, {backgroundColor: '#00623B20'}]}>
+        <View style={[styles.updateIcon, { backgroundColor: '#00623B20' }]}>
           <IconComponent
-            style={[styles.updateIconComponent, {color: '#00623B'}]}
+            style={[styles.updateIconComponent, { color: '#00623B' }]}
           />
         </View>
         <View style={styles.updateContent}>
           <View
             style={[
               styles.updateHeader,
-              {flexDirection: isRTL ? 'row-reverse' : 'row'},
+              { flexDirection: isRTL ? 'row-reverse' : 'row' },
             ]}>
             <Text
               style={[
@@ -507,7 +479,7 @@ export default function HomeScreenNew({navigation}) {
             styles.chevronIcon,
             {
               color: theme.colors.textSecondary,
-              transform: isRTL ? [{rotate: '180deg'}] : [],
+              transform: isRTL ? [{ rotate: '180deg' }] : [],
             },
           ]}
         />
@@ -515,29 +487,29 @@ export default function HomeScreenNew({navigation}) {
     );
   };
 
-  const CompensationCard = ({standard}) => {
+  const CompensationCard = ({ standard }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const IconComponent = standard.icon;
 
     return (
       <TouchableOpacity
-        style={[styles.compensationCard, {backgroundColor: theme.colors.card}]}
+        style={[styles.compensationCard, { backgroundColor: theme.colors.card }]}
         onPress={() => setIsExpanded(!isExpanded)}
         activeOpacity={0.7}>
         <View
           style={[
             styles.compensationHeader,
-            {flexDirection: isRTL ? 'row-reverse' : 'row'},
+            { flexDirection: isRTL ? 'row-reverse' : 'row' },
           ]}>
           <View
             style={[
               styles.compensationIcon,
-              {backgroundColor: standard.color + '20'},
+              { backgroundColor: standard.color + '20' },
             ]}>
             <IconComponent
               style={[
                 styles.compensationIconComponent,
-                {color: standard.color},
+                { color: standard.color },
               ]}
             />
           </View>
@@ -562,7 +534,7 @@ export default function HomeScreenNew({navigation}) {
                 },
               ]}>
               <Text
-                style={[styles.compensationAmount, {color: standard.color}]}>
+                style={[styles.compensationAmount, { color: standard.color }]}>
                 {standard.compensation}
               </Text>
               <Text
@@ -584,8 +556,8 @@ export default function HomeScreenNew({navigation}) {
               {
                 color: theme.colors.textSecondary,
                 transform: [
-                  ...(isRTL ? [{rotate: '180deg'}] : []),
-                  ...(isExpanded ? [{rotate: isRTL ? '90deg' : '-90deg'}] : []),
+                  ...(isRTL ? [{ rotate: '180deg' }] : []),
+                  ...(isExpanded ? [{ rotate: isRTL ? '90deg' : '-90deg' }] : []),
                 ],
               },
             ]}
@@ -597,7 +569,7 @@ export default function HomeScreenNew({navigation}) {
             <View
               style={[
                 styles.compensationDetailRow,
-                {alignItems: isRTL ? 'flex-end' : 'flex-start'},
+                { alignItems: isRTL ? 'flex-end' : 'flex-start' },
               ]}>
               <Text
                 style={[
@@ -625,7 +597,7 @@ export default function HomeScreenNew({navigation}) {
             <View
               style={[
                 styles.compensationDetailRow,
-                {alignItems: isRTL ? 'flex-end' : 'flex-start'},
+                { alignItems: isRTL ? 'flex-end' : 'flex-start' },
               ]}>
               <Text
                 style={[
@@ -676,7 +648,7 @@ export default function HomeScreenNew({navigation}) {
       padding: 20,
       marginBottom: 20,
       shadowColor: '#000',
-      shadowOffset: {width: 0, height: 4},
+      shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.1,
       shadowRadius: 12,
       elevation: 5,
@@ -731,7 +703,7 @@ export default function HomeScreenNew({navigation}) {
       padding: 16,
       marginBottom: 20,
       shadowColor: '#000',
-      shadowOffset: {width: 0, height: 2},
+      shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.08,
       shadowRadius: 8,
       elevation: 3,
@@ -748,48 +720,12 @@ export default function HomeScreenNew({navigation}) {
       padding: 20,
       marginBottom: 20,
       shadowColor: '#000',
-      shadowOffset: {width: 0, height: 2},
+      shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.08,
       shadowRadius: 8,
       elevation: 3,
     },
-    navBarSafeArea: {
-      backgroundColor: theme.colors.surface,
-    },
-    navBar: {
-      flexDirection: isRTL ? 'row-reverse' : 'row',
-      backgroundColor: theme.colors.surface,
-      borderTopWidth: 1,
-      borderTopColor: theme.colors.border,
-      paddingVertical: 8,
-    },
-    navTab: {
-      flex: 1,
-      alignItems: 'center',
-      paddingVertical: 4,
-    },
-    navIcon: {
-      marginBottom: 2,
-      width: 20,
-      height: 20,
-    },
-    navIconActive: {
-      color: theme.colors.primary,
-    },
-    navIconInactive: {
-      color: theme.colors.icon,
-    },
-    navLabel: {
-      fontSize: 13,
-      textAlign: 'center',
-    },
-    navLabelActive: {
-      color: theme.colors.primary,
-      fontWeight: '600',
-    },
-    navLabelInactive: {
-      color: theme.colors.textSecondary,
-    },
+
     // Modal styles
     modalOverlay: {
       flex: 1,
@@ -805,7 +741,7 @@ export default function HomeScreenNew({navigation}) {
       width: '100%',
       maxWidth: 320,
       shadowColor: '#000',
-      shadowOffset: {width: 0, height: 10},
+      shadowOffset: { width: 0, height: 10 },
       shadowOpacity: 0.25,
       shadowRadius: 20,
       elevation: 10,
@@ -870,7 +806,7 @@ export default function HomeScreenNew({navigation}) {
           <View
             style={[
               styles.topAvatarContainer,
-              {alignItems: isRTL ? 'flex-end' : 'flex-start'},
+              { alignItems: isRTL ? 'flex-end' : 'flex-start' },
             ]}>
             <ProfileAvatar />
           </View>
@@ -929,7 +865,7 @@ export default function HomeScreenNew({navigation}) {
               style={styles.seeAllButton}
               onPress={handleComingSoon}
               activeOpacity={0.7}>
-              <Text style={[styles.seeAllText, {color: '#00623B'}]}>
+              <Text style={[styles.seeAllText, { color: '#00623B' }]}>
                 {translations.seraUpdates.seeAll}
               </Text>
             </TouchableOpacity>
@@ -961,7 +897,7 @@ export default function HomeScreenNew({navigation}) {
               style={styles.seeAllButton}
               onPress={handleComingSoon}
               activeOpacity={0.7}>
-              <Text style={[styles.seeAllText, {color: '#00623B'}]}>
+              <Text style={[styles.seeAllText, { color: '#00623B' }]}>
                 {translations.compensation.viewAll}
               </Text>
             </TouchableOpacity>
@@ -983,38 +919,13 @@ export default function HomeScreenNew({navigation}) {
           </View> */}
         </ScrollView>
 
-        <SafeAreaView style={dynamicStyles.navBarSafeArea} edges={['bottom']}>
-          <View style={dynamicStyles.navBar}>
-            {navTabs.map((tab, idx) => {
-              const IconComponent = tab.icon;
-              return (
-                <TouchableOpacity
-                  key={tab.label}
-                  style={dynamicStyles.navTab}
-                  onPress={tab.action}
-                  activeOpacity={0.7}>
-                  <IconComponent
-                    style={[
-                      dynamicStyles.navIcon,
-                      tab.isActive
-                        ? dynamicStyles.navIconActive
-                        : dynamicStyles.navIconInactive,
-                    ]}
-                  />
-                  <Text
-                    style={[
-                      dynamicStyles.navLabel,
-                      tab.isActive
-                        ? dynamicStyles.navLabelActive
-                        : dynamicStyles.navLabelInactive,
-                    ]}>
-                    {tab.label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </SafeAreaView>
+        {/* Navigation Bar */}
+        <NavigationBar
+          navigation={navigation}
+          activeTab="home"
+          onComingSoon={handleComingSoon}
+          showComplaints={true}
+        />
       </View>
 
       {/* Coming Soon Modal */}
@@ -1030,7 +941,7 @@ export default function HomeScreenNew({navigation}) {
           <TouchableOpacity
             style={dynamicStyles.modalContainer}
             activeOpacity={1}
-            onPress={() => {}}>
+            onPress={() => { }}>
             <View style={dynamicStyles.modalHeader}>
               <Clock24Regular style={dynamicStyles.modalIcon} />
               <Text style={dynamicStyles.modalTitle}>
@@ -1096,7 +1007,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
@@ -1253,7 +1164,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 12,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,

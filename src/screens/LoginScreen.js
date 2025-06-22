@@ -10,9 +10,9 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {useUser} from '../context/UserContext';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 import {
   Globe24Regular,
   Shield24Regular,
@@ -20,12 +20,12 @@ import {
 } from '@fluentui/react-native-icons';
 
 const logo = require('../assets/images/sera_logo.png');
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-export default function LoginScreen({navigation}) {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
-  const {setGuestMode} = useUser();
+export default function LoginScreen({ navigation }) {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
+  const { setGuestMode } = useUser();
   const isArabic = i18n.language === 'ar';
 
   const toggleLanguage = () => {
@@ -38,7 +38,7 @@ export default function LoginScreen({navigation}) {
 
   const handleGuestLogin = () => {
     setGuestMode(true);
-    navigation.navigate('Home');
+    navigation.navigate('Services');
   };
 
   const dynamicStyles = StyleSheet.create({
@@ -101,7 +101,7 @@ export default function LoginScreen({navigation}) {
       paddingVertical: 18,
       alignItems: 'center',
       shadowColor: theme.colors.primary,
-      shadowOffset: {width: 0, height: 8},
+      shadowOffset: { width: 0, height: 8 },
       shadowOpacity: 0.3,
       shadowRadius: 12,
       elevation: 8,
@@ -196,7 +196,7 @@ export default function LoginScreen({navigation}) {
           <TouchableOpacity
             style={[
               styles.langSwitcher,
-              {alignSelf: isArabic ? 'flex-end' : 'flex-start'},
+              { alignSelf: isArabic ? 'flex-end' : 'flex-start' },
             ]}
             onPress={toggleLanguage}>
             <Globe24Regular style={dynamicStyles.langIcon} />
@@ -214,7 +214,7 @@ export default function LoginScreen({navigation}) {
           <View
             style={[
               styles.welcomeContainer,
-              {alignItems: isArabic ? 'flex-end' : 'flex-start'},
+              { alignItems: isArabic ? 'flex-end' : 'flex-start' },
             ]}>
             <Text style={dynamicStyles.welcomeTitle}>
               {isArabic ? 'مرحباً بك' : 'Welcome'}
@@ -231,7 +231,7 @@ export default function LoginScreen({navigation}) {
         <View
           style={[
             styles.loginSection,
-            {alignItems: isArabic ? 'flex-end' : 'flex-start'},
+            { alignItems: isArabic ? 'flex-end' : 'flex-start' },
           ]}>
           <Text style={dynamicStyles.loginTitle}>{t('login')}</Text>
           <Text style={dynamicStyles.loginSubtitle}>
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,

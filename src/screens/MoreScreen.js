@@ -8,8 +8,8 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
 import {
   ArrowLeft24Regular,
   Settings24Regular,
@@ -21,11 +21,12 @@ import {
   Link24Regular,
   ChevronRight24Regular,
   Person24Regular,
+  Money24Regular,
 } from '@fluentui/react-native-icons';
 
-const MoreScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+const MoreScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const isRTL = i18n.language === 'ar';
 
   const menuSections = [
@@ -81,6 +82,16 @@ const MoreScreen = ({navigation}) => {
           color: theme.colors.primary,
           onPress: () => {
             navigation.navigate('ImportantLinks');
+          },
+        },
+        {
+          id: 8,
+          titleKey: 'more.compensationStandards.title',
+          descriptionKey: 'more.compensationStandards.description',
+          icon: Money24Regular,
+          color: theme.colors.primary,
+          onPress: () => {
+            navigation.navigate('CompensationStandards');
           },
         },
       ],
@@ -148,8 +159,8 @@ const MoreScreen = ({navigation}) => {
         onPress={item.onPress}
         activeOpacity={0.7}>
         <View
-          style={[styles.iconContainer, {backgroundColor: item.color + '15'}]}>
-          <IconComponent style={[styles.menuIcon, {color: item.color}]} />
+          style={[styles.iconContainer, { backgroundColor: item.color + '15' }]}>
+          <IconComponent style={[styles.menuIcon, { color: item.color }]} />
         </View>
         <View style={styles.textContainer}>
           <Text
@@ -177,7 +188,7 @@ const MoreScreen = ({navigation}) => {
           style={[
             styles.chevronIcon,
             {
-              transform: [{scaleX: isRTL ? -1 : 1}],
+              transform: [{ scaleX: isRTL ? -1 : 1 }],
               color: theme.colors.icon,
             },
           ]}
@@ -246,7 +257,7 @@ const MoreScreen = ({navigation}) => {
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -255,7 +266,7 @@ const MoreScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -273,7 +284,7 @@ const MoreScreen = ({navigation}) => {
             {renderSection(section)}
             {index < menuSections.length - 1 && (
               <View
-                style={[styles.divider, {backgroundColor: theme.colors.border}]}
+                style={[styles.divider, { backgroundColor: theme.colors.border }]}
               />
             )}
           </React.Fragment>

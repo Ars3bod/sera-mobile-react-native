@@ -1,35 +1,35 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   Modal,
   ToastAndroid,
   Platform,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {useUser} from '../context/UserContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 import {
   DocumentText24Regular,
   People24Regular,
   Certificate24Regular,
   Share24Regular,
   FolderOpen24Regular,
-  ArrowLeft24Regular,
   Clock24Regular,
   Dismiss24Regular,
-  Person24Regular,
 } from '@fluentui/react-native-icons';
+import NavigationBar from '../components/NavigationBar';
+import LoginRequiredModal from '../components/LoginRequiredModal';
 
-const ServicesScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
-  const {isAuthenticated, isGuestMode} = useUser();
+const ServicesScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
+  const { isAuthenticated, isGuestMode } = useUser();
   const isRTL = i18n.language === 'ar';
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -48,34 +48,42 @@ const ServicesScreen = ({navigation}) => {
 
   const handleLoginPress = () => {
     setShowLoginModal(false);
-    navigation.navigate('NafathLogin', {fromModal: true});
+    navigation.navigate('NafathLogin', { fromModal: true });
   };
 
   const showLoginPrompt = () => {
     setShowLoginModal(true);
   };
 
+  const handleComingSoonChat = () => {
+    setShowComingSoonModal(true);
+  };
+
   const services = [
-    {
-      id: 1,
-      titleKey: 'services.permitRequest.title',
-      descriptionKey: 'services.permitRequest.description',
-      icon: DocumentText24Regular,
-      color: theme.colors.primary,
-    },
     {
       id: 2,
       titleKey: 'services.complaints.title',
       descriptionKey: 'services.complaints.description',
       icon: People24Regular,
       color: theme.colors.primary,
+      isAvailable: true,
     },
+    {
+      id: 1,
+      titleKey: 'services.permitRequest.title',
+      descriptionKey: 'services.permitRequest.description',
+      icon: DocumentText24Regular,
+      color: theme.colors.primary,
+      isAvailable: false,
+    },
+
     {
       id: 3,
       titleKey: 'services.licenseIssuance.title',
       descriptionKey: 'services.licenseIssuance.description',
       icon: Certificate24Regular,
       color: theme.colors.primary,
+      isAvailable: false, // Coming soon
     },
     {
       id: 4,
@@ -83,6 +91,7 @@ const ServicesScreen = ({navigation}) => {
       descriptionKey: 'services.dataSharing.description',
       icon: Share24Regular,
       color: theme.colors.primary,
+      isAvailable: false, // Coming soon
     },
     {
       id: 5,
@@ -90,11 +99,18 @@ const ServicesScreen = ({navigation}) => {
       descriptionKey: 'services.freedomOfInformation.description',
       icon: FolderOpen24Regular,
       color: theme.colors.primary,
+      isAvailable: false, // Coming soon
     },
   ];
 
   const handleServicePress = service => {
-    // Check if user is in guest mode
+    // Check if service is not available
+    if (!service.isAvailable) {
+      handleComingSoon();
+      return;
+    }
+
+    // Check if user is in guest mode for available services
     if (isGuestMode && !isAuthenticated) {
       showLoginPrompt();
       return;
@@ -117,25 +133,11 @@ const ServicesScreen = ({navigation}) => {
       return;
     }
 
-    // Handle Data Sharing service (id: 4)
-    if (service.id === 4) {
-      handleComingSoon();
-      return;
-    }
-
-    // Handle Freedom of Information service (id: 5)
-    if (service.id === 5) {
-      handleComingSoon();
-      return;
-    }
-
-    // For other services, you can add navigation logic here
+    // For other available services, you can add navigation logic here
     // navigation.navigate('ServiceDetail', { service });
   };
 
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
+
 
   // const toggleLanguage = () => {
   //   const newLanguage = i18n.language === 'ar' ? 'en' : 'ar';
@@ -144,44 +146,80 @@ const ServicesScreen = ({navigation}) => {
 
   const renderServiceCard = service => {
     const IconComponent = service.icon;
+    const isDisabled = !service.isAvailable;
+
     return (
       <TouchableOpacity
         key={service.id}
-        style={[styles.serviceCard, {backgroundColor: theme.colors.card}]}
+        style={[
+          styles.serviceCard,
+          {
+            backgroundColor: theme.colors.card,
+            borderColor: theme.colors.border,
+            opacity: isDisabled ? 0.5 : 1,
+          },
+        ]}
         onPress={() => handleServicePress(service)}
-        activeOpacity={0.7}>
-        <View
-          style={[
-            styles.cardContent,
-            {alignItems: isRTL ? 'flex-end' : 'flex-start'},
-          ]}>
+        activeOpacity={isDisabled ? 0.5 : 0.7}
+        disabled={false}>
+        <View style={[styles.cardContent, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+          {/* Icon Section */}
           <View
             style={[
               styles.iconContainer,
-              {backgroundColor: service.color + '20'},
+              {
+                backgroundColor: isDisabled ? theme.colors.textSecondary + '15' : service.color + '15',
+                marginRight: isRTL ? 0 : 16,
+                marginLeft: isRTL ? 16 : 0,
+              },
             ]}>
             <IconComponent
-              style={[styles.serviceIcon, {color: service.color}]}
+              style={[
+                styles.serviceIcon,
+                { color: isDisabled ? theme.colors.textSecondary : service.color }
+              ]}
             />
           </View>
-          <Text
-            style={[
-              styles.serviceTitle,
-              {textAlign: isRTL ? 'right' : 'left', color: theme.colors.text},
-            ]}>
-            {t(service.titleKey)}
-          </Text>
-          <Text
-            style={[
-              styles.serviceDescription,
-              {
-                textAlign: isRTL ? 'right' : 'left',
-                color: theme.colors.textSecondary,
-              },
-            ]}
-            numberOfLines={3}>
-            {t(service.descriptionKey)}
-          </Text>
+
+          {/* Content Section */}
+          <View style={[styles.textContent, { alignItems: isRTL ? 'flex-end' : 'flex-start' }]}>
+            <View style={[styles.titleContainer, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
+              <Text
+                style={[
+                  styles.serviceTitle,
+                  {
+                    textAlign: isRTL ? 'right' : 'left',
+                    color: isDisabled ? theme.colors.textSecondary : theme.colors.text,
+                    flex: 1,
+                  },
+                ]}>
+                {t(service.titleKey)}
+              </Text>
+              {isDisabled && (
+                <View style={[styles.comingSoonBadge, { backgroundColor: theme.colors.textSecondary + '20' }]}>
+                  <Text style={[styles.comingSoonText, { color: theme.colors.textSecondary }]}>
+                    {t('services.comingSoon')}
+                  </Text>
+                </View>
+              )}
+            </View>
+            <Text
+              style={[
+                styles.serviceDescription,
+                {
+                  textAlign: isRTL ? 'right' : 'left',
+                  color: isDisabled ? theme.colors.textSecondary : theme.colors.textSecondary,
+                },
+              ]}
+              numberOfLines={2}>
+              {t(service.descriptionKey)}
+            </Text>
+          </View>
+
+          {/* Arrow Indicator */}
+          <View style={[styles.arrowContainer, { transform: [{ scaleX: isRTL ? -1 : 1 }] }]}>
+            <Text style={[styles.arrowText, { color: theme.colors.textSecondary }]}>›</Text>
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -202,11 +240,7 @@ const ServicesScreen = ({navigation}) => {
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
     },
-    backIcon: {
-      width: 24,
-      height: 24,
-      color: theme.colors.primary,
-    },
+
     headerTitle: {
       fontSize: 24,
       fontWeight: 'bold',
@@ -275,9 +309,9 @@ const ServicesScreen = ({navigation}) => {
       backgroundColor: theme.colors.primary,
       borderRadius: 12,
       paddingVertical: 14,
-      paddingHorizontal: 14,
+      paddingHorizontal: 24,
       alignItems: 'center',
-      flex: 1,
+      width: '100%',
     },
     modalButtonText: {
       color: '#FFFFFF',
@@ -301,57 +335,62 @@ const ServicesScreen = ({navigation}) => {
   });
 
   return (
-    <SafeAreaView style={dynamicStyles.container}>
+    <SafeAreaView style={dynamicStyles.container} edges={['top']}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={theme.colors.surface}
       />
 
       {/* Header */}
-      <View
-        style={[
-          dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
-        ]}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleGoBack}
-          activeOpacity={0.7}>
-          <ArrowLeft24Regular
-            style={[
-              dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
-            ]}
-          />
-        </TouchableOpacity>
+      <View style={dynamicStyles.header}>
         <Text style={dynamicStyles.headerTitle}>{t('services.title')}</Text>
-        <View style={styles.placeholderView} />
       </View>
 
-      {/* Services Grid */}
+      {/* Services Description Section */}
+      <View style={[
+        styles.descriptionSection,
+        {
+          backgroundColor: theme.colors.surface,
+          borderBottomColor: theme.colors.border,
+        }
+      ]}>
+        <Text style={[
+          styles.descriptionTitle,
+          {
+            color: theme.colors.text,
+            textAlign: isRTL ? 'right' : 'left',
+          }
+        ]}>
+          {t('services.description.title')}
+        </Text>
+        <Text style={[
+          styles.descriptionText,
+          {
+            color: theme.colors.textSecondary,
+            textAlign: isRTL ? 'right' : 'left',
+          }
+        ]}>
+          {t('services.description.subtitle')}
+        </Text>
+      </View>
+
+      {/* Services List */}
       <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}>
-        <View style={styles.servicesGrid}>
-          {services.map((service, index) => {
-            if (index === services.length - 1 && services.length % 2 !== 0) {
-              // Last item if odd number of services - align based on language direction
-              return (
-                <View
-                  key={service.id}
-                  style={[
-                    styles.fullWidthCardContainer,
-                    {alignItems: isRTL ? 'flex-end' : 'flex-start'},
-                  ]}>
-                  {renderServiceCard(service)}
-                </View>
-              );
-            }
-            return renderServiceCard(service);
-          })}
+        <View style={styles.servicesList}>
+          {services.map(service => renderServiceCard(service))}
         </View>
       </ScrollView>
+
+      {/* Navigation Bar */}
+      <NavigationBar
+        navigation={navigation}
+        activeTab="services"
+        onComingSoon={handleComingSoonChat}
+        showComplaints={true}
+      />
 
       {/* Coming Soon Modal */}
       <Modal
@@ -366,7 +405,7 @@ const ServicesScreen = ({navigation}) => {
           <TouchableOpacity
             style={dynamicStyles.modalContainer}
             activeOpacity={1}
-            onPress={() => {}}>
+            onPress={() => { }}>
             <View style={dynamicStyles.modalHeader}>
               <Clock24Regular style={dynamicStyles.modalIcon} />
               <Text style={dynamicStyles.modalTitle}>
@@ -395,61 +434,14 @@ const ServicesScreen = ({navigation}) => {
       </Modal>
 
       {/* Login Required Modal */}
-      <Modal
+      <LoginRequiredModal
         visible={showLoginModal}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={closeLoginModal}>
-        <TouchableOpacity
-          style={dynamicStyles.modalOverlay}
-          activeOpacity={1}
-          onPress={closeLoginModal}>
-          <TouchableOpacity
-            style={dynamicStyles.modalContainer}
-            activeOpacity={1}
-            onPress={() => {}}>
-            <View style={dynamicStyles.modalHeader}>
-              <Person24Regular style={dynamicStyles.modalIcon} />
-              <Text style={dynamicStyles.modalTitle}>
-                {isRTL ? 'تسجيل الدخول مطلوب' : 'Login Required'}
-              </Text>
-              <TouchableOpacity
-                style={dynamicStyles.closeButton}
-                onPress={closeLoginModal}
-                activeOpacity={0.7}>
-                <Dismiss24Regular style={dynamicStyles.closeIcon} />
-              </TouchableOpacity>
-            </View>
-            <Text style={dynamicStyles.modalMessage}>
-              {isRTL
-                ? 'يجب تسجيل الدخول لاستخدام هذه الخدمة. هل تريد تسجيل الدخول الآن؟'
-                : 'You need to login to use this service. Would you like to login now?'}
-            </Text>
-            <View style={dynamicStyles.modalButtonsContainer}>
-              <TouchableOpacity
-                style={[dynamicStyles.modalButton, dynamicStyles.cancelButton]}
-                onPress={closeLoginModal}
-                activeOpacity={0.8}>
-                <Text
-                  style={[
-                    dynamicStyles.modalButtonText,
-                    dynamicStyles.cancelButtonText,
-                  ]}>
-                  {isRTL ? 'إلغاء' : 'Cancel'}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={dynamicStyles.modalButton}
-                onPress={handleLoginPress}
-                activeOpacity={0.8}>
-                <Text style={dynamicStyles.modalButtonText}>
-                  {isRTL ? 'تسجيل الدخول' : 'Login'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </TouchableOpacity>
-      </Modal>
+        onClose={closeLoginModal}
+        onLogin={handleLoginPress}
+        message={isRTL
+          ? 'يجب تسجيل الدخول لاستخدام هذه الخدمة. هل تريد تسجيل الدخول الآن؟'
+          : 'You need to login to use this service. Would you like to login now?'}
+      />
     </SafeAreaView>
   );
 };
@@ -469,64 +461,103 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#e9ecef',
   },
-  backButton: {
-    padding: 8,
-  },
-  placeholderView: {
-    width: 40,
-  },
+
   content: {
     flex: 1,
   },
+  descriptionSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+  },
+  descriptionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  descriptionText: {
+    fontSize: 14,
+    lineHeight: 20,
+    opacity: 0.8,
+  },
   scrollContent: {
     padding: 20,
+    paddingBottom: 100, // Extra space for navigation bar
   },
-  servicesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+  servicesList: {
+    gap: 16,
   },
   serviceCard: {
-    width: '48%',
-    borderRadius: 12,
-    marginBottom: 16,
+    width: '100%',
+    borderRadius: 16,
+    marginBottom: 0, // Using gap instead
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  fullWidthCardContainer: {
-    width: '100%',
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
   },
   cardContent: {
     padding: 20,
+    alignItems: 'center',
+    minHeight: 80,
   },
   iconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 12,
+    width: 64,
+    height: 64,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
   },
   serviceIcon: {
-    width: 24,
-    height: 24,
+    width: 28,
+    height: 28,
+  },
+  textContent: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingVertical: 4,
+  },
+  titleContainer: {
+    alignItems: 'center',
+    marginBottom: 6,
+    width: '100%',
   },
   serviceTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
-    alignSelf: 'stretch',
+    lineHeight: 24,
+  },
+  comingSoonBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    marginLeft: 8,
+  },
+  comingSoonText: {
+    fontSize: 10,
+    fontWeight: '600',
+    textTransform: 'uppercase',
   },
   serviceDescription: {
     fontSize: 14,
     lineHeight: 20,
-    alignSelf: 'stretch',
+    opacity: 0.8,
+  },
+  arrowContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 24,
+    height: 24,
+  },
+  arrowText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    opacity: 0.6,
   },
 });
 

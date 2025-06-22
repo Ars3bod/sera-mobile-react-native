@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, useCallback} from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,12 +9,12 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {useUser} from '../context/UserContext';
-import {pollNafathStatus, loginNafath} from '../services/nafathService';
-import {LoadingSpinner} from '../animations';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
+import { pollNafathStatus, loginNafath } from '../services/nafathService';
+import { LoadingSpinner } from '../animations';
 import DeepLinkService from '../services/deepLinkService';
 import {
   ArrowLeft24Regular,
@@ -26,11 +26,11 @@ import {
   CheckmarkCircle24Regular,
 } from '@fluentui/react-native-icons';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-export default function NafathVerificationScreen({route, navigation}) {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+export default function NafathVerificationScreen({ route, navigation }) {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const userContext = useUser();
   const isArabic = i18n.language === 'ar';
 
@@ -203,7 +203,7 @@ export default function NafathVerificationScreen({route, navigation}) {
       width: 24,
       height: 24,
       color: theme.colors.primary,
-      transform: [{scaleX: isArabic ? -1 : 1}],
+      transform: [{ scaleX: isArabic ? -1 : 1 }],
     },
     headerTitle: {
       fontSize: 20,
@@ -239,7 +239,7 @@ export default function NafathVerificationScreen({route, navigation}) {
       padding: 24,
       marginBottom: 24,
       shadowColor: '#000',
-      shadowOffset: {width: 0, height: 8},
+      shadowOffset: { width: 0, height: 8 },
       shadowOpacity: 0.15,
       shadowRadius: 16,
       elevation: 8,
@@ -336,8 +336,8 @@ export default function NafathVerificationScreen({route, navigation}) {
       color: loading
         ? theme.colors.primary
         : error
-        ? theme.colors.error
-        : theme.colors.textSecondary,
+          ? theme.colors.error
+          : theme.colors.textSecondary,
       textAlign: 'center',
       marginBottom: 16,
     },
@@ -378,7 +378,7 @@ export default function NafathVerificationScreen({route, navigation}) {
       marginBottom: 20,
       alignItems: 'center',
       shadowColor: theme.colors.primary,
-      shadowOffset: {width: 0, height: 6},
+      shadowOffset: { width: 0, height: 6 },
       shadowOpacity: 0.3,
       shadowRadius: 10,
       elevation: 6,

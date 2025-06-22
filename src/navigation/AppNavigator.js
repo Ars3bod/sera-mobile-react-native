@@ -1,7 +1,7 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Easing} from 'react-native-reanimated';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Easing } from 'react-native-reanimated';
 
 // Screens
 import SplashScreen from '../screens/SplashScreen';
@@ -30,6 +30,7 @@ import UsagePolicyScreen from '../screens/UsagePolicyScreen';
 import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
 import DataProtectionScreen from '../screens/DataProtectionScreen';
 import CookiePolicyScreen from '../screens/CookiePolicyScreen';
+import CompensationStandardsScreen from '../screens/CompensationStandardsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -154,6 +155,14 @@ export default function AppNavigator() {
         <Stack.Screen
           name="ImportantLinks"
           component={ImportantLinksScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="CompensationStandards"
+          component={CompensationStandardsScreen}
           options={{
             animation: 'slide_from_right',
             animationDuration: 300,

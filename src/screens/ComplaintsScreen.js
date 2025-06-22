@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,10 +9,10 @@ import {
   StatusBar,
   RefreshControl,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {useUser} from '../context/UserContext';
-import {useFocusEffect} from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   ArrowLeft24Regular,
   Add24Regular,
@@ -21,16 +21,19 @@ import {
   Dismiss24Regular,
   ChevronRight24Regular,
 } from '@fluentui/react-native-icons';
+
+import LoginRequiredModal from '../components/LoginRequiredModal';
+
 import complaintsService, {
   MOCK_COMPLAINTS_DATA,
 } from '../services/complaintsService';
 import AppConfig from '../config/appConfig';
-import {LoadingSpinner} from '../animations';
+import { LoadingSpinner } from '../animations';
 
-const ComplaintsScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
-  const {user} = useUser();
+const ComplaintsScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
+  const { user, isAuthenticated, isGuestMode } = useUser();
   const isRTL = i18n.language === 'ar';
 
   const [complaintsCounts, setComplaintsCounts] = useState({
@@ -41,6 +44,7 @@ const ComplaintsScreen = ({navigation}) => {
   });
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -50,8 +54,28 @@ const ComplaintsScreen = ({navigation}) => {
     navigation.navigate('CreateComplaint');
   };
 
+  // Login modal handlers
+  const closeLoginModal = () => {
+    setShowLoginModal(false);
+  };
+
+  const handleLoginPress = () => {
+    setShowLoginModal(false);
+    navigation.navigate('NafathLogin', { fromModal: true });
+  };
+
+  const showLoginPrompt = () => {
+    setShowLoginModal(true);
+  };
+
   const navigateToViewComplaints = (filter = 'all') => {
-    navigation.navigate('ViewComplaints', {filter});
+    // Check if user is in guest mode
+    if (isGuestMode && !isAuthenticated) {
+      showLoginPrompt();
+      return;
+    }
+    // Navigate to ViewComplaints if authenticated
+    navigation.navigate('ViewComplaints', { filter });
   };
 
   // Get contact ID from user context
@@ -233,17 +257,17 @@ const ComplaintsScreen = ({navigation}) => {
         key={action.titleKey}
         style={[
           styles.actionCard,
-          {backgroundColor: theme.colors.card},
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { backgroundColor: theme.colors.card },
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}
         onPress={action.onPress}
         activeOpacity={0.7}>
         <View
           style={[
             styles.actionIconContainer,
-            {backgroundColor: action.backgroundColor},
+            { backgroundColor: action.backgroundColor },
           ]}>
-          <IconComponent style={[styles.actionIcon, {color: action.color}]} />
+          <IconComponent style={[styles.actionIcon, { color: action.color }]} />
         </View>
         <View style={styles.actionContent}>
           <Text
@@ -271,7 +295,7 @@ const ComplaintsScreen = ({navigation}) => {
           style={[
             styles.chevronIcon,
             {
-              transform: [{scaleX: isRTL ? -1 : 1}],
+              transform: [{ scaleX: isRTL ? -1 : 1 }],
               color: theme.colors.icon,
             },
           ]}
@@ -285,17 +309,17 @@ const ComplaintsScreen = ({navigation}) => {
     return (
       <TouchableOpacity
         key={filter.titleKey}
-        style={[styles.filterCard, {backgroundColor: theme.colors.card}]}
+        style={[styles.filterCard, { backgroundColor: theme.colors.card }]}
         onPress={filter.onPress}
         activeOpacity={0.7}>
         <View
           style={[
             styles.filterIconContainer,
-            {backgroundColor: filter.color + '20'},
+            { backgroundColor: filter.color + '20' },
           ]}>
-          <IconComponent style={[styles.filterIcon, {color: filter.color}]} />
+          <IconComponent style={[styles.filterIcon, { color: filter.color }]} />
         </View>
-        <Text style={[styles.filterCount, {color: theme.colors.text}]}>
+        <Text style={[styles.filterCount, { color: theme.colors.text }]}>
           {filter.count}
         </Text>
         <Text
@@ -352,7 +376,7 @@ const ComplaintsScreen = ({navigation}) => {
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -361,7 +385,7 @@ const ComplaintsScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -386,7 +410,7 @@ const ComplaintsScreen = ({navigation}) => {
         <View
           style={[
             styles.welcomeCard,
-            {backgroundColor: theme.colors.primary + '10'},
+            { backgroundColor: theme.colors.primary + '10' },
           ]}>
           <Text
             style={[
@@ -448,7 +472,7 @@ const ComplaintsScreen = ({navigation}) => {
               <Text
                 style={[
                   styles.loadingText,
-                  {color: theme.colors.textSecondary},
+                  { color: theme.colors.textSecondary },
                 ]}>
                 {t('complaints.view.loading')}
               </Text>
@@ -460,6 +484,13 @@ const ComplaintsScreen = ({navigation}) => {
           )}
         </View>
       </ScrollView>
+
+      {/* Login Required Modal */}
+      <LoginRequiredModal
+        visible={showLoginModal}
+        onClose={closeLoginModal}
+        onLogin={handleLoginPress}
+      />
     </SafeAreaView>
   );
 };

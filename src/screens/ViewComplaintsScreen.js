@@ -1,38 +1,38 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   RefreshControl,
   Alert,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {useUser} from '../context/UserContext';
-import {useFocusEffect} from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
+import { useFocusEffect } from '@react-navigation/native';
 import {
-  ArrowLeft24Regular,
   DocumentText24Regular,
   CheckmarkCircle24Regular,
   Dismiss24Regular,
   Filter24Regular,
 } from '@fluentui/react-native-icons';
+import NavigationBar from '../components/NavigationBar';
 import complaintsService, {
   MOCK_COMPLAINTS_DATA,
 } from '../services/complaintsService';
-import {LoadingSpinner} from '../animations';
+import { LoadingSpinner } from '../animations';
 import AppConfig from '../config/appConfig';
 
-const ViewComplaintsScreen = ({navigation, route}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
-  const {user} = useUser();
+const ViewComplaintsScreen = ({ navigation, route }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
+  const { user } = useUser();
   const isRTL = i18n.language === 'ar';
-  const {filter = 'all'} = route.params || {};
+  const { filter = 'all' } = route.params || {};
 
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,9 +40,7 @@ const ViewComplaintsScreen = ({navigation, route}) => {
   const [error, setError] = useState(null);
   const [currentFilter, setCurrentFilter] = useState(filter);
 
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
+
 
   // Get contact ID from user context
   const getContactId = () => {
@@ -287,14 +285,14 @@ const ViewComplaintsScreen = ({navigation, route}) => {
   const renderComplaintCard = complaint => (
     <TouchableOpacity
       key={complaint.id}
-      style={[styles.complaintCard, {backgroundColor: theme.colors.card}]}
+      style={[styles.complaintCard, { backgroundColor: theme.colors.card }]}
       activeOpacity={0.7}>
       <View style={styles.complaintHeader}>
         <View style={styles.complaintTitleContainer}>
           <Text
             style={[
               styles.complaintTitle,
-              {color: theme.colors.text, textAlign: isRTL ? 'right' : 'left'},
+              { color: theme.colors.text, textAlign: isRTL ? 'right' : 'left' },
             ]}>
             {complaint.title}
           </Text>
@@ -313,12 +311,12 @@ const ViewComplaintsScreen = ({navigation, route}) => {
           <View
             style={[
               styles.statusBadge,
-              {backgroundColor: getStatusColor(complaint.status) + '20'},
+              { backgroundColor: getStatusColor(complaint.status) + '20' },
             ]}>
             <Text
               style={[
                 styles.statusText,
-                {color: getStatusColor(complaint.status)},
+                { color: getStatusColor(complaint.status) },
               ]}>
               {t(`complaints.view.status.${complaint.status}`)}
             </Text>
@@ -339,7 +337,7 @@ const ViewComplaintsScreen = ({navigation, route}) => {
 
       <View style={styles.complaintFooter}>
         <Text
-          style={[styles.complaintDate, {color: theme.colors.textSecondary}]}>
+          style={[styles.complaintDate, { color: theme.colors.textSecondary }]}>
           {(() => {
             const dateValue = complaint.dateSubmitted || complaint.creationDate;
             if (AppConfig.development.enableDebugLogs) {
@@ -378,7 +376,7 @@ const ViewComplaintsScreen = ({navigation, route}) => {
         <IconComponent
           style={[
             styles.filterIcon,
-            {color: isActive ? theme.colors.primary : theme.colors.icon},
+            { color: isActive ? theme.colors.primary : theme.colors.icon },
           ]}
         />
         <Text
@@ -409,11 +407,7 @@ const ViewComplaintsScreen = ({navigation, route}) => {
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
     },
-    backIcon: {
-      width: 24,
-      height: 24,
-      color: theme.colors.primary,
-    },
+
     headerTitle: {
       fontSize: 24,
       fontWeight: 'bold',
@@ -424,33 +418,17 @@ const ViewComplaintsScreen = ({navigation, route}) => {
   });
 
   return (
-    <SafeAreaView style={dynamicStyles.container}>
+    <SafeAreaView style={dynamicStyles.container} edges={['top']}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={theme.colors.surface}
       />
 
       {/* Header */}
-      <View
-        style={[
-          dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
-        ]}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleGoBack}
-          activeOpacity={0.7}>
-          <ArrowLeft24Regular
-            style={[
-              dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
-            ]}
-          />
-        </TouchableOpacity>
+      <View style={dynamicStyles.header}>
         <Text style={dynamicStyles.headerTitle}>
           {t('complaints.view.title')}
         </Text>
-        <View style={styles.placeholderView} />
       </View>
 
       {/* Filter Buttons */}
@@ -478,19 +456,19 @@ const ViewComplaintsScreen = ({navigation, route}) => {
               color={theme.colors.primary}
               duration={1000}
             />
-            <Text style={[styles.loadingText, {color: theme.colors.text}]}>
+            <Text style={[styles.loadingText, { color: theme.colors.text }]}>
               {t('complaints.view.loading')}
             </Text>
           </View>
         ) : error && complaints.length === 0 ? (
           <View style={styles.errorContainer}>
-            <Text style={[styles.errorText, {color: theme.colors.error}]}>
+            <Text style={[styles.errorText, { color: theme.colors.error }]}>
               {error}
             </Text>
             <TouchableOpacity
               style={[
                 styles.retryButton,
-                {backgroundColor: theme.colors.primary},
+                { backgroundColor: theme.colors.primary },
               ]}
               onPress={() => fetchComplaints()}>
               <Text style={styles.retryButtonText}>{t('retry')}</Text>
@@ -499,19 +477,19 @@ const ViewComplaintsScreen = ({navigation, route}) => {
         ) : complaints.length === 0 ? (
           <View style={styles.emptyContainer}>
             <DocumentText24Regular
-              style={[styles.emptyIcon, {color: theme.colors.textSecondary}]}
+              style={[styles.emptyIcon, { color: theme.colors.textSecondary }]}
             />
             <Text
               style={[
                 styles.emptyTitle,
-                {color: theme.colors.text, textAlign: 'center'},
+                { color: theme.colors.text, textAlign: 'center' },
               ]}>
               {t('complaints.view.noComplaints')}
             </Text>
             <Text
               style={[
                 styles.emptyDescription,
-                {color: theme.colors.textSecondary, textAlign: 'center'},
+                { color: theme.colors.textSecondary, textAlign: 'center' },
               ]}>
               {t('complaints.view.noComplaintsMessage')}
             </Text>
@@ -522,17 +500,22 @@ const ViewComplaintsScreen = ({navigation, route}) => {
           </View>
         )}
       </ScrollView>
+
+      {/* Navigation Bar */}
+      <NavigationBar
+        navigation={navigation}
+        activeTab="complaints"
+        onComingSoon={() => {
+          // Handle coming soon for chat functionality
+          console.log('Chat coming soon');
+        }}
+        showComplaints={true}
+      />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  backButton: {
-    padding: 8,
-  },
-  placeholderView: {
-    width: 40,
-  },
   filtersContainer: {
     backgroundColor: 'transparent',
     paddingVertical: 16,
