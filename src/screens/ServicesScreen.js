@@ -33,6 +33,8 @@ const ServicesScreen = ({ navigation }) => {
   const isRTL = i18n.language === 'ar';
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
 
   const handleComingSoon = () => {
     setShowComingSoonModal(true);
@@ -44,6 +46,16 @@ const ServicesScreen = ({ navigation }) => {
 
   const closeLoginModal = () => {
     setShowLoginModal(false);
+  };
+
+  const handleServiceLongPress = (service) => {
+    setSelectedService(service);
+    setShowDescriptionModal(true);
+  };
+
+  const closeDescriptionModal = () => {
+    setShowDescriptionModal(false);
+    setSelectedService(null);
   };
 
   const handleLoginPress = () => {
@@ -64,6 +76,7 @@ const ServicesScreen = ({ navigation }) => {
       id: 2,
       titleKey: 'services.complaints.title',
       descriptionKey: 'services.complaints.description',
+      detailedDescriptionKey: 'services.complaints.detailedDescription',
       icon: People24Regular,
       color: theme.colors.primary,
       isAvailable: true,
@@ -72,15 +85,16 @@ const ServicesScreen = ({ navigation }) => {
       id: 1,
       titleKey: 'services.permitRequest.title',
       descriptionKey: 'services.permitRequest.description',
+      detailedDescriptionKey: 'services.permitRequest.detailedDescription',
       icon: DocumentText24Regular,
       color: theme.colors.primary,
       isAvailable: false,
     },
-
     {
       id: 3,
       titleKey: 'services.licenseIssuance.title',
       descriptionKey: 'services.licenseIssuance.description',
+      detailedDescriptionKey: 'services.licenseIssuance.detailedDescription',
       icon: Certificate24Regular,
       color: theme.colors.primary,
       isAvailable: false, // Coming soon
@@ -89,6 +103,7 @@ const ServicesScreen = ({ navigation }) => {
       id: 4,
       titleKey: 'services.dataSharing.title',
       descriptionKey: 'services.dataSharing.description',
+      detailedDescriptionKey: 'services.dataSharing.detailedDescription',
       icon: Share24Regular,
       color: theme.colors.primary,
       isAvailable: false, // Coming soon
@@ -97,6 +112,7 @@ const ServicesScreen = ({ navigation }) => {
       id: 5,
       titleKey: 'services.freedomOfInformation.title',
       descriptionKey: 'services.freedomOfInformation.description',
+      detailedDescriptionKey: 'services.freedomOfInformation.detailedDescription',
       icon: FolderOpen24Regular,
       color: theme.colors.primary,
       isAvailable: false, // Coming soon
@@ -160,6 +176,7 @@ const ServicesScreen = ({ navigation }) => {
           },
         ]}
         onPress={() => handleServicePress(service)}
+        onLongPress={() => handleServiceLongPress(service)}
         activeOpacity={isDisabled ? 0.5 : 0.7}
         disabled={false}>
         <View style={[styles.cardContent, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
@@ -332,6 +349,67 @@ const ServicesScreen = ({ navigation }) => {
     cancelButtonText: {
       color: theme.colors.text,
     },
+    // Description Modal styles
+    descriptionModalContainer: {
+      backgroundColor: theme.colors.card,
+      borderRadius: 20,
+      padding: 24,
+      width: '90%',
+      maxWidth: 400,
+      maxHeight: '80%',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 10,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 20,
+      elevation: 10,
+    },
+    descriptionModalHeader: {
+      flexDirection: isRTL ? 'row-reverse' : 'row',
+      alignItems: 'center',
+      marginBottom: 20,
+      paddingBottom: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.border,
+    },
+    descriptionModalIcon: {
+      width: 32,
+      height: 32,
+      color: theme.colors.primary,
+      marginRight: isRTL ? 0 : 12,
+      marginLeft: isRTL ? 12 : 0,
+    },
+    descriptionModalTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: theme.colors.text,
+      flex: 1,
+      textAlign: isRTL ? 'right' : 'left',
+    },
+    descriptionModalContent: {
+      marginBottom: 24,
+    },
+    descriptionModalText: {
+      fontSize: 16,
+      color: theme.colors.text,
+      lineHeight: 24,
+      textAlign: isRTL ? 'right' : 'left',
+    },
+    descriptionModalButton: {
+      backgroundColor: theme.colors.primary,
+      borderRadius: 12,
+      paddingVertical: 14,
+      paddingHorizontal: 24,
+      alignItems: 'center',
+      width: '100%',
+    },
+    descriptionModalButtonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontWeight: '600',
+    },
   });
 
   return (
@@ -442,6 +520,47 @@ const ServicesScreen = ({ navigation }) => {
           ? 'يجب تسجيل الدخول لاستخدام هذه الخدمة. هل تريد تسجيل الدخول الآن؟'
           : 'You need to login to use this service. Would you like to login now?'}
       />
+
+      {/* Service Description Modal */}
+      <Modal
+        visible={showDescriptionModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={closeDescriptionModal}>
+        <TouchableOpacity
+          style={dynamicStyles.modalOverlay}
+          activeOpacity={1}
+          onPress={closeDescriptionModal}>
+          <TouchableOpacity
+            style={dynamicStyles.descriptionModalContainer}
+            activeOpacity={1}
+            onPress={() => { }}>
+            <View style={dynamicStyles.descriptionModalHeader}>
+              {selectedService && (
+                <>
+                  <selectedService.icon style={dynamicStyles.descriptionModalIcon} />
+                  <Text style={dynamicStyles.descriptionModalTitle}>
+                    {t(selectedService.titleKey)}
+                  </Text>
+                </>
+              )}
+            </View>
+            <ScrollView style={dynamicStyles.descriptionModalContent} showsVerticalScrollIndicator={false}>
+              <Text style={dynamicStyles.descriptionModalText}>
+                {selectedService?.detailedDescriptionKey ? t(selectedService.detailedDescriptionKey) : ''}
+              </Text>
+            </ScrollView>
+            <TouchableOpacity
+              style={dynamicStyles.descriptionModalButton}
+              onPress={closeDescriptionModal}
+              activeOpacity={0.8}>
+              <Text style={dynamicStyles.descriptionModalButtonText}>
+                {isRTL ? 'إغلاق' : 'Close'}
+              </Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
     </SafeAreaView>
   );
 };

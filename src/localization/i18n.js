@@ -127,26 +127,102 @@ const resources = {
           title: 'Permit Request',
           description:
             'You can request permits to benefit from electronic submission...',
+          detailedDescription: 'Service description coming soon.',
         },
         complaints: {
           title: 'Complaints',
           description:
             'You can submit complaints or objections to the authority...',
+          detailedDescription: 'The service enables you to submit or escalate a complaint with SERA if you are unhappy with the outcome of the service provider\'s handling of your complaint, or if there is a delay in resolving it. It also allows you to follow up on the status of your complaint. The service is available 24/7 through various service delivery channels.',
         },
         licenseIssuance: {
           title: 'License Issuance',
           description:
             'You can request to benefit from applying for license issuance...',
+          detailedDescription: 'Service description coming soon.',
         },
         dataSharing: {
           title: 'Data Sharing',
           description:
             'Sharing allows information exchange with the applicant...',
+          detailedDescription: 'Service description coming soon.',
         },
         freedomOfInformation: {
           title: 'Freedom of Information',
           description:
             'The authority provides public data according to the freedom of information policy issued by the data management office...',
+          detailedDescription: 'Service description coming soon.',
+        },
+      },
+      consumptionTariff: {
+        title: 'Consumption Tariff',
+        description: {
+          title: 'Electricity Consumption Tariff',
+          content: 'The electricity consumption tariff is the price charged for electricity consumption by different consumer categories. These tariffs are set by SERA to ensure fair pricing while promoting efficient electricity use.',
+        },
+        stats: {
+          categories: 'Categories',
+          tariffRange: 'Tariff Range (HH/kWh)',
+          effectiveYear: 'Effective Year',
+        },
+        table: {
+          consumptionRange: 'Consumption Range (kWh/month)',
+          networkType: 'Network Type',
+          tariff: 'Tariff (HH/kWh)',
+        },
+        units: {
+          kwhMonth: 'kWh/month',
+          hhKwh: 'HH/kWh',
+        },
+        ranges: {
+          all: 'All consumption levels',
+        },
+        networkTypes: {
+          distributionnetwork: 'Connected to Distribution Network',
+          transmissionnetwork: 'Connected to Transmission Network',
+        },
+        categories: {
+          residential: {
+            title: 'Residential',
+          },
+          commercial: {
+            title: 'Commercial',
+          },
+          governmental: {
+            title: 'Governmental',
+          },
+          industrial: {
+            title: 'Industrial',
+          },
+          agricultural: {
+            title: 'Agricultural',
+          },
+          organizations: {
+            title: 'Organizations - Associations - Cooperatives',
+          },
+          healthEducation: {
+            title: 'Private Health Facilities - Private Schools',
+          },
+          cloudComputing: {
+            title: 'Cloud Computing',
+            description: 'The cloud computing tariff is applied to establishments operating in the activities of providing cloud computing services, dedicated infrastructure, and the infrastructure that enables and is associated with it.',
+          },
+          highIntensityFirst: {
+            title: 'High Intensity - First Cluster Facilities',
+            description: 'Applied to facilities operating in eligible activities where the ratio of electricity cost to operational costs (excluding raw materials) is 20% or more and which fulfill the necessary requirements.',
+          },
+          highIntensitySecond: {
+            title: 'High Intensity - Second Cluster Facilities',
+            description: 'Applied to facilities operating in eligible activities where the ratio of electricity cost to operational costs (excluding raw materials) is between 10% and 19.9% and which achieve the necessary requirements.',
+          },
+        },
+        notes: {
+          effectiveFrom2025: 'The tariff will be applied starting from 28/05/2025',
+          highIntensityConditions: 'The High Intensity Electricity Consumption Tariff is applied to eligible facilities, provided that the tariff granted does not exceed that of the facility\'s applicable category.',
+        },
+        additionalInfo: {
+          title: 'Additional Information',
+          content: 'For more detailed information about electricity tariffs, eligibility criteria, and application procedures, please visit the official SERA website or contact our customer service team.',
         },
       },
       more: {
@@ -197,6 +273,10 @@ const resources = {
         compensationStandards: {
           title: 'Compensation Standards',
           description: 'Learn about your consumer rights and compensation',
+        },
+        consumptionTariff: {
+          title: 'Consumption Tariff',
+          description: 'View current electricity consumption tariff rates',
         },
       },
       settings: {
@@ -1093,23 +1173,99 @@ const resources = {
         permitRequest: {
           title: 'طلب تصريح',
           description: 'يمكن طلب التصريح للاستفادة من التقديم الإلكتروني ...',
+          detailedDescription: 'وصف الخدمة قريباً.',
         },
         complaints: {
           title: 'الشكوى',
           description: 'يمكن تقديم الشكوى أو طلب الاعتراض لدى الهيئة ...',
+          detailedDescription: 'تتيح هذه الخدمة تقديم أو تصعيد شكوى لدى الهيئة في حال الاعتراض على نتيجة معالجة مقدم الخدمة للشكوى أو التأخر في المعالجة، كما تمكنك من متابعة شكواك لدى الهيئة. وتتوفر الخدمة على مدار الساعة 24/7 عبر قنوات تقديم الخدمة.',
         },
         licenseIssuance: {
           title: 'إصدار رخصة',
           description: 'يمكن طلب الاستفادة من التقديم على إصدار الرخصة ...',
+          detailedDescription: 'وصف الخدمة قريباً.',
         },
         dataSharing: {
           title: 'مشاركة البيانات',
           description: 'تتيح المشاركة تبادل المعلومات مع صاحب الطلب ...',
+          detailedDescription: 'وصف الخدمة قريباً.',
         },
         freedomOfInformation: {
           title: 'حرية المعلومات',
           description:
             'توفر الهيئة البيانات العامة وذلك حسب سياسة حرية المعلومات الصادرة من مكتب إدارة البيانات...',
+          detailedDescription: 'وصف الخدمة قريباً.',
+        },
+      },
+      consumptionTariff: {
+        title: 'تعرفة الاستهلاك',
+        description: {
+          title: 'تعرفة استهلاك الكهرباء',
+          content: 'تعرفة استهلاك الكهرباء هي السعر المفروض على استهلاك الكهرباء لمختلف فئات المستهلكين. يتم تحديد هذه التعرفات من قبل الهيئة لضمان التسعير العادل مع تعزيز الاستخدام الفعال للكهرباء.',
+        },
+        stats: {
+          categories: 'الفئات',
+          tariffRange: 'نطاق التعرفة (هلله/ك.و.س)',
+          effectiveYear: 'سنة التطبيق',
+        },
+        table: {
+          consumptionRange: 'نطاق الاستهلاك (ك.و.س/شهر)',
+          networkType: 'نوع الشبكة',
+          tariff: 'التعرفة (هلله/ك.و.س)',
+        },
+        units: {
+          kwhMonth: 'ك.و.س/شهر',
+          hhKwh: 'هلله/ك.و.س',
+        },
+        ranges: {
+          all: 'جميع مستويات الاستهلاك',
+        },
+        networkTypes: {
+          distributionnetwork: 'متصل بشبكة التوزيع',
+          transmissionnetwork: 'متصل بشبكة النقل',
+        },
+        categories: {
+          residential: {
+            title: 'السكني',
+          },
+          commercial: {
+            title: 'التجاري',
+          },
+          governmental: {
+            title: 'الحكومي',
+          },
+          industrial: {
+            title: 'الصناعي',
+          },
+          agricultural: {
+            title: 'الزراعي',
+          },
+          organizations: {
+            title: 'المؤسسات - الجمعيات - التعاونيات والحكم عليها',
+          },
+          healthEducation: {
+            title: 'المرافق الصحية الخاصة - المؤسسات والمدارس الخاصة',
+          },
+          cloudComputing: {
+            title: 'الحوسبة السحابية',
+            description: 'يتم تطبيق تعرفة الحوسبة السحابية على المؤسسات التي تعمل في أنشطة توفير خدمات الحوسبة السحابية والبنية التحتية المخصصة والبنية التحتية التي تمكن وترتبط بها.',
+          },
+          highIntensityFirst: {
+            title: 'عالي الكثافة - مرافق المجموعة الأولى',
+            description: 'يطبق على المرافق التي تعمل في الأنشطة المؤهلة حيث تبلغ نسبة تكلفة الكهرباء إلى التكاليف التشغيلية (باستثناء المواد الخام) 20% أو أكثر والتي تستوفي المتطلبات اللازمة.',
+          },
+          highIntensitySecond: {
+            title: 'عالي الكثافة - مرافق المجموعة الثانية',
+            description: 'يطبق على المرافق التي تعمل في الأنشطة المؤهلة حيث تتراوح نسبة تكلفة الكهرباء إلى التكاليف التشغيلية (باستثناء المواد الخام) بين 10% و 19.9% والتي تحقق المتطلبات اللازمة.',
+          },
+        },
+        notes: {
+          effectiveFrom2025: 'سيتم تطبيق التعرفة اعتباراً من 28/05/2025',
+          highIntensityConditions: 'يتم تطبيق تعرفة استهلاك الكهرباء عالية الكثافة على المرافق المؤهلة، بشرط ألا تتجاوز التعرفة الممنوحة تعرفة الفئة المطبقة للمرفق.',
+        },
+        additionalInfo: {
+          title: 'معلومات إضافية',
+          content: 'لمزيد من المعلومات التفصيلية حول تعرفات الكهرباء ومعايير الأهلية وإجراءات التقديم، يرجى زيارة الموقع الرسمي للهيئة أو الاتصال بفريق خدمة العملاء.',
         },
       },
       more: {
@@ -1160,6 +1316,10 @@ const resources = {
         compensationStandards: {
           title: 'معايير التعويضات',
           description: 'تعرف على حقوقك كمستهلك ومعايير التعويض',
+        },
+        consumptionTariff: {
+          title: 'تعرفة الاستهلاك',
+          description: 'عرض أسعار تعرفة استهلاك الكهرباء الحالية',
         },
       },
       settings: {

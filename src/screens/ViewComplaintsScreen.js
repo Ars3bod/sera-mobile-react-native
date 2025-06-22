@@ -8,6 +8,7 @@ import {
   StatusBar,
   RefreshControl,
   Alert,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +20,8 @@ import {
   CheckmarkCircle24Regular,
   Dismiss24Regular,
   Filter24Regular,
+  Clock24Regular,
+  ArrowLeft24Regular,
 } from '@fluentui/react-native-icons';
 import NavigationBar from '../components/NavigationBar';
 import complaintsService, {
@@ -32,15 +35,29 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
   const { theme, isDarkMode } = useTheme();
   const { user } = useUser();
   const isRTL = i18n.language === 'ar';
-  const { filter = 'all' } = route.params || {};
+  const { filter = 'all', fromNavBar = true } = route.params || {};
 
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
   const [currentFilter, setCurrentFilter] = useState(filter);
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
+  // Determine if user came from NavigationBar or ComplaintsScreen
+  const isFromNavigationBar = fromNavBar;
 
+  const handleComingSoon = () => {
+    setShowComingSoonModal(true);
+  };
+
+  const closeModal = () => {
+    setShowComingSoonModal(false);
+  };
+
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
 
   // Get contact ID from user context
   const getContactId = () => {
@@ -398,7 +415,7 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
       backgroundColor: theme.colors.background,
     },
     header: {
-      flexDirection: 'row',
+      flexDirection: isRTL ? 'row-reverse' : 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: 20,
@@ -407,13 +424,88 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
     },
-
+    backButton: {
+      padding: 8,
+      marginRight: isRTL ? 0 : 12,
+      marginLeft: isRTL ? 12 : 0,
+    },
+    backIcon: {
+      width: 24,
+      height: 24,
+      color: theme.colors.primary,
+      transform: [{ scaleX: isRTL ? -1 : 1 }],
+    },
     headerTitle: {
       fontSize: 24,
       fontWeight: 'bold',
       color: theme.colors.primary,
-      textAlign: 'center',
+      textAlign: isFromNavigationBar ? 'center' : (isRTL ? 'right' : 'left'),
       flex: 1,
+    },
+    placeholderView: {
+      width: 40,
+    },
+    // Modal styles
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+    },
+    modalContainer: {
+      backgroundColor: theme.colors.card,
+      borderRadius: 20,
+      padding: 24,
+      width: '100%',
+      maxWidth: 320,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 10,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 20,
+      elevation: 10,
+    },
+    modalHeader: {
+      flexDirection: isRTL ? 'row-reverse' : 'row',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    modalIcon: {
+      width: 32,
+      height: 32,
+      color: theme.colors.primary,
+      marginRight: isRTL ? 0 : 12,
+      marginLeft: isRTL ? 12 : 0,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: theme.colors.text,
+      flex: 1,
+      textAlign: isRTL ? 'right' : 'left',
+    },
+    modalMessage: {
+      fontSize: 16,
+      color: theme.colors.textSecondary,
+      lineHeight: 24,
+      textAlign: isRTL ? 'right' : 'left',
+      marginBottom: 24,
+    },
+    modalButton: {
+      backgroundColor: theme.colors.primary,
+      borderRadius: 12,
+      paddingVertical: 14,
+      paddingHorizontal: 24,
+      alignItems: 'center',
+      width: '100%',
+    },
+    modalButtonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontWeight: '600',
     },
   });
 
@@ -426,9 +518,18 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
 
       {/* Header */}
       <View style={dynamicStyles.header}>
+        {!isFromNavigationBar && (
+          <TouchableOpacity
+            style={dynamicStyles.backButton}
+            onPress={handleGoBack}
+            activeOpacity={0.7}>
+            <ArrowLeft24Regular style={dynamicStyles.backIcon} />
+          </TouchableOpacity>
+        )}
         <Text style={dynamicStyles.headerTitle}>
           {t('complaints.view.title')}
         </Text>
+        {!isFromNavigationBar && <View style={dynamicStyles.placeholderView} />}
       </View>
 
       {/* Filter Buttons */}
@@ -501,16 +602,50 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
         )}
       </ScrollView>
 
-      {/* Navigation Bar */}
-      <NavigationBar
-        navigation={navigation}
-        activeTab="complaints"
-        onComingSoon={() => {
-          // Handle coming soon for chat functionality
-          console.log('Chat coming soon');
-        }}
-        showComplaints={true}
-      />
+      {/* Navigation Bar - Only show if user came from NavigationBar */}
+      {isFromNavigationBar && (
+        <NavigationBar
+          navigation={navigation}
+          activeTab="complaints"
+          onComingSoon={handleComingSoon}
+          showComplaints={true}
+        />
+      )}
+
+      {/* Coming Soon Modal */}
+      <Modal
+        visible={showComingSoonModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={closeModal}>
+        <TouchableOpacity
+          style={dynamicStyles.modalOverlay}
+          activeOpacity={1}
+          onPress={closeModal}>
+          <TouchableOpacity
+            style={dynamicStyles.modalContainer}
+            activeOpacity={1}
+            onPress={() => { }}>
+            <View style={dynamicStyles.modalHeader}>
+              <Clock24Regular style={dynamicStyles.modalIcon} />
+              <Text style={dynamicStyles.modalTitle}>
+                {t('home.comingSoon.title')}
+              </Text>
+            </View>
+            <Text style={dynamicStyles.modalMessage}>
+              {t('home.comingSoon.message')}
+            </Text>
+            <TouchableOpacity
+              style={dynamicStyles.modalButton}
+              onPress={closeModal}
+              activeOpacity={0.8}>
+              <Text style={dynamicStyles.modalButtonText}>
+                {t('home.comingSoon.okButton')}
+              </Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
     </SafeAreaView>
   );
 };

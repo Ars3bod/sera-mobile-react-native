@@ -53,7 +53,8 @@ const NavigationBar = ({
             return;
         }
         // Navigate to ViewComplaints if authenticated
-        navigation.navigate('ViewComplaints', { filter: 'all' });
+        // Pass fromNavBar: true to indicate user came from NavigationBar
+        navigation.navigate('ViewComplaints', { filter: 'all', fromNavBar: true });
     };
 
     // Navigation tabs configuration

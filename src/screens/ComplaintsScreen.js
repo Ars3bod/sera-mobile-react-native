@@ -75,7 +75,8 @@ const ComplaintsScreen = ({ navigation }) => {
       return;
     }
     // Navigate to ViewComplaints if authenticated
-    navigation.navigate('ViewComplaints', { filter });
+    // Pass fromNavBar: false to indicate user came from ComplaintsScreen
+    navigation.navigate('ViewComplaints', { filter, fromNavBar: false });
   };
 
   // Get contact ID from user context
