@@ -142,7 +142,10 @@ const CompensationStandardsScreen = ({ navigation }) => {
                     <Text style={[styles.statValue, { color: '#00623B' }]}>
                         {quickStats.totalStandards}
                     </Text>
-                    <Text style={[styles.statLabel, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
+                    <Text style={[styles.statLabel, {
+                        color: theme.colors.textSecondary,
+                        textAlign: 'center'
+                    }]} numberOfLines={2}>
                         {translations.quickStats.totalStandards}
                     </Text>
                 </View>
@@ -150,7 +153,10 @@ const CompensationStandardsScreen = ({ navigation }) => {
                     <Text style={[styles.statValue, { color: '#00623B' }]}>
                         {isRTL ? `${quickStats.avgCompensation} ريال` : `SAR ${quickStats.avgCompensation}`}
                     </Text>
-                    <Text style={[styles.statLabel, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
+                    <Text style={[styles.statLabel, {
+                        color: theme.colors.textSecondary,
+                        textAlign: 'center'
+                    }]} numberOfLines={2}>
                         {translations.quickStats.avgCompensation}
                     </Text>
                 </View>
@@ -158,7 +164,10 @@ const CompensationStandardsScreen = ({ navigation }) => {
                     <Text style={[styles.statValue, { color: '#00623B' }]}>
                         {quickStats.maxPeriod}
                     </Text>
-                    <Text style={[styles.statLabel, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
+                    <Text style={[styles.statLabel, {
+                        color: theme.colors.textSecondary,
+                        textAlign: 'center'
+                    }]} numberOfLines={2}>
                         {translations.quickStats.maxPeriod}
                     </Text>
                 </View>
@@ -169,10 +178,18 @@ const CompensationStandardsScreen = ({ navigation }) => {
     // Section Header Component
     const SectionHeader = ({ title, count }) => (
         <View style={[styles.sectionHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text, textAlign: isRTL ? 'right' : 'left' }]}>
+            <Text style={[styles.sectionTitle, {
+                color: theme.colors.text,
+                textAlign: isRTL ? 'right' : 'left',
+                writingDirection: isRTL ? 'rtl' : 'ltr'
+            }]}>
                 {title}
             </Text>
-            <View style={[styles.countBadge, { backgroundColor: '#00623B20' }]}>
+            <View style={[styles.countBadge, {
+                backgroundColor: '#00623B20',
+                marginLeft: isRTL ? 0 : 8,
+                marginRight: isRTL ? 8 : 0
+            }]}>
                 <Text style={[styles.countText, { color: '#00623B' }]}>
                     {count}
                 </Text>
@@ -492,24 +509,29 @@ const styles = StyleSheet.create({
     statsRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        gap: 8,
     },
     statItem: {
         flex: 1,
         alignItems: 'center',
+        paddingHorizontal: 4,
     },
     statValue: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 4,
+        marginBottom: 6,
     },
     statLabel: {
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: '500',
         textAlign: 'center',
+        lineHeight: 14,
+        minHeight: 28,
     },
     // Section Styles
     sectionHeader: {
         alignItems: 'center',
+        justifyContent: 'space-between',
         marginBottom: 16,
         marginTop: 8,
     },

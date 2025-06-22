@@ -1,6 +1,6 @@
 {
   "name": "seraApp",
-  "displayName": "seraApp",
+  "displayName": "SERA App",
   "plugins": [
     "expo-localization"
   ]

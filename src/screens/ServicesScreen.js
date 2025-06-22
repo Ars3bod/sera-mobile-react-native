@@ -231,6 +231,78 @@ const ServicesScreen = ({ navigation }) => {
               numberOfLines={2}>
               {t(service.descriptionKey)}
             </Text>
+            {service.id === 2 && service.isAvailable && ( // Only show for complaints service when available
+              <TouchableOpacity
+                style={[styles.serviceDescriptionLink, { alignSelf: isRTL ? 'flex-end' : 'flex-start' }]}
+                onPress={() => {
+                  navigation.navigate('ServiceDescription', {
+                    serviceData: {
+                      id: 'complaints',
+                      title: {
+                        en: 'Complaint',
+                        ar: 'الشكاوى'
+                      },
+                      description: {
+                        en: 'The service enables you to submit or escalate a complaint with SERA if you are unhappy with the outcome of the service provider\'s handling of your complaint, or if there is a delay in resolving it. It also allows you to follow up on the status of your complaint. The service is available 24/7 through various service delivery channels.',
+                        ar: 'تتيح لك الخدمة تقديم أو تصعيد شكوى لدى هيئة تنظيم الكهرباء إذا لم تكن راضياً عن نتيجة تعامل مقدم الخدمة مع شكواك، أو في حالة وجود تأخير في حلها. كما تتيح لك متابعة حالة شكواك. الخدمة متاحة على مدار الساعة طوال أيام الأسبوع من خلال قنوات تقديم الخدمات المختلفة.'
+                      },
+                      steps: {
+                        en: [
+                          'Choose "Complaint".',
+                          'Choose "Raise a complaint"',
+                          'Fill out the Complaint Form',
+                          'Submit the complaint'
+                        ],
+                        ar: [
+                          'اختر "الشكاوى".',
+                          'اختر "تقديم شكوى"',
+                          'املأ نموذج الشكوى',
+                          'أرسل الشكوى'
+                        ]
+                      },
+                      requirements: {
+                        en: [
+                          'Logging in through the Unified National Access (NAFATH)'
+                        ],
+                        ar: [
+                          'تسجيل الدخول من خلال النفاذ الوطني الموحد (نفاذ)'
+                        ]
+                      },
+                      targetedAudience: {
+                        en: 'Consumer',
+                        ar: 'المستهلك'
+                      },
+                      completionPeriod: {
+                        en: '20 workdays',
+                        ar: '20 يوم عمل'
+                      },
+                      fees: {
+                        en: 'Free',
+                        ar: 'مجاني'
+                      },
+                      supportedLanguages: {
+                        en: 'Arabic-English',
+                        ar: 'العربية - الإنجليزية'
+                      },
+                      contactNumber: '19944',
+                      deliveryChannels: {
+                        en: 'E-portal - Call Center',
+                        ar: 'البوابة الإلكترونية - مركز الاتصال'
+                      },
+                      submitUrl: 'https://eservices.sera.gov.sa/Complaint-menu',
+                      guideUrl: 'https://sera.gov.sa/-/media/wera/pdfs/e-service/electricity-services-complaint-en.pdf'
+                    }
+                  });
+                }}
+                activeOpacity={0.7}>
+                <Text style={[styles.serviceDescriptionLinkText, {
+                  color: theme.colors.primary,
+                  textAlign: isRTL ? 'right' : 'left'
+                }]}>
+                  {isRTL ? 'وصف الخدمة ←' : 'Service Description →'}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
 
           {/* Arrow Indicator */}
@@ -403,7 +475,7 @@ const ServicesScreen = ({ navigation }) => {
       paddingVertical: 14,
       paddingHorizontal: 24,
       alignItems: 'center',
-      width: '100%',
+      flex: 1,
     },
     descriptionModalButtonText: {
       color: '#FFFFFF',
@@ -550,14 +622,86 @@ const ServicesScreen = ({ navigation }) => {
                 {selectedService?.detailedDescriptionKey ? t(selectedService.detailedDescriptionKey) : ''}
               </Text>
             </ScrollView>
-            <TouchableOpacity
-              style={dynamicStyles.descriptionModalButton}
-              onPress={closeDescriptionModal}
-              activeOpacity={0.8}>
-              <Text style={dynamicStyles.descriptionModalButtonText}>
-                {isRTL ? 'إغلاق' : 'Close'}
-              </Text>
-            </TouchableOpacity>
+            <View style={dynamicStyles.modalButtonsContainer}>
+              <TouchableOpacity
+                style={[dynamicStyles.descriptionModalButton, dynamicStyles.cancelButton]}
+                onPress={closeDescriptionModal}
+                activeOpacity={0.8}>
+                <Text style={[dynamicStyles.descriptionModalButtonText, dynamicStyles.cancelButtonText]}>
+                  {isRTL ? 'إغلاق' : 'Close'}
+                </Text>
+              </TouchableOpacity>
+              {selectedService?.id === 2 && ( // Only show for complaints service
+                <TouchableOpacity
+                  style={dynamicStyles.descriptionModalButton}
+                  onPress={() => {
+                    closeDescriptionModal();
+                    navigation.navigate('ServiceDescription', {
+                      serviceData: {
+                        id: 'complaints',
+                        title: {
+                          en: 'Complaint',
+                          ar: 'الشكاوى'
+                        },
+                        description: {
+                          en: 'The service enables you to submit or escalate a complaint with SERA if you are unhappy with the outcome of the service provider\'s handling of your complaint, or if there is a delay in resolving it. It also allows you to follow up on the status of your complaint. The service is available 24/7 through various service delivery channels.',
+                          ar: 'تتيح لك الخدمة تقديم أو تصعيد شكوى لدى هيئة تنظيم الكهرباء إذا لم تكن راضياً عن نتيجة تعامل مقدم الخدمة مع شكواك، أو في حالة وجود تأخير في حلها. كما تتيح لك متابعة حالة شكواك. الخدمة متاحة على مدار الساعة طوال أيام الأسبوع من خلال قنوات تقديم الخدمات المختلفة.'
+                        },
+                        steps: {
+                          en: [
+                            'Choose "Complaint".',
+                            'Choose "Raise a complaint"',
+                            'Fill out the Complaint Form',
+                            'Submit the complaint'
+                          ],
+                          ar: [
+                            'اختر "الشكاوى".',
+                            'اختر "تقديم شكوى"',
+                            'املأ نموذج الشكوى',
+                            'أرسل الشكوى'
+                          ]
+                        },
+                        requirements: {
+                          en: [
+                            'Logging in through the Unified National Access (NAFATH)'
+                          ],
+                          ar: [
+                            'تسجيل الدخول من خلال النفاذ الوطني الموحد (نفاذ)'
+                          ]
+                        },
+                        targetedAudience: {
+                          en: 'Consumer',
+                          ar: 'المستهلك'
+                        },
+                        completionPeriod: {
+                          en: '20 workdays',
+                          ar: '20 يوم عمل'
+                        },
+                        fees: {
+                          en: 'Free',
+                          ar: 'مجاني'
+                        },
+                        supportedLanguages: {
+                          en: 'Arabic-English',
+                          ar: 'العربية - الإنجليزية'
+                        },
+                        contactNumber: '19944',
+                        deliveryChannels: {
+                          en: 'E-portal - Call Center',
+                          ar: 'البوابة الإلكترونية - مركز الاتصال'
+                        },
+                        submitUrl: 'https://eservices.sera.gov.sa/Complaint-menu',
+                        guideUrl: 'https://sera.gov.sa/-/media/wera/pdfs/e-service/electricity-services-complaint-en.pdf'
+                      }
+                    });
+                  }}
+                  activeOpacity={0.8}>
+                  <Text style={dynamicStyles.descriptionModalButtonText}>
+                    {isRTL ? 'وصف الخدمة' : 'Service Description'}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
@@ -677,6 +821,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     opacity: 0.6,
+  },
+  serviceDescriptionLink: {
+    marginTop: 8,
+    paddingVertical: 4,
+  },
+  serviceDescriptionLinkText: {
+    fontSize: 13,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
 });
 

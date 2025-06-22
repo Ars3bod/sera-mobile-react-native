@@ -1,4 +1,4 @@
-package sa.gov.sera.mobile
+package com.sera.seraapp
 
 import android.app.Application
 import com.facebook.react.PackageList

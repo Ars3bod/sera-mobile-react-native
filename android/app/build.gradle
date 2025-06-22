@@ -84,9 +84,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "sa.gov.sera.mobile"
+    namespace "com.sera.seraapp"
     defaultConfig {
-        applicationId "sa.gov.sera.mobile"
+        applicationId "com.sera.seraapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

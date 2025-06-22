@@ -32,6 +32,7 @@ import DataProtectionScreen from '../screens/DataProtectionScreen';
 import CookiePolicyScreen from '../screens/CookiePolicyScreen';
 import CompensationStandardsScreen from '../screens/CompensationStandardsScreen';
 import ConsumptionTariffScreen from '../screens/ConsumptionTariffScreen';
+import ServiceDescriptionScreen from '../screens/ServiceDescriptionScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -172,6 +173,14 @@ export default function AppNavigator() {
         <Stack.Screen
           name="ConsumptionTariff"
           component={ConsumptionTariffScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="ServiceDescription"
+          component={ServiceDescriptionScreen}
           options={{
             animation: 'slide_from_right',
             animationDuration: 300,

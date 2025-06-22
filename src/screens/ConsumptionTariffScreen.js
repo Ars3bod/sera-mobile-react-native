@@ -202,13 +202,18 @@ const ConsumptionTariffScreen = ({ navigation }) => {
                     style={[styles.categoryHeader, { flexDirection: isRTL ? 'row-reverse' : 'row' }]}
                     onPress={() => toggleCategory(category.id)}
                     activeOpacity={0.7}>
-                    <View style={[styles.categoryIconContainer, { backgroundColor: category.color + '15' }]}>
+                    <View style={[styles.categoryIconContainer, {
+                        backgroundColor: category.color + '15',
+                        marginRight: isRTL ? 0 : 16,
+                        marginLeft: isRTL ? 16 : 0
+                    }]}>
                         {React.createElement(IconComponent, { style: [styles.categoryIcon, { color: category.color }] })}
                     </View>
                     <View style={styles.categoryTitleContainer}>
                         <Text style={[styles.categoryTitle, {
                             color: safeTheme.colors.text,
-                            textAlign: isRTL ? 'right' : 'left'
+                            textAlign: isRTL ? 'right' : 'left',
+                            writingDirection: isRTL ? 'rtl' : 'ltr'
                         }]}>
                             {t(category.titleKey)}
                         </Text>
@@ -504,7 +509,6 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 16,
     },
     categoryIcon: {
         width: 24,
