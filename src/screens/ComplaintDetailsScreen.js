@@ -10,7 +10,10 @@ import {
     ActivityIndicator,
     Alert,
     RefreshControl,
+    Platform,
+    PermissionsAndroid,
     Linking,
+    Share,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
@@ -27,6 +30,8 @@ import {
 } from '@fluentui/react-native-icons';
 import complaintsService from '../services/complaintsService';
 import AppConfig from '../config/appConfig';
+import RNFS from 'react-native-fs';
+import ActionToast from '../components/ActionToast';
 
 const ComplaintDetailsScreen = ({ navigation, route }) => {
     const { t, i18n } = useTranslation();
@@ -40,6 +45,8 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
     const [complaint, setComplaint] = useState(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [showActionToast, setShowActionToast] = useState(false);
+    const [selectedAttachment, setSelectedAttachment] = useState(null);
 
     // Load complaint details
     const loadComplaintDetails = async (showRefreshing = false) => {
@@ -95,28 +102,294 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
         navigation.goBack();
     };
 
-    // Handle attachment download
+    // Handle attachment press - show ActionToast for confirmation
     const handleAttachmentPress = (attachment) => {
-        Alert.alert(
-            t('complaints.details.attachment.title'),
-            t('complaints.details.attachment.message', { fileName: attachment.Name }),
-            [
-                { text: t('common.cancel'), style: 'cancel' },
-                {
-                    text: t('complaints.details.attachment.download'),
-                    onPress: () => downloadAttachment(attachment)
-                }
-            ]
-        );
+        if (AppConfig.development.enableDebugLogs) {
+            console.log('Attachment pressed:', attachment.Name);
+        }
+        setSelectedAttachment(attachment);
+        setShowActionToast(true);
     };
 
-    // Download attachment (mock implementation)
-    const downloadAttachment = (attachment) => {
-        // In a real implementation, this would handle file download
-        Alert.alert(
-            t('complaints.details.attachment.downloadTitle'),
-            t('complaints.details.attachment.downloadMessage', { fileName: attachment.Name })
-        );
+    // Request storage permission for Android
+    const requestStoragePermission = async () => {
+        if (Platform.OS !== 'android') return true;
+
+        try {
+            if (Platform.Version >= 30) {
+                // Android 11+ - no permission needed for app's external files directory
+                return true;
+            } else {
+                // Android 10 and below
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: t('permissions.storage.title'),
+                        message: t('permissions.storage.message'),
+                        buttonNeutral: t('permissions.storage.neutral'),
+                        buttonNegative: t('common.cancel'),
+                        buttonPositive: t('common.ok'),
+                    }
+                );
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            }
+        } catch (err) {
+            console.warn('Permission request error:', err);
+            return false;
+        }
+    };
+
+    // Download attachment and immediately show share modal
+    const downloadAttachment = async (attachment) => {
+        try {
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('=== DOWNLOAD ATTACHMENT STARTED ===');
+                console.log('Attachment object:', JSON.stringify(attachment, null, 2));
+                console.log('Attachment keys:', Object.keys(attachment || {}));
+            }
+
+            // Check if attachment has base64 data
+            if (!attachment.Body && !attachment.Data && !attachment.Base64Data) {
+                if (AppConfig.development.enableDebugLogs) {
+                    console.log('No base64 data found in attachment');
+                    console.log('Body:', !!attachment.Body);
+                    console.log('Data:', !!attachment.Data);
+                    console.log('Base64Data:', !!attachment.Base64Data);
+                }
+
+                Alert.alert(
+                    t('complaints.details.attachment.downloadTitle'),
+                    t('complaints.details.attachment.downloadError'),
+                    [{ text: t('common.ok') }]
+                );
+                return;
+            }
+
+            // Directly proceed to download and share
+            await performDownloadAndShare(attachment);
+
+        } catch (error) {
+            if (AppConfig.development.enableDebugLogs) {
+                console.error('Download preparation error:', error);
+                console.error('Error stack:', error.stack);
+            }
+            Alert.alert(
+                t('complaints.details.attachment.downloadTitle'),
+                t('complaints.details.attachment.downloadError'),
+                [{ text: t('common.ok') }]
+            );
+        }
+    };
+
+    // Perform the actual download and immediately share
+    const performDownloadAndShare = async (attachment) => {
+        try {
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('=== PERFORM DOWNLOAD STARTED ===');
+                console.log('Platform OS:', Platform.OS);
+                console.log('Attachment name:', attachment.Name);
+            }
+
+
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('Requesting storage permission...');
+            }
+
+            // Request storage permission
+            const hasPermission = await requestStoragePermission();
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('Storage permission result:', hasPermission);
+            }
+
+            if (!hasPermission) {
+                if (AppConfig.development.enableDebugLogs) {
+                    console.log('Permission denied, showing error');
+                }
+                Alert.alert(
+                    t('complaints.details.attachment.downloadTitle'),
+                    t('permissions.storage.denied'),
+                    [{ text: t('common.ok') }]
+                );
+                return;
+            }
+
+            // Get base64 data
+            const base64Data = attachment.Body || attachment.Data || attachment.Base64Data;
+
+            // Clean base64 data (remove data URL prefix if present)
+            const cleanBase64 = base64Data.replace(/^data:[^;]+;base64,/, '');
+
+            // Generate file name with extension
+            const fileName = attachment.Name || `attachment_${Date.now()}.pdf`;
+            const fileExtension = fileName.split('.').pop()?.toLowerCase() || 'pdf';
+
+            // Determine download path based on platform
+            let downloadPath;
+            if (Platform.OS === 'android') {
+                // Use app's external files directory for Android
+                const downloadsDir = `${RNFS.ExternalDirectoryPath}/Downloads`;
+
+                // Ensure downloads directory exists
+                try {
+                    await RNFS.mkdir(downloadsDir);
+                } catch (mkdirError) {
+                    // Directory might already exist, ignore error
+                }
+
+                downloadPath = `${downloadsDir}/${fileName}`;
+            } else {
+                // iOS - use documents directory
+                downloadPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+            }
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('Download path:', downloadPath);
+                console.log('File extension:', fileExtension);
+                console.log('Base64 data length:', cleanBase64.length);
+            }
+
+            // Write file to device
+            await RNFS.writeFile(downloadPath, cleanBase64, 'base64');
+
+            // Verify file was created
+            const fileExists = await RNFS.exists(downloadPath);
+            if (!fileExists) {
+                throw new Error('File was not created successfully');
+            }
+
+            // Get file info
+            const fileInfo = await RNFS.stat(downloadPath);
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('File downloaded successfully:', {
+                    path: downloadPath,
+                    size: fileInfo.size,
+                    isFile: fileInfo.isFile()
+                });
+            }
+
+            // Immediately show native share modal
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('File downloaded successfully, showing share modal');
+            }
+
+            await openDownloadedFile(downloadPath, fileExtension);
+
+        } catch (error) {
+            if (AppConfig.development.enableDebugLogs) {
+                console.error('Download error:', error);
+            }
+
+            let errorMessage = t('complaints.details.attachment.downloadError');
+            if (error.message.includes('permission')) {
+                errorMessage = t('permissions.storage.denied');
+            } else if (error.message.includes('space')) {
+                errorMessage = t('errors.insufficientStorage');
+            }
+
+            Alert.alert(
+                t('complaints.details.attachment.downloadTitle'),
+                errorMessage,
+                [{ text: t('common.ok') }]
+            );
+        }
+    };
+
+    // Open downloaded file
+    const openDownloadedFile = async (filePath, fileExtension) => {
+        try {
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('Attempting to open file:', filePath);
+                console.log('Platform:', Platform.OS);
+            }
+
+            if (Platform.OS === 'android') {
+                // For Android, try to open with file manager or appropriate app
+                const fileUrl = `file://${filePath}`;
+
+                if (AppConfig.development.enableDebugLogs) {
+                    console.log('Trying to open Android file URL:', fileUrl);
+                }
+
+                const canOpen = await Linking.canOpenURL(fileUrl);
+                if (canOpen) {
+                    await Linking.openURL(fileUrl);
+                    if (AppConfig.development.enableDebugLogs) {
+                        console.log('Successfully opened file with Linking');
+                    }
+                } else {
+                    if (AppConfig.development.enableDebugLogs) {
+                        console.log('Cannot open file with Linking, showing location');
+                    }
+                    // Fallback: show file location
+                    Alert.alert(
+                        t('complaints.details.attachment.fileLocation'),
+                        t('complaints.details.attachment.fileLocationMessage', {
+                            path: filePath.replace(RNFS.ExternalDirectoryPath, 'Internal Storage/Android/data/com.sera.seraapp/files')
+                        }),
+                        [{ text: t('common.ok') }]
+                    );
+                }
+            } else {
+                // For iOS, use React Native Share API
+                if (AppConfig.development.enableDebugLogs) {
+                    console.log('Attempting to share file on iOS:', filePath);
+                }
+
+                const shareResult = await Share.share({
+                    url: `file://${filePath}`,
+                    title: t('complaints.details.attachment.shareTitle'),
+                });
+
+                if (AppConfig.development.enableDebugLogs) {
+                    console.log('iOS Share result:', shareResult);
+                }
+
+                if (shareResult.action === Share.dismissedAction) {
+                    if (AppConfig.development.enableDebugLogs) {
+                        console.log('User dismissed share sheet');
+                    }
+                }
+            }
+        } catch (error) {
+            if (AppConfig.development.enableDebugLogs) {
+                console.error('Error opening file:', error);
+                console.error('File path:', filePath);
+                console.error('Error details:', error.message);
+            }
+
+            // Try alternative method for iOS
+            if (Platform.OS === 'ios') {
+                try {
+                    if (AppConfig.development.enableDebugLogs) {
+                        console.log('Trying alternative iOS method with Linking');
+                    }
+
+                    const fileUrl = `file://${filePath}`;
+                    const canOpen = await Linking.canOpenURL(fileUrl);
+
+                    if (canOpen) {
+                        await Linking.openURL(fileUrl);
+                        if (AppConfig.development.enableDebugLogs) {
+                            console.log('iOS file opened with Linking successfully');
+                        }
+                        return;
+                    }
+                } catch (linkingError) {
+                    if (AppConfig.development.enableDebugLogs) {
+                        console.error('iOS Linking also failed:', linkingError);
+                    }
+                }
+            }
+
+            Alert.alert(
+                t('complaints.details.attachment.openError'),
+                t('complaints.details.attachment.openErrorMessage'),
+                [{ text: t('common.ok') }]
+            );
+        }
     };
 
     // Handle survey
@@ -193,6 +466,21 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
             default:
                 return t('complaints.status.open');
         }
+    };
+
+    // Handle ActionToast confirm - proceed with download and share
+    const handleToastConfirm = () => {
+        setShowActionToast(false);
+        if (selectedAttachment) {
+            downloadAttachment(selectedAttachment);
+            setSelectedAttachment(null);
+        }
+    };
+
+    // Handle ActionToast cancel
+    const handleToastCancel = () => {
+        setShowActionToast(false);
+        setSelectedAttachment(null);
     };
 
     // Get localized stage text based on stage key
@@ -687,7 +975,23 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
                 )}
+
+
             </ScrollView>
+
+            {/* Action Toast for download confirmation */}
+            <ActionToast
+                visible={showActionToast}
+                type="info"
+                title={t('complaints.details.attachment.downloadTitle')}
+                message={t('complaints.details.attachment.message', {
+                    fileName: selectedAttachment?.Name || 'file'
+                })}
+                confirmText={t('complaints.details.attachment.download')}
+                cancelText={t('common.cancel')}
+                onConfirm={handleToastConfirm}
+                onCancel={handleToastCancel}
+            />
         </SafeAreaView>
     );
 };
