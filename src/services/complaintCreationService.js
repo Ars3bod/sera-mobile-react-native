@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {getEndpointUrl} from '../config/apiConfig';
+import { getEndpointUrl } from '../config/apiConfig';
 import AppConfig from '../config/appConfig';
 
 /**
@@ -56,8 +56,7 @@ class ComplaintCreationService {
 
       if (error.response) {
         throw new Error(
-          `Failed to fetch service providers: ${error.response.status} - ${
-            error.response.data?.errorMessage || error.response.statusText
+          `Failed to fetch service providers: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
           }`,
         );
       } else if (error.request) {
@@ -107,7 +106,7 @@ class ComplaintCreationService {
       } else {
         throw new Error(
           response.data?.errorMessage ||
-            'Failed to fetch consumption categories',
+          'Failed to fetch consumption categories',
         );
       }
     } catch (error) {
@@ -117,8 +116,7 @@ class ComplaintCreationService {
 
       if (error.response) {
         throw new Error(
-          `Failed to fetch consumption categories: ${error.response.status} - ${
-            error.response.data?.errorMessage || error.response.statusText
+          `Failed to fetch consumption categories: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
           }`,
         );
       } else if (error.request) {
@@ -177,8 +175,7 @@ class ComplaintCreationService {
 
       if (error.response) {
         throw new Error(
-          `Failed to fetch complaint types: ${error.response.status} - ${
-            error.response.data?.errorMessage || error.response.statusText
+          `Failed to fetch complaint types: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
           }`,
         );
       } else if (error.request) {
@@ -242,8 +239,7 @@ class ComplaintCreationService {
 
       if (error.response) {
         throw new Error(
-          `Failed to check field visibility: ${error.response.status} - ${
-            error.response.data?.errorMessage || error.response.statusText
+          `Failed to check field visibility: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
           }`,
         );
       } else if (error.request) {
@@ -255,11 +251,36 @@ class ComplaintCreationService {
   }
 
   /**
+   * Create attachments XML format for complaint
+   * @param {Array} attachments - Array of attachment objects
+   * @returns {string} XML formatted attachments
+   */
+  createAttachmentsXML(attachments) {
+    if (!attachments || attachments.length === 0) {
+      return null;
+    }
+
+    const attachmentDataElements = attachments.map(attachment => {
+      return `    <AttachmentData>
+      <Name>${attachment.name}</Name>
+      <Type>${attachment.type || 'application/octet-stream'}</Type>
+      <Body>${attachment.base64Data}</Body>
+    </AttachmentData>`;
+    }).join('\n');
+
+    return `<?xml version="1.0" encoding="utf-16"?>
+<ArrayOfAttachmentData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+${attachmentDataElements}
+</ArrayOfAttachmentData>`;
+  }
+
+  /**
    * Create a new complaint
    * @param {Object} complaintData - Complaint data
+   * @param {Array} attachments - Array of file attachments
    * @returns {Promise<Object>} Create complaint response
    */
-  async createComplaint(complaintData) {
+  async createComplaint(complaintData, attachments = []) {
     try {
       const url = `${getEndpointUrl(
         'base',
@@ -267,12 +288,18 @@ class ComplaintCreationService {
         this.environment,
       )}/case/createcase`;
 
-      if (AppConfig.development.enableDebugLogs) {
-        console.log('Creating complaint with URL:', url);
-        console.log('Request data:', complaintData);
+      // Add attachments to complaint data if provided
+      const finalComplaintData = { ...complaintData };
+      if (attachments && attachments.length > 0) {
+        finalComplaintData.attachmentsObject = this.createAttachmentsXML(attachments);
       }
 
-      const response = await axios.post(url, complaintData, {
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Creating complaint with URL:', url);
+        console.log('Request data:', { ...finalComplaintData, attachmentsObject: finalComplaintData.attachmentsObject ? '[ATTACHMENTS_XML]' : null });
+      }
+
+      const response = await axios.post(url, finalComplaintData, {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
@@ -304,8 +331,7 @@ class ComplaintCreationService {
 
       if (error.response) {
         throw new Error(
-          `Failed to create complaint: ${error.response.status} - ${
-            error.response.data?.errorMessage || error.response.statusText
+          `Failed to create complaint: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
           }`,
         );
       } else if (error.request) {
@@ -331,6 +357,245 @@ class ComplaintCreationService {
   getEnvironment() {
     return this.environment;
   }
+
+  /**
+   * Upload attachment file
+   * @param {Object} attachmentData - Attachment data
+   * @param {string} attachmentData.fileName - File name with extension
+   * @param {string} attachmentData.titleInArabic - File title in Arabic
+   * @param {string} attachmentData.titleInEnglish - File title in English
+   * @param {string} attachmentData.beneficiary - User's contact ID
+   * @param {string} attachmentData.base64Data - Base64 encoded file content
+   * @returns {Promise<Object>} Upload response
+   */
+  async uploadAttachment(attachmentData) {
+    try {
+      const url = `${getEndpointUrl(
+        'base',
+        '',
+        this.environment,
+      )}/attachment/uploadattachment`;
+
+      // Sanitize file name (replace spaces with underscores)
+      const sanitizedFileName = attachmentData.fileName.replace(/\s+/g, '_');
+
+      const requestData = {
+        fileNameWithExtention: sanitizedFileName,
+        titleInArabic: attachmentData.titleInArabic,
+        titleInEnglish: attachmentData.titleInEnglish,
+        entitylogicalname: 'ntw_case', // For complaints
+        beneficiary: attachmentData.beneficiary,
+        attachmentId: 'ntw_attachments', // Default attachment field
+        stepNumber: '0', // General step for complaints
+        recordId: attachmentData.recordId || '', // Will be set after case creation
+        base64Data: attachmentData.base64Data.replace(/^data:[^;]+;base64,/, ''), // Remove data URL prefix
+        token: 'yI0vI0f4ba78wewqeWER$!!77', // Hardcoded token
+      };
+
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Uploading attachment with URL:', url);
+        console.log('Request data:', { ...requestData, base64Data: '[BASE64_DATA]' });
+      }
+
+      const response = await axios.post(url, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        timeout: AppConfig.api.requestTimeout * 3, // Extended timeout for file uploads
+      });
+
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Upload attachment response:', response.data);
+      }
+
+      if (response.data && response.data.isSuccess) {
+        return {
+          success: true,
+          message: 'File uploaded successfully',
+          rawData: response.data,
+        };
+      } else {
+        throw new Error(
+          response.data?.errorMessage || 'Failed to upload attachment',
+        );
+      }
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Upload attachment error:', error);
+      }
+
+      if (error.response) {
+        throw new Error(
+          `Failed to upload attachment: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
+          }`,
+        );
+      } else if (error.request) {
+        throw new Error('Network error: Unable to reach upload attachment API');
+      } else {
+        throw new Error(`Upload attachment error: ${error.message}`);
+      }
+    }
+  }
+
+  /**
+   * Get attachments by record ID
+   * @param {string} recordId - Record ID (case ID)
+   * @param {number} step - Step number (0 for general)
+   * @returns {Promise<Object>} Attachments response
+   */
+  async getAttachmentsByRecordId(recordId, step = 0) {
+    try {
+      const url = `${getEndpointUrl(
+        'base',
+        '',
+        this.environment,
+      )}/file/getattachmentsbyrecordid`;
+
+      const requestData = {
+        RecordId: recordId,
+        Step: step,
+      };
+
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Getting attachments with URL:', url);
+        console.log('Request data:', requestData);
+      }
+
+      const response = await axios.post(url, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        timeout: AppConfig.api.requestTimeout,
+      });
+
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Get attachments response:', response.data);
+      }
+
+      if (response.data && response.data.result) {
+        return {
+          success: true,
+          attachments: response.data.result || [],
+          rawData: response.data,
+        };
+      } else {
+        throw new Error('Failed to get attachments');
+      }
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Get attachments error:', error);
+      }
+
+      if (error.response) {
+        throw new Error(
+          `Failed to get attachments: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
+          }`,
+        );
+      } else if (error.request) {
+        throw new Error('Network error: Unable to reach get attachments API');
+      } else {
+        throw new Error(`Get attachments error: ${error.message}`);
+      }
+    }
+  }
+
+  /**
+   * Delete attachment
+   * @param {string} filePath - File path to delete
+   * @returns {Promise<Object>} Delete response
+   */
+  async deleteAttachment(filePath) {
+    try {
+      const url = `${getEndpointUrl(
+        'base',
+        '',
+        this.environment,
+      )}/attachment/deleteattachment`;
+
+      const requestData = {
+        restApiUrl: 'https://eservicesapi.sera.gov.sa/api/Attachments/RemoveAttachment',
+        token: 'yI0vI0f4ba78wewqeWER$!!77',
+        filePath: filePath,
+      };
+
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Deleting attachment with URL:', url);
+        console.log('Request data:', requestData);
+      }
+
+      const response = await axios.post(url, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        timeout: AppConfig.api.requestTimeout,
+      });
+
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Delete attachment response:', response.data);
+      }
+
+      if (response.data && response.data.success) {
+        return {
+          success: true,
+          message: response.data.message || 'File deleted successfully',
+          rawData: response.data,
+        };
+      } else {
+        throw new Error('Failed to delete attachment');
+      }
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Delete attachment error:', error);
+      }
+
+      if (error.response) {
+        throw new Error(
+          `Failed to delete attachment: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
+          }`,
+        );
+      } else if (error.request) {
+        throw new Error('Network error: Unable to reach delete attachment API');
+      } else {
+        throw new Error(`Delete attachment error: ${error.message}`);
+      }
+    }
+  }
+
+  /**
+   * Validate file for upload
+   * @param {Object} file - File object
+   * @returns {Object} Validation result
+   */
+  validateFile(file) {
+    const validExtensions = ['png', 'jpg', 'jpeg', 'pdf', 'doc', 'docx', 'zip', 'xls', 'xlsx', 'svg'];
+    const maxSizeBytes = 20 * 1024 * 1024; // 20MB
+
+    if (!file || !file.name) {
+      return { isValid: false, error: 'File is required' };
+    }
+
+    // Check file extension
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    if (!extension || !validExtensions.includes(extension)) {
+      return {
+        isValid: false,
+        error: `File type not supported. Allowed types: ${validExtensions.join(', ')}`
+      };
+    }
+
+    // Check file size
+    if (file.size && file.size > maxSizeBytes) {
+      return {
+        isValid: false,
+        error: `File size too large. Maximum size is 20MB`
+      };
+    }
+
+    return { isValid: true };
+  }
 }
 
 // Export singleton instance
@@ -354,16 +619,16 @@ export const MOCK_SERVICE_PROVIDERS = [
 
 export const MOCK_CONSUMPTION_CATEGORIES = {
   ar: [
-    {name: 'سكني', value: 266990001},
-    {name: 'تجاري', value: 266990000},
-    {name: 'صناعي', value: 266990002},
-    {name: 'حكومي', value: 266990003},
+    { name: 'سكني', value: 266990001 },
+    { name: 'تجاري', value: 266990000 },
+    { name: 'صناعي', value: 266990002 },
+    { name: 'حكومي', value: 266990003 },
   ],
   en: [
-    {name: 'Residential', value: 266990001},
-    {name: 'Commercial', value: 266990000},
-    {name: 'Industrial', value: 266990002},
-    {name: 'Government', value: 266990003},
+    { name: 'Residential', value: 266990001 },
+    { name: 'Commercial', value: 266990000 },
+    { name: 'Industrial', value: 266990002 },
+    { name: 'Government', value: 266990003 },
   ],
 };
 

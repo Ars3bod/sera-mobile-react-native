@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Easing } from 'react-native-reanimated';
 
 // Screens
 import SplashScreen from '../screens/SplashScreen';
@@ -33,6 +32,7 @@ import CookiePolicyScreen from '../screens/CookiePolicyScreen';
 import CompensationStandardsScreen from '../screens/CompensationStandardsScreen';
 import ConsumptionTariffScreen from '../screens/ConsumptionTariffScreen';
 import ServiceDescriptionScreen from '../screens/ServiceDescriptionScreen';
+import ComplaintDetailsScreen from '../screens/ComplaintDetailsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -205,6 +205,14 @@ export default function AppNavigator() {
         <Stack.Screen
           name="ViewComplaints"
           component={ViewComplaintsScreen}
+          options={{
+            animation: 'slide_from_right',
+            animationDuration: 300,
+          }}
+        />
+        <Stack.Screen
+          name="ComplaintDetails"
+          component={ComplaintDetailsScreen}
           options={{
             animation: 'slide_from_right',
             animationDuration: 300,

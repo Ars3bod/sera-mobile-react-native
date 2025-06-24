@@ -7,7 +7,7 @@ const AppConfig = {
   // API Configuration
   api: {
     // Set to true to use mock data, false to use real API
-    useMockData: false, // Change this to switch between modes
+    useMockData: false, // Change this to switch between modes - temporarily enabled for testing
 
     // Default environment for API calls
     defaultEnvironment: 'flux', // 'prod' or 'flux'

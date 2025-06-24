@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,11 +11,12 @@ import {
   Alert,
   Modal,
   FlatList,
+  Platform,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {useUser} from '../context/UserContext';
-import {useFocusEffect} from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   ArrowLeft24Regular,
   ChevronDown24Regular,
@@ -30,12 +31,12 @@ import complaintCreationService, {
 } from '../services/complaintCreationService';
 import AppConfig from '../config/appConfig';
 import Toast from '../components/Toast';
-import {LoadingSpinner} from '../animations';
+import LoadingSpinner from '../animations/components/LoadingSpinner';
 
-const CreateComplaintScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
-  const {user} = useUser();
+const CreateComplaintScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
+  const { user } = useUser();
   const isRTL = i18n.language === 'ar';
 
   // Form state
@@ -149,7 +150,7 @@ const CreateComplaintScreen = ({navigation}) => {
         }
         setConsumptionCategories(
           MOCK_CONSUMPTION_CATEGORIES[i18n.language] ||
-            MOCK_CONSUMPTION_CATEGORIES.ar,
+          MOCK_CONSUMPTION_CATEGORIES.ar,
         );
       } else {
         if (AppConfig.development.enableDebugLogs) {
@@ -173,7 +174,7 @@ const CreateComplaintScreen = ({navigation}) => {
       // Fallback to mock data
       setConsumptionCategories(
         MOCK_CONSUMPTION_CATEGORIES[i18n.language] ||
-          MOCK_CONSUMPTION_CATEGORIES.ar,
+        MOCK_CONSUMPTION_CATEGORIES.ar,
       );
     }
   };
@@ -272,31 +273,193 @@ const CreateComplaintScreen = ({navigation}) => {
     }
   };
 
-  const handleAttachFile = () => {
+  const handleAttachFile = async () => {
+    try {
+      // Check if we're on web first
+      if (Platform.OS === 'web' && typeof document !== 'undefined') {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.png,.jpg,.jpeg,.pdf,.doc,.docx,.zip,.xls,.xlsx,.svg';
+        input.multiple = false;
+
+        input.onchange = async (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            await handleFileSelection({
+              name: file.name,
+              size: file.size,
+              type: file.type,
+              uri: URL.createObjectURL(file),
+              file: file,
+            });
+          }
+        };
+
+        input.click();
+        return;
+      }
+
+      // For mobile, use react-native-document-picker
+      let DocumentPicker;
+      try {
+        DocumentPicker = require('react-native-document-picker');
+
+        // Verify DocumentPicker has required methods
+        if (!DocumentPicker || typeof DocumentPicker.pick !== 'function') {
+          throw new Error('DocumentPicker.pick method not available');
+        }
+
+        const result = await DocumentPicker.pick({
+          type: [
+            DocumentPicker.types.images,
+            DocumentPicker.types.pdf,
+            DocumentPicker.types.doc,
+            DocumentPicker.types.docx,
+            DocumentPicker.types.xls,
+            DocumentPicker.types.xlsx,
+            DocumentPicker.types.zip,
+          ],
+        });
+
+        if (result && result[0]) {
+          const file = result[0];
+          await handleFileSelection({
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            uri: file.uri,
+          });
+        }
+      } catch (error) {
+        // Check if user cancelled (only if DocumentPicker was loaded)
+        if (DocumentPicker && DocumentPicker.isCancel && DocumentPicker.isCancel(error)) {
+          // User cancelled file picker
+          return;
+        }
+
+        if (AppConfig.development.enableDebugLogs) {
+          console.error('Document picker error:', error);
+        }
+
+        // Show mock file selection as fallback
+        Alert.alert(
+          t('complaints.create.uploadFileTitle'),
+          'File picker not available. Using mock file for testing.',
+          [
+            { text: t('complaints.create.cancel'), style: 'cancel' },
+            {
+              text: t('complaints.create.chooseFile'),
+              onPress: () => {
+                // Mock file for testing
+                handleFileSelection({
+                  name: `document_${attachments.length + 1}.pdf`,
+                  size: 1024 * 1024 * 2, // 2MB
+                  type: 'application/pdf',
+                  uri: 'mock://file.pdf',
+                  mockFile: true,
+                });
+              },
+            },
+          ],
+        );
+      }
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('File selection error:', error);
+      }
+
+      // Show mock file selection as final fallback
+      Alert.alert(
+        t('complaints.create.uploadFileTitle'),
+        'File picker not available. Using mock file for testing.',
+        [
+          { text: t('complaints.create.cancel'), style: 'cancel' },
+          {
+            text: t('complaints.create.chooseFile'),
+            onPress: () => {
+              // Mock file for testing
+              handleFileSelection({
+                name: `document_${attachments.length + 1}.pdf`,
+                size: 1024 * 1024 * 2, // 2MB
+                type: 'application/pdf',
+                uri: 'mock://file.pdf',
+                mockFile: true,
+              });
+            },
+          },
+        ],
+      );
+    }
+  };
+
+  const handleFileSelection = async (file) => {
+    try {
+      // Validate file
+      const validation = complaintCreationService.validateFile(file);
+      if (!validation.isValid) {
+        Alert.alert(t('complaints.create.error'), validation.error);
+        return;
+      }
+
+      // Check total attachments count
+      if (attachments.length >= 5) {
+        Alert.alert(
+          t('complaints.create.error'),
+          'Maximum 5 files can be attached.',
+        );
+        return;
+      }
+
+      // Format file size for display
+      const formatFileSize = (bytes) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      };
+
+      // Add file to attachments list with upload status
+      const newAttachment = {
+        id: Date.now(),
+        name: file.name,
+        size: formatFileSize(file.size || 0),
+        type: file.type,
+        uri: file.uri,
+        file: file,
+        uploading: false,
+        uploaded: false,
+        error: null,
+      };
+
+      setAttachments(prev => [...prev, newAttachment]);
+    } catch (error) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('File handling error:', error);
+      }
+
+      Alert.alert(
+        t('complaints.create.error'),
+        'Failed to process file. Please try again.',
+      );
+    }
+  };
+
+  const removeAttachment = (id) => {
     Alert.alert(
-      t('complaints.create.uploadFileTitle'),
-      t('complaints.create.uploadFileMessage'),
+      t('complaints.create.removeAttachment'),
+      t('complaints.create.removeAttachmentConfirm'),
       [
-        {text: t('complaints.create.cancel'), style: 'cancel'},
+        { text: t('complaints.create.cancel'), style: 'cancel' },
         {
-          text: t('complaints.create.chooseFile'),
+          text: t('common.ok'),
+          style: 'destructive',
           onPress: () => {
-            // Mock file addition
-            const mockFile = {
-              id: Date.now(),
-              name: `document_${attachments.length + 1}.pdf`,
-              size: '2.5 MB',
-              type: 'application/pdf',
-            };
-            setAttachments([...attachments, mockFile]);
+            setAttachments(prev => prev.filter(file => file.id !== id));
           },
         },
       ],
     );
-  };
-
-  const removeAttachment = id => {
-    setAttachments(attachments.filter(file => file.id !== id));
   };
 
   const handleSubmit = async () => {
@@ -338,7 +501,7 @@ const CreateComplaintScreen = ({navigation}) => {
         await new Promise(resolve => setTimeout(resolve, 2000));
 
         showToast(
-          t('complaints.create.successWithCaseId', {caseId: '#25010898'}),
+          t('complaints.create.successWithCaseId', { caseId: '#25010898' }),
         );
 
         // Navigate to complaints screen after delay
@@ -349,10 +512,184 @@ const CreateComplaintScreen = ({navigation}) => {
         // Real API call
         const contactId = getContactId();
 
+        // Process attachments - convert to base64
+        const processedAttachments = [];
+        const failedAttachments = [];
+
+        for (const attachment of attachments) {
+          try {
+            let base64Data;
+
+            if (attachment.mockFile) {
+              // Handle mock files for testing
+              base64Data = 'JVBERi0xLjQKJdPr6eEKMSAwIG9iao8PAovVGl0bGUgKFVudGl0bGVkKQo+PgplbmRvYmoKMiAwIG9iao8PAovQ3JlYXRvciAoTW9ja1BERkNyZWF0b3IpCj4+CmVuZG9iagp4cmVmCjAgMwowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA0NSAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9TaXplIDMKPj4Kc3RhcnR4cmVmCjkxCiUlRU9G'; // Mock PDF base64
+            } else if (attachment.uri && !attachment.uri.startsWith('mock://')) {
+              // Handle URI-based files (mobile) - prioritize this for React Native
+              try {
+                if (AppConfig.development.enableDebugLogs) {
+                  console.log('Processing file URI:', attachment.uri);
+                }
+
+                const response = await fetch(attachment.uri);
+                if (!response.ok) {
+                  throw new Error(`Failed to fetch file "${attachment.name}": HTTP ${response.status}`);
+                }
+
+                const blob = await response.blob();
+                base64Data = await new Promise((resolve, reject) => {
+                  const reader = new FileReader();
+
+                  reader.onload = function (event) {
+                    try {
+                      // More robust event handling
+                      const result = event.target?.result || this.result;
+                      if (result && typeof result === 'string') {
+                        resolve(result);
+                      } else {
+                        reject(new Error('FileReader returned invalid result for blob'));
+                      }
+                    } catch (eventError) {
+                      reject(new Error(`Blob event handling error: ${eventError.message}`));
+                    }
+                  };
+
+                  reader.onerror = function (error) {
+                    reject(new Error(`Blob FileReader failed: ${error.message || 'Unknown error'}`));
+                  };
+
+                  reader.onabort = function () {
+                    reject(new Error('Blob FileReader was aborted'));
+                  };
+
+                  try {
+                    reader.readAsDataURL(blob);
+                  } catch (readError) {
+                    reject(new Error(`Failed to start reading blob: ${readError.message}`));
+                  }
+                });
+              } catch (fetchError) {
+                throw new Error(`Failed to process file "${attachment.name}": ${fetchError.message}`);
+              }
+            } else if (attachment.file && typeof attachment.file === 'object') {
+              // Handle File objects (web) - fallback for web platforms
+              try {
+                if (AppConfig.development.enableDebugLogs) {
+                  console.log('Processing file object for web platform');
+                }
+
+                base64Data = await new Promise((resolve, reject) => {
+                  const reader = new FileReader();
+
+                  reader.onload = function (event) {
+                    try {
+                      // More robust event handling
+                      const result = event.target?.result || this.result;
+                      if (result && typeof result === 'string') {
+                        resolve(result);
+                      } else {
+                        reject(new Error('FileReader returned invalid result'));
+                      }
+                    } catch (eventError) {
+                      reject(new Error(`Event handling error: ${eventError.message}`));
+                    }
+                  };
+
+                  reader.onerror = function (error) {
+                    reject(new Error(`FileReader failed: ${error.message || 'Unknown error'}`));
+                  };
+
+                  reader.onabort = function () {
+                    reject(new Error('FileReader was aborted'));
+                  };
+
+                  try {
+                    reader.readAsDataURL(attachment.file);
+                  } catch (readError) {
+                    reject(new Error(`Failed to start reading file: ${readError.message}`));
+                  }
+                });
+              } catch (fileReaderError) {
+                throw new Error(`Failed to read file "${attachment.name}": ${fileReaderError.message}`);
+              }
+            } else {
+              // Mock file URI or no valid source - use mock data for testing/development
+              if (AppConfig.development.enableDebugLogs) {
+                console.log('Using mock data for attachment:', attachment.name);
+              }
+              base64Data = 'data:application/pdf;base64,JVBERi0xLjQKJdPr6eEKMSAwIG9iao8PAovVGl0bGUgKFVudGl0bGVkKQo+PgplbmRvYmoKMiAwIG9iago8PAovQ3JlYXRvciAoTW9ja1BERkNyZWF0b3IpCj4+CmVuZG9iagp4cmVmCjAgMwowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA0NSAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9TaXplIDMKPj4Kc3RhcnR4cmVmCjkxCiUlRU9G';
+            }
+
+            if (!base64Data) {
+              throw new Error(`No data could be extracted from file "${attachment.name}"`);
+            }
+
+            processedAttachments.push({
+              name: attachment.name,
+              type: attachment.type,
+              base64Data: base64Data.replace(/^data:[^;]+;base64,/, ''), // Remove data URL prefix
+            });
+
+            if (AppConfig.development.enableDebugLogs) {
+              console.log('Successfully processed attachment:', attachment.name);
+            }
+          } catch (error) {
+            if (AppConfig.development.enableDebugLogs) {
+              console.error('Failed to process attachment:', attachment.name, error.message);
+              console.error('Attachment object:', JSON.stringify(attachment, null, 2));
+              console.error('Full error:', error);
+            }
+
+            // For development/testing - provide more details
+            let errorMessage = error.message;
+            if (AppConfig.development.enableDebugLogs) {
+              errorMessage += ` (Type: ${attachment.type || 'unknown'}, Size: ${attachment.size || 'unknown'}, URI: ${attachment.uri ? 'present' : 'missing'})`;
+            }
+
+            failedAttachments.push({
+              name: attachment.name,
+              error: errorMessage,
+            });
+          }
+        }
+
+        // Check if any attachments failed to process
+        if (failedAttachments.length > 0) {
+          const failedFileNames = failedAttachments.map(failed => failed.name).join(', ');
+          const errorDetails = failedAttachments.map(failed => `• ${failed.name}: ${failed.error}`).join('\n');
+
+          const errorMessage = failedAttachments.length === 1
+            ? t('complaints.create.attachmentFailedSingle', { fileName: failedFileNames })
+            : t('complaints.create.attachmentFailedMultiple', { count: failedAttachments.length, fileNames: failedFileNames });
+
+          Alert.alert(
+            t('complaints.create.attachmentError'),
+            `${errorMessage}\n\n${t('complaints.create.attachmentErrorDetails')}:\n${errorDetails}`,
+            [
+              {
+                text: t('complaints.create.continueWithoutAttachments'),
+                style: 'default',
+                onPress: () => {
+                  // Remove failed attachments and continue
+                  const successfulAttachments = attachments.filter(att =>
+                    !failedAttachments.some(failed => failed.name === att.name)
+                  );
+                  setAttachments(successfulAttachments);
+                  // Don't restart submission automatically - let user decide
+                }
+              },
+              {
+                text: t('complaints.create.fixAttachments'),
+                style: 'cancel'
+              }
+            ]
+          );
+
+          throw new Error(`Attachment processing failed for: ${failedFileNames}`);
+        }
+
         const complaintData = {
           accountNumber: accountNumber || '',
           orderNumber: orderNumber || '',
-          attachmentsObject: null, // TODO: Handle file uploads
           complainterType: consumptionCategory?.value || consumptionCategory,
           beneficiary: contactId,
           descriptionParam: complaintText,
@@ -366,6 +703,7 @@ const CreateComplaintScreen = ({navigation}) => {
 
         const response = await complaintCreationService.createComplaint(
           complaintData,
+          processedAttachments,
         );
 
         if (response.success) {
@@ -419,7 +757,7 @@ const CreateComplaintScreen = ({navigation}) => {
         {value || placeholder}
       </Text>
       <ChevronDown24Regular
-        style={[styles.dropdownIcon, {color: theme.colors.icon}]}
+        style={[styles.dropdownIcon, { color: theme.colors.icon }]}
       />
     </TouchableOpacity>
   );
@@ -439,7 +777,7 @@ const CreateComplaintScreen = ({navigation}) => {
       onRequestClose={() => setVisible(false)}>
       <View style={styles.modalOverlay}>
         <View
-          style={[styles.modalContent, {backgroundColor: theme.colors.card}]}>
+          style={[styles.modalContent, { backgroundColor: theme.colors.card }]}>
           <Text
             style={[
               styles.modalTitle,
@@ -459,7 +797,7 @@ const CreateComplaintScreen = ({navigation}) => {
               item.value ||
               index.toString()
             }
-            renderItem={({item}) => {
+            renderItem={({ item }) => {
               let displayText = '';
               if (displayKey === 'serviceProvider') {
                 displayText = isRTL ? item.accountName : item.englishName;
@@ -473,7 +811,7 @@ const CreateComplaintScreen = ({navigation}) => {
                 <TouchableOpacity
                   style={[
                     styles.modalItem,
-                    {borderBottomColor: theme.colors.border},
+                    { borderBottomColor: theme.colors.border },
                   ]}
                   onPress={() => {
                     if (displayKey === 'complaintType') {
@@ -501,14 +839,14 @@ const CreateComplaintScreen = ({navigation}) => {
           <TouchableOpacity
             style={[
               styles.modalCloseButton,
-              {backgroundColor: theme.colors.primary},
+              { backgroundColor: theme.colors.primary },
             ]}
             onPress={() => setVisible(false)}
             activeOpacity={0.7}>
             <Text
               style={[
                 styles.modalCloseText,
-                {color: theme.colors.textInverse},
+                { color: theme.colors.textInverse },
               ]}>
               {t('complaints.create.close')}
             </Text>
@@ -518,17 +856,17 @@ const CreateComplaintScreen = ({navigation}) => {
     </Modal>
   );
 
-  const renderAttachment = ({item}) => (
+  const renderAttachment = ({ item }) => (
     <View
       style={[
         styles.attachmentItem,
         {
           backgroundColor: theme.colors.surface,
-          borderColor: theme.colors.border,
+          borderColor: item.error ? '#F44336' : theme.colors.border,
         },
       ]}>
       <Document24Regular
-        style={[styles.attachmentIcon, {color: theme.colors.primary}]}
+        style={[styles.attachmentIcon, { color: theme.colors.primary }]}
       />
       <View style={styles.attachmentInfo}>
         <Text
@@ -550,13 +888,22 @@ const CreateComplaintScreen = ({navigation}) => {
             },
           ]}>
           {item.size}
+          {item.uploading && ' - Uploading...'}
+          {item.uploaded && ' - ✓ Uploaded'}
+          {item.error && ` - Error: ${item.error}`}
         </Text>
       </View>
       <TouchableOpacity
         style={styles.removeButton}
         onPress={() => removeAttachment(item.id)}
-        activeOpacity={0.7}>
-        <Delete24Regular style={[styles.removeIcon, {color: '#F44336'}]} />
+        activeOpacity={0.7}
+        disabled={item.uploading}>
+        <Delete24Regular
+          style={[
+            styles.removeIcon,
+            { color: item.uploading ? theme.colors.textSecondary : '#F44336' }
+          ]}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -619,7 +966,7 @@ const CreateComplaintScreen = ({navigation}) => {
             color={theme.colors.primary}
             duration={1000}
           />
-          <Text style={[styles.loadingText, {color: theme.colors.text}]}>
+          <Text style={[styles.loadingText, { color: theme.colors.text }]}>
             Loading form data...
           </Text>
         </View>
@@ -646,7 +993,7 @@ const CreateComplaintScreen = ({navigation}) => {
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -655,7 +1002,7 @@ const CreateComplaintScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -848,7 +1195,7 @@ const CreateComplaintScreen = ({navigation}) => {
             onPress={handleAttachFile}
             activeOpacity={0.7}>
             <Attach24Regular
-              style={[styles.attachIcon, {color: theme.colors.primary}]}
+              style={[styles.attachIcon, { color: theme.colors.primary }]}
             />
             <Text
               style={[
@@ -923,7 +1270,7 @@ const CreateComplaintScreen = ({navigation}) => {
         setShowComplaintTypeModal,
         t('complaints.create.complaintType'),
         complaintTypes,
-        () => {}, // Handled by handleComplaintTypeSelect
+        () => { }, // Handled by handleComplaintTypeSelect
         'complaintType',
       )}
     </SafeAreaView>

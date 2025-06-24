@@ -351,6 +351,285 @@ class ComplaintsService {
 
     return counts;
   }
+
+  /**
+   * Get detailed information about a specific complaint
+   * @param {string} caseNumber - The case number to fetch details for
+   * @returns {Promise<Object>} Promise resolving to complaint details response
+   */
+  async getComplaintDetails(caseNumber) {
+    try {
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Getting complaint details for case:', caseNumber);
+      }
+
+      // Build full API endpoint URL
+      const url = getEndpointUrl('case', 'details', this.environment);
+
+      // Prepare request data for POST body
+      const requestData = {
+        caseNumber: caseNumber
+      };
+
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Fetching complaint details with URL:', url);
+        console.log('Request data:', requestData);
+      }
+
+      // Make API request using POST method
+      const response = await axios.post(url, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        timeout: AppConfig.api.requestTimeout,
+      });
+
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Complaint details API response:', response);
+      }
+
+      // Check if response is successful
+      if (response.data && response.data.success && response.data.caseObjectResult) {
+        // Parse the JSON string in caseObjectResult
+        let parsedComplaint;
+        try {
+          parsedComplaint = JSON.parse(response.data.caseObjectResult);
+        } catch (parseError) {
+          console.error('Error parsing complaint details JSON:', parseError);
+          throw new Error('Invalid response format');
+        }
+
+        // Process and normalize the complaint data
+        const processedComplaint = {
+          CaseId: parsedComplaint.CaseId,
+          CaseNumber: parsedComplaint.CaseNumber,
+          Account: parsedComplaint.Account, // {Key, Value} - Service provider
+          Region: parsedComplaint.Region, // {Key, Value} - Region
+          City: parsedComplaint.City, // {Key, Value} - City
+          Office: parsedComplaint.Office, // {Key, Value} - Office
+          OriginatingCaseNumber: parsedComplaint.OriginatingCaseNumber,
+          CaseType: parsedComplaint.CaseType, // {Key, Value} - Complaint type
+          Description: parsedComplaint.Description,
+          Attachment: parsedComplaint.Attachment || [], // Array of attachments
+          CompalintRegistered: parsedComplaint.CompalintRegistered,
+          CouncilDescription: parsedComplaint.CouncilDescription, // Service provider response
+          Comments: parsedComplaint.Comments || [], // Case comments/updates
+          ComplainterType: parsedComplaint.ComplainterType, // {Key, Value} - Customer type
+          ProcessingResult: parsedComplaint.ProcessingResult, // {Key, Value} - Final decision
+          ProcessingResultText: parsedComplaint.ProcessingResultText, // Detailed decision text
+          Reopen: parsedComplaint.Reopen, // {IsReopen, ReopenComment, ReopenReason, FileBase, FileName}
+          SurveyCode: parsedComplaint.SurveyCode,
+          SurveyResponseId: parsedComplaint.SurveyResponseId,
+          Status: parsedComplaint.Status, // {Key, Value} - Current status
+          CaseStage: parsedComplaint.CaseStage, // {Key, Value} - Current stage
+          ResultReaded: parsedComplaint.ResultReaded,
+          CanReopen: parsedComplaint.CanReopen,
+          CreationDate: parsedComplaint.CreationDate,
+          ClosedDate: parsedComplaint.ClosedDate,
+          SubCaseType: parsedComplaint.SubCaseType,
+          Logo: parsedComplaint.Logo,
+        };
+
+        // Mark result as read if status indicates completion
+        if (parsedComplaint.Status?.Key === '266990011' || parsedComplaint.Status?.Key === '266990015') {
+          if (!parsedComplaint.ResultReaded) {
+            // Call API to mark as read (optional - depends on business requirements)
+            try {
+              await this.markComplaintResultAsRead(caseNumber);
+              processedComplaint.ResultReaded = true;
+            } catch (markError) {
+              console.warn('Failed to mark complaint result as read:', markError);
+              // Don't fail the whole request for this
+            }
+          }
+        }
+
+        return {
+          success: true,
+          complaint: processedComplaint,
+          message: 'Complaint details loaded successfully'
+        };
+      } else {
+        throw new Error(response.data?.errorMessage || 'Failed to fetch complaint details');
+      }
+    } catch (error) {
+      console.error('Error in getComplaintDetails:', error);
+
+      // Check if we should use mock data based on config or error type
+      const shouldUseMock = AppConfig.api.useMockData ||
+        AppConfig.development.useMockData ||
+        (error.code === 'NETWORK_ERROR') ||
+        (error.message && error.message.includes('Network Error'));
+
+      if (shouldUseMock) {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Using mock data for complaint details due to:', error.message);
+        }
+
+        // Return mock data for development
+        const mockComplaint = this.generateMockComplaintDetails(caseNumber);
+        return {
+          success: true,
+          complaint: mockComplaint,
+          message: 'Mock complaint details loaded (network unavailable)',
+          isMockData: true
+        };
+      }
+
+      // Handle different types of errors
+      let errorMessage = 'Failed to load complaint details';
+
+      if (error.response) {
+        // Server responded with error status
+        errorMessage = `Server error: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText}`;
+      } else if (error.request) {
+        // Network error - no response received
+        errorMessage = 'Network error: Unable to reach complaint details service. Please check your connection.';
+      } else {
+        // Other error
+        errorMessage = error.message || 'Unknown error occurred';
+      }
+
+      return {
+        success: false,
+        complaint: null,
+        message: errorMessage,
+        errorType: error.response ? 'server' : error.request ? 'network' : 'unknown'
+      };
+    }
+  }
+
+  /**
+   * Mark complaint result as read
+   * @param {string} caseNumber - The case number to mark as read
+   * @returns {Promise<Object>} Promise resolving to mark read response
+   */
+  async markComplaintResultAsRead(caseNumber) {
+    try {
+      const url = getEndpointUrl('case', 'markresultread', this.environment);
+      const requestData = {
+        caseNumber: caseNumber
+      };
+
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Marking complaint result as read with URL:', url);
+        console.log('Request data:', requestData);
+      }
+
+      const response = await axios.post(url, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        timeout: AppConfig.api.requestTimeout,
+      });
+
+      if (AppConfig.development.enableDebugLogs) {
+        console.log('Mark result as read response:', response);
+      }
+
+      return response;
+    } catch (error) {
+      console.error('Error marking complaint result as read:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Generate mock complaint details for development
+   * @param {string} caseNumber - The case number
+   * @returns {Object} Mock complaint details
+   */
+  generateMockComplaintDetails(caseNumber) {
+    const statusOptions = [
+      { Key: '1', Value: 'Under Processing' },
+      { Key: '266990010', Value: 'Checking Complaint' },
+      { Key: '266990011', Value: 'Closed' },
+      { Key: '266990005', Value: 'Closed as inquiry' },
+    ];
+
+    const randomStatus = statusOptions[Math.floor(Math.random() * statusOptions.length)];
+
+    return {
+      CaseId: `${caseNumber}-id`,
+      CaseNumber: caseNumber,
+      Account: {
+        Key: "1eff1c6e-6fb0-ed11-bada-00155d00725a",
+        Value: "الشركة السعودية للكهرباء"
+      },
+      Region: {
+        Key: "962d623d-0a35-ee11-baea-0205857feb80",
+        Value: "شركة مرافق السعودية"
+      },
+      City: {
+        Key: "cc631fd4-926d-ee11-baf4-00155d007258",
+        Value: "ينبع الصناعية"
+      },
+      Office: {
+        Key: null,
+        Value: null
+      },
+      OriginatingCaseNumber: null,
+      CaseType: {
+        Key: "825daad3-57a9-ed11-bada-00155d00725a",
+        Value: "جودة الخدمة الكهربائية"
+      },
+      Description: "Test complaint description for case " + caseNumber,
+      Attachment: [
+        {
+          Id: "attachment-1",
+          Name: "document.pdf",
+          Type: ".pdf",
+          Body: "base64-encoded-content"
+        }
+      ],
+      CompalintRegistered: false,
+      CouncilDescription: "Service provider response for this complaint",
+      Comments: [
+        {
+          text: "Complaint received and under review",
+          date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          author: "SERA Team"
+        },
+        {
+          text: "Additional information requested from service provider",
+          date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          author: "SERA Team"
+        }
+      ],
+      ComplainterType: {
+        Key: "266990002",
+        Value: "Industrial"
+      },
+      ProcessingResult: randomStatus.Key === '266990011' ? {
+        Key: "result-key",
+        Value: "Complaint resolved in customer favor"
+      } : null,
+      ProcessingResultText: randomStatus.Key === '266990011' ?
+        "The complaint has been thoroughly investigated and resolved. Service provider has been instructed to improve their service quality." : null,
+      Reopen: {
+        IsReopen: randomStatus.Key === '266990011' ? "True" : "False",
+        ReopenComment: null,
+        ReopenReason: null,
+        FileBase: null,
+        FileName: null
+      },
+      SurveyCode: "SURV-1003",
+      SurveyResponseId: "fb5c05e6-e050-f011-baff-aa5fa518ce00",
+      Status: randomStatus,
+      CaseStage: {
+        Key: "266990001",
+        Value: "Complaint Check"
+      },
+      ResultReaded: false,
+      CanReopen: randomStatus.Key === '266990011',
+      CreationDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+      ClosedDate: randomStatus.Key === '266990011' ? new Date().toISOString() : null,
+      SubCaseType: null,
+      Logo: null,
+    };
+  }
 }
 
 // Export singleton instance

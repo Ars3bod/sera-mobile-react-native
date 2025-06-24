@@ -9,6 +9,8 @@ import {
   RefreshControl,
   Alert,
   Modal,
+  FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -22,12 +24,13 @@ import {
   Filter24Regular,
   Clock24Regular,
   ArrowLeft24Regular,
+  ChevronRight24Regular,
+  ChevronLeft24Regular,
 } from '@fluentui/react-native-icons';
 import NavigationBar from '../components/NavigationBar';
 import complaintsService, {
   MOCK_COMPLAINTS_DATA,
 } from '../services/complaintsService';
-import { LoadingSpinner } from '../animations';
 import AppConfig from '../config/appConfig';
 
 const ViewComplaintsScreen = ({ navigation, route }) => {
@@ -385,81 +388,161 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
     }
   };
 
-  const renderComplaintCard = complaint => (
-    <TouchableOpacity
-      key={complaint.id}
-      style={[styles.complaintCard, { backgroundColor: theme.colors.card }]}
-      activeOpacity={0.7}>
-      <View style={styles.complaintHeader}>
-        <View style={styles.complaintTitleContainer}>
-          <Text
-            style={[
-              styles.complaintTitle,
-              { color: theme.colors.text, textAlign: isRTL ? 'right' : 'left' },
-            ]}>
-            {complaint.title}
-          </Text>
-          <Text
-            style={[
+  const getStatusDisplayText = status => {
+    switch (status) {
+      case 'open':
+        return t('complaints.view.status.open');
+      case 'closed':
+        return t('complaints.view.status.closed');
+      default:
+        return t('complaints.view.status.unknown');
+    }
+  };
+
+  // Handle complaint item press
+  const handleComplaintPress = (complaint) => {
+    if (complaint.caseNumber) {
+      navigation.navigate('ComplaintDetails', {
+        caseNumber: complaint.caseNumber
+      });
+    } else {
+      Alert.alert(
+        t('complaints.view.error'),
+        t('complaints.view.invalidComplaint')
+      );
+    }
+  };
+
+  // Render complaint item
+  const renderComplaintItem = ({ item }) => {
+    const statusColor = getStatusColor(item.status);
+
+    return (
+      <TouchableOpacity
+        style={[
+          styles.complaintItem,
+          {
+            backgroundColor: theme.colors.card,
+            borderColor: theme.colors.border,
+          }
+        ]}
+        onPress={() => handleComplaintPress(item)}
+        activeOpacity={0.7}
+      >
+        <View style={[
+          styles.complaintHeader,
+          {
+            flexDirection: isRTL ? 'row-reverse' : 'row',
+          }
+        ]}>
+          <View style={styles.complaintNumberContainer}>
+            <Text style={[
               styles.complaintNumber,
               {
-                color: theme.colors.textSecondary,
+                color: theme.colors.text,
                 textAlign: isRTL ? 'right' : 'left',
-              },
+              }
             ]}>
-            #{complaint.caseNumber}
+              {item.caseNumber}
+            </Text>
+            <View style={[
+              styles.statusDot,
+              {
+                backgroundColor: statusColor,
+                marginLeft: isRTL ? 0 : 8,
+                marginRight: isRTL ? 8 : 0,
+              }
+            ]} />
+          </View>
+
+          <Text style={[
+            styles.complaintDate,
+            {
+              color: theme.colors.textSecondary,
+              textAlign: isRTL ? 'right' : 'left',
+            }
+          ]}>
+            {formatDate(item.creationDate)}
           </Text>
         </View>
-        <View style={styles.statusContainer}>
-          <View
-            style={[
-              styles.statusBadge,
-              { backgroundColor: getStatusColor(complaint.status) + '20' },
-            ]}>
-            <Text
-              style={[
-                styles.statusText,
-                { color: getStatusColor(complaint.status) },
-              ]}>
-              {complaint.statusCode
-                ? complaintsService.getStatusDisplayText(complaint.statusCode, i18n.language)
-                : t(`complaints.view.status.${complaint.status}`)
-              }
-            </Text>
-          </View>
-        </View>
-      </View>
 
-      <Text
-        style={[
-          styles.complaintDescription,
+        <Text style={[
+          styles.complaintType,
           {
             color: theme.colors.textSecondary,
             textAlign: isRTL ? 'right' : 'left',
-          },
+          }
         ]}>
-        {complaint.description}
-      </Text>
-
-      <View style={styles.complaintFooter}>
-        <Text
-          style={[styles.complaintDate, { color: theme.colors.textSecondary }]}>
-          {(() => {
-            const dateValue = complaint.dateSubmitted || complaint.creationDate;
-            if (AppConfig.development.enableDebugLogs) {
-              console.log('Complaint date values:', {
-                id: complaint.id,
-                dateSubmitted: complaint.dateSubmitted,
-                creationDate: complaint.creationDate,
-                finalValue: dateValue,
-              });
-            }
-            return formatDate(dateValue);
-          })()}
+          {item.caseType}
         </Text>
-      </View>
-    </TouchableOpacity>
-  );
+
+        <Text style={[
+          styles.complaintDescription,
+          {
+            color: theme.colors.text,
+            textAlign: isRTL ? 'right' : 'left',
+          }
+        ]}
+          numberOfLines={2}
+        >
+          {item.description}
+        </Text>
+
+        <View style={styles.complaintFooter}>
+          <Text style={[
+            styles.complaintProvider,
+            {
+              color: theme.colors.textSecondary,
+              textAlign: isRTL ? 'right' : 'left',
+            }
+          ]}>
+            {item.serviceProvider}
+          </Text>
+
+          <View style={[
+            styles.statusBadge,
+            { backgroundColor: statusColor + '20' }
+          ]}>
+            <Text style={[
+              styles.statusText,
+              { color: statusColor }
+            ]}>
+              {getStatusDisplayText(item.status)}
+            </Text>
+          </View>
+        </View>
+
+        {/* Tap indicator */}
+        <View style={[
+          styles.tapIndicator,
+          {
+            right: isRTL ? undefined : 16,
+            left: isRTL ? 16 : undefined,
+          }
+        ]}>
+          {isRTL ? (
+            <ChevronLeft24Regular
+              style={[
+                styles.chevronIcon,
+                {
+                  color: theme.colors.textSecondary,
+                }
+              ]}
+            />
+          ) : (
+            <ChevronRight24Regular
+              style={[
+                styles.chevronIcon,
+                {
+                  color: theme.colors.textSecondary,
+                }
+              ]}
+            />
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   const renderFilterButton = filterOption => {
     const IconComponent = filterOption.icon;
@@ -475,6 +558,9 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
               ? theme.colors.primary + '20'
               : theme.colors.surface,
             borderColor: isActive ? theme.colors.primary : theme.colors.border,
+            flexDirection: isRTL ? 'row-reverse' : 'row',
+            marginLeft: isRTL ? 8 : 0,
+            marginRight: isRTL ? 0 : 8,
           },
         ]}
         onPress={() => setCurrentFilter(filterOption.key)}
@@ -482,7 +568,11 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
         <IconComponent
           style={[
             styles.filterIcon,
-            { color: isActive ? theme.colors.primary : theme.colors.icon },
+            {
+              color: isActive ? theme.colors.primary : theme.colors.icon,
+              marginLeft: isRTL ? 6 : 0,
+              marginRight: isRTL ? 0 : 6,
+            },
           ]}
         />
         <Text
@@ -626,70 +716,79 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filtersContent}>
+          contentContainerStyle={[
+            styles.filtersContent,
+            {
+              flexDirection: isRTL ? 'row-reverse' : 'row',
+            }
+          ]}>
           {filterOptions.map(renderFilterButton)}
         </ScrollView>
       </View>
 
       {/* Content */}
-      <ScrollView
-        style={styles.content}
-        contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        {loading ? (
-          <View style={styles.loadingContainer}>
-            <LoadingSpinner
-              type="rotating"
-              size={40}
-              color={theme.colors.primary}
-              duration={1000}
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator
+            size="large"
+            color={theme.colors.primary}
+          />
+          <Text style={[styles.loadingText, { color: theme.colors.text }]}>
+            {t('complaints.view.loading')}
+          </Text>
+        </View>
+      ) : error && complaints.length === 0 ? (
+        <View style={styles.errorContainer}>
+          <Text style={[styles.errorText, { color: theme.colors.error }]}>
+            {error}
+          </Text>
+          <TouchableOpacity
+            style={[
+              styles.retryButton,
+              { backgroundColor: theme.colors.primary },
+            ]}
+            onPress={() => loadComplaints()}>
+            <Text style={styles.retryButtonText}>{t('retry')}</Text>
+          </TouchableOpacity>
+        </View>
+      ) : complaints.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <DocumentText24Regular
+            style={[styles.emptyIcon, { color: theme.colors.textSecondary }]}
+          />
+          <Text
+            style={[
+              styles.emptyTitle,
+              { color: theme.colors.text, textAlign: 'center' },
+            ]}>
+            {t('complaints.view.noComplaints')}
+          </Text>
+          <Text
+            style={[
+              styles.emptyDescription,
+              { color: theme.colors.textSecondary, textAlign: 'center' },
+            ]}>
+            {t('complaints.view.noComplaintsMessage')}
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={complaints}
+          renderItem={renderComplaintItem}
+          keyExtractor={(item) => item.id || item.caseNumber}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.complaintsContainer}
+          style={styles.content}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[theme.colors.primary]}
+              tintColor={theme.colors.primary}
             />
-            <Text style={[styles.loadingText, { color: theme.colors.text }]}>
-              {t('complaints.view.loading')}
-            </Text>
-          </View>
-        ) : error && complaints.length === 0 ? (
-          <View style={styles.errorContainer}>
-            <Text style={[styles.errorText, { color: theme.colors.error }]}>
-              {error}
-            </Text>
-            <TouchableOpacity
-              style={[
-                styles.retryButton,
-                { backgroundColor: theme.colors.primary },
-              ]}
-              onPress={() => loadComplaints()}>
-              <Text style={styles.retryButtonText}>{t('retry')}</Text>
-            </TouchableOpacity>
-          </View>
-        ) : complaints.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <DocumentText24Regular
-              style={[styles.emptyIcon, { color: theme.colors.textSecondary }]}
-            />
-            <Text
-              style={[
-                styles.emptyTitle,
-                { color: theme.colors.text, textAlign: 'center' },
-              ]}>
-              {t('complaints.view.noComplaints')}
-            </Text>
-            <Text
-              style={[
-                styles.emptyDescription,
-                { color: theme.colors.textSecondary, textAlign: 'center' },
-              ]}>
-              {t('complaints.view.noComplaintsMessage')}
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.complaintsContainer}>
-            {complaints.map(renderComplaintCard)}
-          </View>
-        )}
-      </ScrollView>
+          }
+        />
+      )}
 
       {/* Navigation Bar - Only show if user came from NavigationBar */}
       {isFromNavigationBar && (
@@ -749,18 +848,15 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   filterButton: {
-    flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    marginRight: 8,
   },
   filterIcon: {
     width: 16,
     height: 16,
-    marginRight: 6,
   },
   filterText: {
     fontSize: 14,
@@ -768,9 +864,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-  },
-  scrollContent: {
-    padding: 20,
   },
   loadingContainer: {
     flex: 1,
@@ -787,6 +880,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 40,
+    paddingHorizontal: 20,
   },
   errorText: {
     fontSize: 16,
@@ -808,6 +902,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 40,
+    paddingHorizontal: 20,
   },
   emptyIcon: {
     width: 48,
@@ -824,54 +919,47 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   complaintsContainer: {
-    gap: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
   },
-  complaintCard: {
-    borderRadius: 12,
+  complaintItem: {
+    marginVertical: 8,
     padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    borderRadius: 12,
+    borderWidth: 1,
+    position: 'relative',
   },
   complaintHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginBottom: 8,
   },
-  complaintTitleContainer: {
-    flex: 1,
-    marginRight: 12,
-  },
-  complaintTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
+  complaintNumberContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   complaintNumber: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '600',
+    marginRight: 8,
   },
-  statusContainer: {
-    alignItems: 'flex-end',
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+  complaintDate: {
+    fontSize: 14,
   },
-  statusText: {
-    fontSize: 12,
-    fontWeight: 'bold',
+  complaintType: {
+    fontSize: 14,
+    marginBottom: 8,
+    fontStyle: 'italic',
   },
   complaintDescription: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 16,
+    lineHeight: 22,
     marginBottom: 12,
   },
   complaintFooter: {
@@ -879,8 +967,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  complaintDate: {
+  complaintProvider: {
+    fontSize: 14,
+    flex: 1,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginLeft: 8,
+  },
+  statusText: {
     fontSize: 12,
+    fontWeight: '600',
+  },
+  tapIndicator: {
+    position: 'absolute',
+    top: '50%',
+    transform: [{ translateY: -12 }],
+  },
+  chevronIcon: {
+    fontSize: 20,
   },
 });
 
