@@ -39,7 +39,6 @@ const ComplaintsScreen = ({ navigation }) => {
   const [complaintsCounts, setComplaintsCounts] = useState({
     open: 0,
     closed: 0,
-    rejected: 0,
     total: 0,
   });
   const [loading, setLoading] = useState(false);
@@ -81,9 +80,95 @@ const ComplaintsScreen = ({ navigation }) => {
 
   // Get contact ID from user context
   const getContactId = () => {
+    // Check for contact ID stored directly in user profile
+    if (user?.contactId) {
+      return user.contactId;
+    }
+
+    // Check multiple possible locations for contact ID
     if (user?.contactInfo?.id) {
       return user.contactInfo.id;
     }
+
+    // Check if contact validation result is stored elsewhere
+    if (user?.contactValidation?.data?.id) {
+      return user.contactValidation.data.id;
+    }
+
+    return null;
+  };
+
+  // Get user phone number with fallbacks
+  const getUserPhoneNumber = () => {
+    // Check for phone number from contact validation (mapped from MobilePhone)
+    if (user?.phone) {
+      return user.phone;
+    }
+
+    // Check multiple possible sources for phone number
+    if (user?.phoneNumber) {
+      return user.phoneNumber;
+    }
+
+    if (user?.contactInfo?.mobilePhone) {
+      return user.contactInfo.mobilePhone;
+    }
+
+    if (user?.contactInfo?.phoneNumber) {
+      return user.contactInfo.phoneNumber;
+    }
+
+    // Check for mobile field variations
+    if (user?.mobile) {
+      return user.mobile;
+    }
+
+    if (user?.mobilePhone) {
+      return user.mobilePhone;
+    }
+
+    // For development/testing, return a placeholder
+    if (AppConfig.development.enableDebugLogs) {
+      return '+966501234567'; // Placeholder for development
+    }
+
+    return null;
+  };
+
+  // Get user national ID
+  const getUserNationalId = () => {
+    // Check primary field
+    if (user?.nationalId) {
+      return user.nationalId;
+    }
+
+    // Check alternative field names
+    if (user?.nin) {
+      return user.nin;
+    }
+
+    if (user?.id) {
+      return user.id.toString();
+    }
+
+    // Check contact info
+    if (user?.contactInfo?.nationalId) {
+      return user.contactInfo.nationalId;
+    }
+
+    if (user?.contactInfo?.nin) {
+      return user.contactInfo.nin;
+    }
+
+    // Check for NIN field variations
+    if (user?.NIN) {
+      return user.NIN;
+    }
+
+    if (user?.nationalID) {
+      return user.nationalID;
+    }
+
     return null;
   };
 
@@ -97,8 +182,17 @@ const ComplaintsScreen = ({ navigation }) => {
       return true;
     }
 
+    // Check if user is not authenticated
+    if (!user || !isAuthenticated) {
+      return true;
+    }
+
+    // Check if essential user data is missing
     const contactId = getContactId();
-    if (!contactId) {
+    const phoneNumber = getUserPhoneNumber();
+    const nationalId = getUserNationalId();
+
+    if (!contactId || !phoneNumber || !nationalId) {
       return true;
     }
 
@@ -115,22 +209,13 @@ const ComplaintsScreen = ({ navigation }) => {
           console.log('Using mock data for complaints counts');
         }
 
-        // Calculate counts from mock data
-        const openCount = MOCK_COMPLAINTS_DATA.all.filter(
-          c => c.status === 'open',
-        ).length;
-        const closedCount = MOCK_COMPLAINTS_DATA.all.filter(
-          c => c.status === 'closed',
-        ).length;
-        const rejectedCount = MOCK_COMPLAINTS_DATA.all.filter(
-          c => c.status === 'rejected',
-        ).length;
+        // Calculate counts from mock data using service method
+        const counts = complaintsService.getComplaintCounts(MOCK_COMPLAINTS_DATA.all);
 
         setComplaintsCounts({
-          open: openCount,
-          closed: closedCount,
-          rejected: rejectedCount,
-          total: MOCK_COMPLAINTS_DATA.all.length,
+          open: counts.open,
+          closed: counts.closed,
+          total: counts.all,
         });
       } else {
         if (AppConfig.development.enableDebugLogs) {
@@ -138,30 +223,27 @@ const ComplaintsScreen = ({ navigation }) => {
         }
 
         const contactId = getContactId();
+        const phoneNumber = getUserPhoneNumber();
+        const nationalId = getUserNationalId();
 
         // Fetch all complaints to calculate counts
         const response = await complaintsService.getComplaintsList({
           cid: contactId,
-          statusCode: '3', // All complaints
-          pageNumber: '1',
-          pageSize: AppConfig.pagination.maxPageSize.toString(), // Get max to count all
+          phoneNumber: phoneNumber,
+          nin: nationalId,
+          langCode: i18n.language,
+          pageNumber: 1,
+          pageSize: 99,
         });
 
         if (response.success) {
           const complaints = response.complaints || [];
-          const openCount = complaints.filter(c => c.status === 'open').length;
-          const closedCount = complaints.filter(
-            c => c.status === 'closed',
-          ).length;
-          const rejectedCount = complaints.filter(
-            c => c.status === 'rejected',
-          ).length;
+          const counts = complaintsService.getComplaintCounts(complaints);
 
           setComplaintsCounts({
-            open: openCount,
-            closed: closedCount,
-            rejected: rejectedCount,
-            total: complaints.length,
+            open: counts.open,
+            closed: counts.closed,
+            total: counts.all,
           });
         } else {
           throw new Error('Failed to fetch complaints');
@@ -173,21 +255,12 @@ const ComplaintsScreen = ({ navigation }) => {
       }
 
       // Fallback to mock data counts on error
-      const openCount = MOCK_COMPLAINTS_DATA.all.filter(
-        c => c.status === 'open',
-      ).length;
-      const closedCount = MOCK_COMPLAINTS_DATA.all.filter(
-        c => c.status === 'closed',
-      ).length;
-      const rejectedCount = MOCK_COMPLAINTS_DATA.all.filter(
-        c => c.status === 'rejected',
-      ).length;
+      const counts = complaintsService.getComplaintCounts(MOCK_COMPLAINTS_DATA.all);
 
       setComplaintsCounts({
-        open: openCount,
-        closed: closedCount,
-        rejected: rejectedCount,
-        total: MOCK_COMPLAINTS_DATA.all.length,
+        open: counts.open,
+        closed: counts.closed,
+        total: counts.all,
       });
     } finally {
       if (showLoading) setLoading(false);
@@ -229,9 +302,16 @@ const ComplaintsScreen = ({ navigation }) => {
 
   const quickFilters = [
     {
+      titleKey: 'complaints.filters.all',
+      icon: DocumentText24Regular,
+      color: '#6B7280',
+      count: complaintsCounts.total,
+      onPress: () => navigateToViewComplaints('all'),
+    },
+    {
       titleKey: 'complaints.filters.open',
       icon: DocumentText24Regular,
-      color: '#FF9800',
+      color: '#2196F3',
       count: complaintsCounts.open,
       onPress: () => navigateToViewComplaints('open'),
     },
@@ -241,13 +321,6 @@ const ComplaintsScreen = ({ navigation }) => {
       color: '#4CAF50',
       count: complaintsCounts.closed,
       onPress: () => navigateToViewComplaints('closed'),
-    },
-    {
-      titleKey: 'complaints.filters.rejected',
-      icon: Dismiss24Regular,
-      color: '#F44336',
-      count: complaintsCounts.rejected,
-      onPress: () => navigateToViewComplaints('rejected'),
     },
   ];
 

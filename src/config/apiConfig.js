@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
   case: {
     base: '/case',
     list: '/list',
+    search: '/casesearch',
     create: '/create',
     details: '/details',
   },

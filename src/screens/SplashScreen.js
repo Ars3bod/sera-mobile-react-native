@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {View, StyleSheet, Dimensions, StatusBar, Image} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, Dimensions, StatusBar, Image } from 'react-native';
 import Video from 'react-native-video';
 import Animated, {
   useSharedValue,
@@ -10,9 +10,9 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-export default function SplashScreen({navigation}) {
+export default function SplashScreen({ navigation }) {
   const logoOpacity = useSharedValue(0);
   const logoScale = useSharedValue(0.8);
 
@@ -53,7 +53,7 @@ export default function SplashScreen({navigation}) {
   const logoAnimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: logoOpacity.value,
-      transform: [{scale: logoScale.value}],
+      transform: [{ scale: logoScale.value }],
     };
   });
 

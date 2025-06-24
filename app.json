@@ -1,7 +1,33 @@
 {
   "name": "seraApp",
   "displayName": "SERA App",
+  "version": "1.0.0",
   "plugins": [
     "expo-localization"
-  ]
+  ],
+  "ios": {
+    "bundleIdentifier": "sa.gov.sera.mobile",
+    "buildNumber": "1",
+    "deploymentTarget": "13.0",
+    "supportsTablet": false,
+    "requireFullScreen": true,
+    "infoPlist": {
+      "CFBundleDisplayName": "SERA App",
+      "CFBundleName": "SERA App",
+      "NSAppTransportSecurity": {
+        "NSAllowsArbitraryLoads": false,
+        "NSAllowsLocalNetworking": true
+      },
+      "UILaunchStoryboardName": "LaunchScreen",
+      "UISupportedInterfaceOrientations": [
+        "UIInterfaceOrientationPortrait",
+        "UIInterfaceOrientationLandscapeLeft",
+        "UIInterfaceOrientationLandscapeRight"
+      ],
+      "LSApplicationQueriesSchemes": [
+        "nafath",
+        "tel"
+      ]
+    }
+  }
 }

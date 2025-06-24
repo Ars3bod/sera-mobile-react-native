@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {getEndpointUrl} from '../config/apiConfig';
+import { getEndpointUrl } from '../config/apiConfig';
 
 /**
  * Contact validation service for user verification
@@ -52,8 +52,7 @@ class ContactService {
       if (error.response) {
         // Server responded with error status
         throw new Error(
-          `Contact validation failed: ${error.response.status} - ${
-            error.response.data?.errorMessage || error.response.statusText
+          `Contact validation failed: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
           }`,
         );
       } else if (error.request) {
@@ -71,7 +70,7 @@ class ContactService {
   /**
    * Parse user information from the validation response message
    * @param {string} messageString - JSON string from response message
-   * @returns {Object|null} Parsed user information
+   * @returns {Object|null} Parsed user information with mobilePhone from MobilePhone field
    */
   parseUserInfo(messageString) {
     try {
@@ -91,7 +90,7 @@ class ContactService {
         lastNameAr: userInfo.LNameT,
         middleName: userInfo.MName,
         middleNameAr: userInfo.MNameT,
-        mobilePhone: userInfo.MobilePhone,
+        mobilePhone: userInfo.MobilePhone, // Mapped from API's MobilePhone field
         nationalId: userInfo.NIN,
         nationality: userInfo.Nationality,
         idType: userInfo.IdType,

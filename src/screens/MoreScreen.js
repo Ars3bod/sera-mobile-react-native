@@ -46,6 +46,26 @@ const MoreScreen = ({ navigation }) => {
           },
         },
         {
+          id: 8,
+          titleKey: 'more.compensationStandards.title',
+          descriptionKey: 'more.compensationStandards.description',
+          icon: Money24Regular,
+          color: theme.colors.primary,
+          onPress: () => {
+            navigation.navigate('CompensationStandards');
+          },
+        },
+        {
+          id: 9,
+          titleKey: 'more.consumptionTariff.title',
+          descriptionKey: 'more.consumptionTariff.description',
+          icon: Flash24Regular,
+          color: theme.colors.primary,
+          onPress: () => {
+            navigation.navigate('ConsumptionTariff');
+          },
+        },
+        {
           id: 3,
           titleKey: 'more.contactUs.title',
           descriptionKey: 'more.contactUs.description',
@@ -55,16 +75,16 @@ const MoreScreen = ({ navigation }) => {
             navigation.navigate('Contact');
           },
         },
-        {
-          id: 4,
-          titleKey: 'more.news.title',
-          descriptionKey: 'more.news.description',
-          icon: News24Regular,
-          color: theme.colors.primary,
-          onPress: () => {
-            navigation.navigate('News');
-          },
-        },
+        // {
+        //   id: 4,
+        //   titleKey: 'more.news.title',
+        //   descriptionKey: 'more.news.description',
+        //   icon: News24Regular,
+        //   color: theme.colors.primary,
+        //   onPress: () => {
+        //     navigation.navigate('News');
+        //   },
+        // },
         {
           id: 6,
           titleKey: 'more.faq.title',
@@ -85,26 +105,7 @@ const MoreScreen = ({ navigation }) => {
             navigation.navigate('ImportantLinks');
           },
         },
-        {
-          id: 8,
-          titleKey: 'more.compensationStandards.title',
-          descriptionKey: 'more.compensationStandards.description',
-          icon: Money24Regular,
-          color: theme.colors.primary,
-          onPress: () => {
-            navigation.navigate('CompensationStandards');
-          },
-        },
-        {
-          id: 9,
-          titleKey: 'more.consumptionTariff.title',
-          descriptionKey: 'more.consumptionTariff.description',
-          icon: Flash24Regular,
-          color: theme.colors.primary,
-          onPress: () => {
-            navigation.navigate('ConsumptionTariff');
-          },
-        },
+
       ],
     },
     {

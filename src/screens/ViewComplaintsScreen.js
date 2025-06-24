@@ -33,7 +33,7 @@ import AppConfig from '../config/appConfig';
 const ViewComplaintsScreen = ({ navigation, route }) => {
   const { t, i18n } = useTranslation();
   const { theme, isDarkMode } = useTheme();
-  const { user } = useUser();
+  const { user, isAuthenticated } = useUser();
   const isRTL = i18n.language === 'ar';
   const { filter = 'all', fromNavBar = true } = route.params || {};
 
@@ -61,10 +61,96 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
 
   // Get contact ID from user context
   const getContactId = () => {
+    // Check for contact ID stored directly in user profile
+    if (user?.contactId) {
+      return user.contactId;
+    }
+
+    // Check multiple possible locations for contact ID
     if (user?.contactInfo?.id) {
       return user.contactInfo.id;
     }
+
+    // Check if contact validation result is stored elsewhere
+    if (user?.contactValidation?.data?.id) {
+      return user.contactValidation.data.id;
+    }
+
     return null;
+  };
+
+  // Get user phone number with fallbacks
+  const getUserPhoneNumber = () => {
+    // Check for phone number from contact validation (mapped from MobilePhone)
+    if (user?.phone) {
+      return user.phone;
+    }
+
+    // Check multiple possible sources for phone number
+    if (user?.phoneNumber) {
+      return user.phoneNumber;
+    }
+
+    if (user?.contactInfo?.mobilePhone) {
+      return user.contactInfo.mobilePhone;
+    }
+
+    if (user?.contactInfo?.phoneNumber) {
+      return user.contactInfo.phoneNumber;
+    }
+
+    // Check for mobile field variations
+    if (user?.mobile) {
+      return user.mobile;
+    }
+
+    if (user?.mobilePhone) {
+      return user.mobilePhone;
+    }
+
+    // For development/testing, return a placeholder
+    if (AppConfig.development.enableDebugLogs) {
+      return '+966501234567'; // Placeholder for development
+    }
+
+    return null; // Return null instead of empty string to make it clear it's missing
+  };
+
+  // Get user national ID
+  const getUserNationalId = () => {
+    // Check primary field
+    if (user?.nationalId) {
+      return user.nationalId;
+    }
+
+    // Check alternative field names
+    if (user?.nin) {
+      return user.nin;
+    }
+
+    if (user?.id) {
+      return user.id.toString();
+    }
+
+    // Check contact info
+    if (user?.contactInfo?.nationalId) {
+      return user.contactInfo.nationalId;
+    }
+
+    if (user?.contactInfo?.nin) {
+      return user.contactInfo.nin;
+    }
+
+    // Check for NIN field variations
+    if (user?.NIN) {
+      return user.NIN;
+    }
+
+    if (user?.nationalID) {
+      return user.nationalID;
+    }
+
+    return null; // Return null instead of empty string to make it clear it's missing
   };
 
   // Helper function to format date safely
@@ -183,63 +269,70 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
       return true;
     }
 
-    // If no contact ID available, use mock data
+    // Check if user is not authenticated
+    if (!user || !isAuthenticated) {
+      return true;
+    }
+
+    // Check if essential user data is missing
     const contactId = getContactId();
-    if (!contactId) {
+    const phoneNumber = getUserPhoneNumber();
+    const nationalId = getUserNationalId();
+
+    if (!contactId || !phoneNumber || !nationalId) {
       return true;
     }
 
     return false;
   };
 
-  const fetchComplaints = async (showLoading = true) => {
+  const loadComplaints = async (showLoading = true) => {
     try {
       if (showLoading) setLoading(true);
       setError(null);
 
-      if (shouldUseMockData()) {
-        if (AppConfig.development.enableDebugLogs) {
-          console.log('Using mock data for complaints (configured mode)');
-        }
+      // Get user data for API call
+      const contactId = getContactId();
+      const phoneNumber = getUserPhoneNumber();
+      const nationalId = getUserNationalId();
 
-        // Use mock data for development/presentation
+      // Check if we have required data or should use mock data
+      if (!contactId || !phoneNumber || !nationalId || shouldUseMockData()) {
+        // Use mock data
         const mockComplaints = MOCK_COMPLAINTS_DATA.all.filter(complaint => {
           if (currentFilter === 'all') return true;
           return complaint.status === currentFilter;
         });
         setComplaints(mockComplaints);
+        return;
+      }
+
+      // Directly call complaintsService.getComplaintsList()
+      const response = await complaintsService.getComplaintsList({
+        cid: contactId,
+        phoneNumber: phoneNumber,
+        nin: nationalId,
+        langCode: i18n.language,
+        pageNumber: 1,
+        pageSize: 99,
+      });
+
+      if (response.success && response.complaints) {
+        // Apply client-side filtering
+        const filteredComplaints = complaintsService.filterComplaintsByStatus(
+          response.complaints,
+          currentFilter
+        );
+
+        setComplaints(filteredComplaints);
       } else {
-        if (AppConfig.development.enableDebugLogs) {
-          console.log('Using real API for complaints');
-        }
-
-        // Use real API
-        const contactId = getContactId();
-        const statusCode =
-          complaintsService.getStatusCodeForFilter(currentFilter);
-        const response = await complaintsService.getComplaintsList({
-          cid: contactId,
-          statusCode: statusCode,
-          pageNumber: '1',
-          pageSize: AppConfig.pagination.defaultPageSize.toString(),
-        });
-
-        if (response.success) {
-          setComplaints(response.complaints || []);
-        } else {
-          throw new Error('Failed to fetch complaints');
-        }
+        throw new Error(response.errorMessage || 'Failed to load complaints');
       }
+
     } catch (err) {
-      if (AppConfig.development.enableDebugLogs) {
-        console.error('Error fetching complaints:', err);
-      }
       setError(err.message);
 
       // Fallback to mock data on error
-      if (AppConfig.development.enableDebugLogs) {
-        console.log('Falling back to mock data due to error');
-      }
       const mockComplaints = MOCK_COMPLAINTS_DATA.all.filter(complaint => {
         if (currentFilter === 'all') return true;
         return complaint.status === currentFilter;
@@ -253,13 +346,13 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    fetchComplaints(false);
+    loadComplaints(false);
   }, [currentFilter]);
 
   // Load complaints when screen focuses or filter changes
   useFocusEffect(
     useCallback(() => {
-      fetchComplaints();
+      loadComplaints();
     }, [currentFilter]),
   );
 
@@ -272,28 +365,21 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
     {
       key: 'open',
       labelKey: 'complaints.filters.open',
-      icon: DocumentText24Regular,
+      icon: Clock24Regular,
     },
     {
       key: 'closed',
       labelKey: 'complaints.filters.closed',
       icon: CheckmarkCircle24Regular,
     },
-    {
-      key: 'rejected',
-      labelKey: 'complaints.filters.rejected',
-      icon: Dismiss24Regular,
-    },
   ];
 
   const getStatusColor = status => {
     switch (status) {
       case 'open':
-        return '#FF9800';
+        return '#FF9800'; // Orange for open
       case 'closed':
-        return '#4CAF50';
-      case 'rejected':
-        return '#F44336';
+        return '#4CAF50'; // Green for closed
       default:
         return theme.colors.textSecondary;
     }
@@ -335,7 +421,10 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
                 styles.statusText,
                 { color: getStatusColor(complaint.status) },
               ]}>
-              {t(`complaints.view.status.${complaint.status}`)}
+              {complaint.statusCode
+                ? complaintsService.getStatusDisplayText(complaint.statusCode, i18n.language)
+                : t(`complaints.view.status.${complaint.status}`)
+              }
             </Text>
           </View>
         </View>
@@ -571,7 +660,7 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
                 styles.retryButton,
                 { backgroundColor: theme.colors.primary },
               ]}
-              onPress={() => fetchComplaints()}>
+              onPress={() => loadComplaints()}>
               <Text style={styles.retryButtonText}>{t('retry')}</Text>
             </TouchableOpacity>
           </View>

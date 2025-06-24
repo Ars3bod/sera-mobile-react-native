@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,8 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
 import {
   ArrowLeft24Regular,
   News24Regular,
@@ -19,16 +19,28 @@ import {
   Filter24Regular,
 } from '@fluentui/react-native-icons';
 
-const NewsScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+const NewsScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const isRTL = i18n.language === 'ar';
 
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('news');
+  const scrollViewRef = useRef(null);
 
   const handleGoBack = () => {
     navigation.goBack();
   };
+
+  // Effect to scroll to the appropriate position when language changes or component mounts
+  useEffect(() => {
+    if (scrollViewRef.current && isRTL) {
+      // Small delay to ensure the ScrollView is fully rendered
+      setTimeout(() => {
+        // Scroll to the far right to show the first tab in RTL
+        scrollViewRef.current.scrollToEnd({ animated: false });
+      }, 100);
+    }
+  }, [isRTL]);
 
   // Mock data - في التطبيق الحقيقي سيتم جلبها من API
   const newsData = [
@@ -41,21 +53,43 @@ const NewsScreen = ({navigation}) => {
       summaryEn:
         'SERA announced the launch of a new initiative to develop the electricity sector and improve services for consumers.',
       date: '2024-01-15',
-      category: 'announcements',
+      category: 'news',
     },
     {
       id: 2,
+      titleAr: 'فعالية توعوية حول ترشيد استهلاك الكهرباء',
+      titleEn: 'Educational Event on Electricity Conservation',
+      summaryAr:
+        'تنظم الهيئة فعالية توعوية لتثقيف المواطنين حول أهمية ترشيد استهلاك الكهرباء.',
+      summaryEn:
+        'SERA organizes an educational event to educate citizens about the importance of electricity conservation.',
+      date: '2024-01-12',
+      category: 'events',
+    },
+    {
+      id: 3,
+      titleAr: 'حملة توعوية حول السلامة الكهربائية',
+      titleEn: 'Awareness Campaign on Electrical Safety',
+      summaryAr:
+        'إطلاق حملة توعوية شاملة حول أهمية السلامة الكهربائية في المنازل والمؤسسات.',
+      summaryEn:
+        'Launch of a comprehensive awareness campaign on the importance of electrical safety in homes and institutions.',
+      date: '2024-01-10',
+      category: 'awareness',
+    },
+    {
+      id: 4,
       titleAr: 'تحديث لائحة تنظيم الكهرباء',
       titleEn: 'Update to Electricity Regulation',
       summaryAr:
         'تم تحديث لائحة تنظيم الكهرباء لتواكب التطورات الحديثة في القطاع.',
       summaryEn:
         'The electricity regulation has been updated to keep pace with recent developments in the sector.',
-      date: '2024-01-10',
-      category: 'regulations',
+      date: '2024-01-08',
+      category: 'updates',
     },
     {
-      id: 3,
+      id: 5,
       titleAr: 'تقرير الأداء الربعي',
       titleEn: 'Quarterly Performance Report',
       summaryAr:
@@ -68,16 +102,13 @@ const NewsScreen = ({navigation}) => {
   ];
 
   const categories = [
-    {key: 'all', labelKey: 'news.categories.all'},
-    {key: 'announcements', labelKey: 'news.categories.announcements'},
-    {key: 'regulations', labelKey: 'news.categories.regulations'},
-    {key: 'updates', labelKey: 'news.categories.updates'},
+    { key: 'news', labelKey: 'news.categories.news' },
+    { key: 'events', labelKey: 'news.categories.events' },
+    { key: 'awareness', labelKey: 'news.categories.awareness' },
+    { key: 'updates', labelKey: 'news.categories.updates' },
   ];
 
-  const filteredNews =
-    selectedCategory === 'all'
-      ? newsData
-      : newsData.filter(item => item.category === selectedCategory);
+  const filteredNews = newsData.filter(item => item.category === selectedCategory);
 
   const formatDate = dateString => {
     const date = new Date(dateString);
@@ -118,9 +149,9 @@ const NewsScreen = ({navigation}) => {
     </TouchableOpacity>
   );
 
-  const renderNewsItem = ({item}) => (
+  const renderNewsItem = ({ item }) => (
     <TouchableOpacity
-      style={[styles.newsItem, {backgroundColor: theme.colors.card}]}
+      style={[styles.newsItem, { backgroundColor: theme.colors.card }]}
       activeOpacity={0.7}
       onPress={() => {
         // Navigate to news detail screen
@@ -130,7 +161,7 @@ const NewsScreen = ({navigation}) => {
         <View
           style={[
             styles.newsHeader,
-            {flexDirection: isRTL ? 'row-reverse' : 'row'},
+            { flexDirection: isRTL ? 'row-reverse' : 'row' },
           ]}>
           <View
             style={[
@@ -142,7 +173,7 @@ const NewsScreen = ({navigation}) => {
               },
             ]}>
             <News24Regular
-              style={[styles.newsIcon, {color: theme.colors.primary}]}
+              style={[styles.newsIcon, { color: theme.colors.primary }]}
             />
           </View>
           <View
@@ -167,7 +198,7 @@ const NewsScreen = ({navigation}) => {
             <View
               style={[
                 styles.dateContainer,
-                {flexDirection: isRTL ? 'row-reverse' : 'row'},
+                { flexDirection: isRTL ? 'row-reverse' : 'row' },
               ]}>
               <Calendar24Regular
                 style={[
@@ -180,7 +211,7 @@ const NewsScreen = ({navigation}) => {
                 ]}
               />
               <Text
-                style={[styles.newsDate, {color: theme.colors.textSecondary}]}>
+                style={[styles.newsDate, { color: theme.colors.textSecondary }]}>
                 {formatDate(item.date)}
               </Text>
             </View>
@@ -189,7 +220,7 @@ const NewsScreen = ({navigation}) => {
             style={[
               styles.chevronIcon,
               {
-                transform: [{scaleX: isRTL ? -1 : 1}],
+                transform: [{ scaleX: isRTL ? -1 : 1 }],
                 color: theme.colors.icon,
               },
             ]}
@@ -250,7 +281,7 @@ const NewsScreen = ({navigation}) => {
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -259,7 +290,7 @@ const NewsScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -270,9 +301,13 @@ const NewsScreen = ({navigation}) => {
       {/* Categories */}
       <View style={styles.categoriesContainer}>
         <ScrollView
+          ref={scrollViewRef}
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoriesContent}>
+          contentContainerStyle={[
+            styles.categoriesContent,
+            { flexDirection: isRTL ? 'row-reverse' : 'row' }
+          ]}>
           {categories.map(renderCategoryButton)}
         </ScrollView>
       </View>
@@ -290,7 +325,7 @@ const NewsScreen = ({navigation}) => {
       ) : (
         <View style={styles.emptyContainer}>
           <Filter24Regular
-            style={[styles.emptyIcon, {color: theme.colors.textSecondary}]}
+            style={[styles.emptyIcon, { color: theme.colors.textSecondary }]}
           />
           <Text
             style={[

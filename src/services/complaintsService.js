@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {getEndpointUrl} from '../config/apiConfig';
+import { getEndpointUrl } from '../config/apiConfig';
 import AppConfig from '../config/appConfig';
 
 /**
@@ -11,33 +11,38 @@ class ComplaintsService {
   }
 
   /**
-   * Get list of complaints/cases for a user
+   * Get list of complaints/cases for a user using casesearch endpoint
    * @param {Object} params - Request parameters
-   * @param {string} params.cid - Contact ID from validatecontact response
-   * @param {string} params.statusCode - Status filter (1: open/in-progress, 2: closed, 3: all)
-   * @param {string} params.searchKey - Search keyword (optional)
-   * @param {string} params.pageNumber - Page number (default: "1")
-   * @param {string} params.pageSize - Page size (default: from config)
+   * @param {string} params.cid - Contact ID (user identifier)
+   * @param {string} params.phoneNumber - User's phone number
+   * @param {string} params.nin - National ID number
+   * @param {string} params.langCode - Language code ('ar' or 'en')
+   * @param {string} params.pageNumber - Page number (default: 1)
+   * @param {string} params.pageSize - Page size (default: 99)
    * @returns {Promise<Object>} Complaints list response
    */
   async getComplaintsList({
     cid,
-    statusCode = '3', // Default to all
-    searchKey = '',
-    pageNumber = '0',
-    pageSize = AppConfig.pagination.defaultPageSize.toString(),
+    phoneNumber,
+    nin,
+    langCode = 'en',
+    pageNumber = 1,
+    pageSize = 99,
   }) {
     try {
-      const url = getEndpointUrl('case', 'list', this.environment);
+      // Update endpoint to use casesearch
+      const url = getEndpointUrl('case', 'search', this.environment);
+
+      // Convert language code to numeric format
+      const numericLangCode = langCode === 'ar' ? 1025 : 1033;
 
       const requestData = {
-        langCode: '1033', // Hardcoded as specified
-        cid: cid,
-        searchKey: searchKey,
-        statusCode: statusCode,
-        desc: 'true', // Empty as specified
+        langCode: numericLangCode,
         pageNumber: pageNumber,
+        cid: cid,
         pageSize: pageSize,
+        phoneNumber: phoneNumber,
+        nin: nin,
       };
 
       if (AppConfig.development.enableDebugLogs) {
@@ -81,8 +86,7 @@ class ComplaintsService {
 
       if (error.response) {
         throw new Error(
-          `Failed to fetch complaints: ${error.response.status} - ${
-            error.response.data?.errorMessage || error.response.statusText
+          `Failed to fetch complaints: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
           }`,
         );
       } else if (error.request) {
@@ -109,8 +113,10 @@ class ComplaintsService {
         caseNumber: complaint.CaseNumber,
         title: complaint.CaseType?.Value || 'Unknown Type',
         description: complaint.CaseType?.Value || '',
-        status: this.mapStatus(complaint.Status?.Key),
-        statusValue: complaint.Status?.Value,
+        status: this.mapStatus(complaint.Status?.Value),
+        statusValue: complaint.Status?.Key,
+        statusCode: complaint.Status?.Value,
+        statusCategory: this.getStatusCategory(complaint.Status?.Value),
         stage: complaint.CaseStage?.Value || 'Unknown Stage',
         stageKey: complaint.CaseStage?.Key,
         type: complaint.CaseType?.Value || 'Unknown',
@@ -162,24 +168,82 @@ class ComplaintsService {
   }
 
   /**
-   * Map API status to UI status
-   * @param {string} apiStatus - Status from API
+   * Map API status to UI status using updated mapping
+   * @param {string|number} apiStatus - Status code from API
    * @returns {string} Mapped status
    */
   mapStatus(apiStatus) {
-    if (!apiStatus) return 'unknown';
+    if (!apiStatus) return 'open';
 
-    const statusLower = apiStatus.toLowerCase();
-    if (statusLower.includes('verification') || statusLower.includes('check')) {
-      return 'open';
+    const statusCode = apiStatus.toString();
+
+    // Simplified status mapping - only open and closed
+    switch (statusCode) {
+      case '1':
+        return 'open';
+      case '266990010':
+      case '266990011':
+        return 'closed';
+      default:
+        return 'open'; // All other statuses considered open
     }
-    if (statusLower.includes('closed') || statusLower.includes('resolved')) {
-      return 'closed';
+  }
+
+  /**
+   * Get status display text for UI
+   * @param {string|number} apiStatus - Status code from API
+   * @param {string} language - Language code ('ar' or 'en')
+   * @returns {string} Display text for status
+   */
+  getStatusDisplayText(apiStatus, language = 'en') {
+    if (!apiStatus) return language === 'ar' ? 'مفتوحة' : 'Open';
+
+    const statusCode = apiStatus.toString();
+
+    if (language === 'ar') {
+      switch (statusCode) {
+        case '1':
+          return 'مفتوحة';
+        case '266990010':
+          return 'مغلق كاستفسار';
+        case '266990011':
+          return 'مغلقة';
+        default:
+          return 'مفتوحة';
+      }
+    } else {
+      switch (statusCode) {
+        case '1':
+          return 'Open';
+        case '266990010':
+          return 'Closed as inquiry';
+        case '266990011':
+          return 'Closed';
+        default:
+          return 'Open';
+      }
     }
-    if (statusLower.includes('reject')) {
-      return 'rejected';
+  }
+
+  /**
+   * Get status category for filtering
+   * @param {string|number} apiStatus - Status code from API
+   * @returns {string} Status category
+   */
+  getStatusCategory(apiStatus) {
+    if (!apiStatus) return 'open';
+
+    const statusCode = apiStatus.toString();
+
+    switch (statusCode) {
+      case '1':
+        return 'open';
+      case '266990010':
+      case '266990011':
+        return 'closed';
+      default:
+        return 'open'; // All other statuses considered open
     }
-    return 'open'; // Default to open for unknown statuses
   }
 
   /**
@@ -201,21 +265,42 @@ class ComplaintsService {
   }
 
   /**
-   * Get status code for API request based on filter
-   * @param {string} filter - Filter type ('all', 'open', 'closed', 'rejected')
-   * @returns {string} Status code for API
+   * Filter complaints by status category
+   * @param {Array} complaints - Array of complaints
+   * @param {string} filter - Filter type ('all', 'open', 'closed')
+   * @returns {Array} Filtered complaints array
    */
-  getStatusCodeForFilter(filter) {
-    switch (filter) {
-      case 'open':
-        return '1'; // Open/In progress
-      case 'closed':
-        return '2'; // Closed
-      case 'rejected':
-        return '2'; // Treat rejected as closed for now
-      case 'all':
-      default:
-        return '3'; // All
+  filterComplaintsByStatus(complaints, filter) {
+    if (!complaints || !Array.isArray(complaints)) return [];
+
+    if (filter === 'all') {
+      return complaints;
+    }
+
+    return complaints.filter(complaint => {
+      const category = this.getStatusCategory(complaint.statusCode);
+      return category === filter;
+    });
+  }
+
+  /**
+   * Get available filter options for complaints
+   * @param {string} language - Language code ('ar' or 'en')
+   * @returns {Array} Array of filter options
+   */
+  getFilterOptions(language = 'en') {
+    if (language === 'ar') {
+      return [
+        { key: 'all', label: 'الكل' },
+        { key: 'open', label: 'مفتوحة' },
+        { key: 'closed', label: 'مغلقة' },
+      ];
+    } else {
+      return [
+        { key: 'all', label: 'All' },
+        { key: 'open', label: 'Open' },
+        { key: 'closed', label: 'Closed' },
+      ];
     }
   }
 
@@ -233,6 +318,38 @@ class ComplaintsService {
    */
   getEnvironment() {
     return this.environment;
+  }
+
+  /**
+   * Get complaint counts by status category
+   * @param {Array} complaints - Array of complaints
+   * @returns {Object} Counts object with all, open, and closed counts
+   */
+  getComplaintCounts(complaints) {
+    if (!complaints || !Array.isArray(complaints)) {
+      return { all: 0, open: 0, closed: 0 };
+    }
+
+    const counts = {
+      all: complaints.length,
+      open: 0,
+      closed: 0
+    };
+
+    complaints.forEach(complaint => {
+      const statusCode = complaint.statusCode?.toString();
+
+      if (statusCode === '1') {
+        counts.open++;
+      } else if (statusCode === '266990010' || statusCode === '266990011') {
+        counts.closed++;
+      } else {
+        // All other status codes are considered open
+        counts.open++;
+      }
+    });
+
+    return counts;
   }
 }
 

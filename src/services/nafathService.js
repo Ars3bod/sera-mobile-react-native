@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {getEndpointUrl} from '../config/apiConfig';
+import { getEndpointUrl } from '../config/apiConfig';
 import contactService from './contactService';
 
 let wToken = null;
@@ -7,7 +7,7 @@ let wToken = null;
 export async function loginNafath(id) {
   try {
     const url = getEndpointUrl('nafath', 'loginNafath');
-    const response = await axios.post(url, {id});
+    const response = await axios.post(url, { id });
     return response.data;
   } catch (error) {
     console.error('Login Nafath error:', error);
@@ -23,7 +23,7 @@ export async function pollNafathStatus(
   onSuccess,
   userContext = null,
 ) {
-  console.log('pollNafathStatus called with:', {transId, random, id});
+  console.log('pollNafathStatus called with:', { transId, random, id });
   const start = Date.now();
 
   while (shouldContinue() && Date.now() - start < 120000) {
@@ -69,6 +69,10 @@ export async function pollNafathStatus(
                   await userContext.updateUserProfile({
                     contactInfo: contactValidationResult.userInfo,
                     contactValidatedAt: new Date().toISOString(),
+                    // Map MobilePhone to user.phone for easier access
+                    phone: contactValidationResult.userInfo.mobilePhone,
+                    // Also store contact ID for API calls
+                    contactId: contactValidationResult.userInfo.id,
                   });
                 }
 
@@ -122,7 +126,7 @@ export function getWToken() {
 export async function getUserInfo(token) {
   try {
     const url = getEndpointUrl('nafath', 'userInfo');
-    const response = await axios.post(url, {token});
+    const response = await axios.post(url, { token });
     return response.data;
   } catch (error) {
     console.error('Get user info error:', error);

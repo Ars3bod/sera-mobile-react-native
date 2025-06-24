@@ -386,9 +386,9 @@ const resources = {
         readMore: 'Read More',
         noNews: 'No news available at the moment.',
         categories: {
-          all: 'All',
-          announcements: 'Announcements',
-          regulations: 'Regulations',
+          news: 'News',
+          events: 'Events',
+          awareness: 'Awareness Campaigns',
           updates: 'Updates',
         },
       },
@@ -672,7 +672,6 @@ const resources = {
           all: 'All',
           open: 'Open',
           closed: 'Closed',
-          rejected: 'Rejected',
         },
         create: {
           title: 'Create Complaint',
@@ -1411,7 +1410,7 @@ const resources = {
         },
         email: {
           title: 'البريد الإلكتروني',
-          address: 'Info@sera.gov.sa',
+          address: 'info@sera.gov.sa',
         },
         website: {
           title: 'الموقع الإلكتروني',
@@ -1429,9 +1428,9 @@ const resources = {
         readMore: 'قراءة المزيد',
         noNews: 'لا توجد أخبار متاحة في الوقت الحالي.',
         categories: {
-          all: 'الكل',
-          announcements: 'الإعلانات',
-          regulations: 'التنظيمات',
+          news: 'الأخبار',
+          events: 'الفعاليات',
+          awareness: 'حملات التوعية',
           updates: 'التحديثات',
         },
       },
@@ -1710,7 +1709,6 @@ const resources = {
           all: 'الكل',
           open: 'مفتوحة',
           closed: 'مغلقة',
-          rejected: 'مرفوضة',
         },
         create: {
           title: 'شكوى جديدة',

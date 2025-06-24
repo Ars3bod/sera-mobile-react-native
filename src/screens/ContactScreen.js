@@ -9,8 +9,8 @@ import {
   TouchableOpacity,
   Linking,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
 import {
   ArrowLeft24Regular,
   Location24Regular,
@@ -20,9 +20,9 @@ import {
   Clock24Regular,
 } from '@fluentui/react-native-icons';
 
-const ContactScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+const ContactScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const isRTL = i18n.language === 'ar';
 
   const handleGoBack = () => {
@@ -103,7 +103,7 @@ const ContactScreen = ({navigation}) => {
               marginLeft: isRTL ? 16 : 0,
             },
           ]}>
-          <IconComponent style={[styles.contactIcon, {color: item.color}]} />
+          <IconComponent style={[styles.contactIcon, { color: item.color }]} />
         </View>
         <View style={styles.contactContent}>
           <Text
@@ -196,7 +196,7 @@ const ContactScreen = ({navigation}) => {
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -205,7 +205,7 @@ const ContactScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -224,7 +224,7 @@ const ContactScreen = ({navigation}) => {
         <View
           style={[
             styles.infoCard,
-            {backgroundColor: theme.colors.primary + '10'},
+            { backgroundColor: theme.colors.primary + '10' },
           ]}>
           <Text
             style={[
@@ -236,7 +236,7 @@ const ContactScreen = ({navigation}) => {
             ]}>
             {t('contact.address.country')}
           </Text>
-          <Text
+          {/* <Text
             style={[
               styles.infoText,
               {
@@ -244,8 +244,8 @@ const ContactScreen = ({navigation}) => {
                 textAlign: isRTL ? 'right' : 'left',
               },
             ]}>
-            🇸🇦 المملكة العربية السعودية
-          </Text>
+            المملكة العربية السعودية
+          </Text> */}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   clickableItem: {
-    transform: [{scale: 1}],
+    transform: [{ scale: 1 }],
   },
   iconContainer: {
     width: 56,
