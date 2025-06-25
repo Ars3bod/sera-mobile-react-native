@@ -17,13 +17,23 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useUser } from '../context/UserContext';
 import { useFocusEffect } from '@react-navigation/native';
-import {
-  ArrowLeft24Regular,
-  ChevronDown24Regular,
-  Attach24Regular,
-  Delete24Regular,
-  Document24Regular,
-} from '@fluentui/react-native-icons';
+// Safe import for FluentUI icons with fallbacks
+let ArrowLeft24Regular, ChevronDown24Regular, Attach24Regular, Delete24Regular, Document24Regular;
+try {
+  const icons = require('@fluentui/react-native-icons');
+  ArrowLeft24Regular = icons.ArrowLeft24Regular;
+  ChevronDown24Regular = icons.ChevronDown24Regular;
+  Attach24Regular = icons.Attach24Regular;
+  Delete24Regular = icons.Delete24Regular;
+  Document24Regular = icons.Document24Regular;
+} catch (error) {
+  // Fallback components using emoji or simple text
+  ArrowLeft24Regular = () => <Text style={{ fontSize: 20 }}>←</Text>;
+  ChevronDown24Regular = () => <Text style={{ fontSize: 16 }}>▼</Text>;
+  Attach24Regular = () => <Text style={{ fontSize: 20 }}>📎</Text>;
+  Delete24Regular = () => <Text style={{ fontSize: 18 }}>🗑️</Text>;
+  Document24Regular = () => <Text style={{ fontSize: 18 }}>📄</Text>;
+}
 import complaintCreationService, {
   MOCK_SERVICE_PROVIDERS,
   MOCK_CONSUMPTION_CATEGORIES,
@@ -32,6 +42,7 @@ import complaintCreationService, {
 import AppConfig from '../config/appConfig';
 import Toast from '../components/Toast';
 import LoadingSpinner from '../animations/components/LoadingSpinner';
+import { pick, types } from '@react-native-documents/picker';
 
 const CreateComplaintScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
@@ -299,29 +310,28 @@ const CreateComplaintScreen = ({ navigation }) => {
         return;
       }
 
-      // For mobile, use react-native-document-picker
-      let DocumentPicker;
+      // For mobile platforms, use @react-native-documents/picker
       try {
-        DocumentPicker = require('react-native-document-picker');
-
-        // Verify DocumentPicker has required methods
-        if (!DocumentPicker || typeof DocumentPicker.pick !== 'function') {
-          throw new Error('DocumentPicker.pick method not available');
-        }
-
-        const result = await DocumentPicker.pick({
+        const result = await pick({
           type: [
-            DocumentPicker.types.images,
-            DocumentPicker.types.pdf,
-            DocumentPicker.types.doc,
-            DocumentPicker.types.docx,
-            DocumentPicker.types.xls,
-            DocumentPicker.types.xlsx,
-            DocumentPicker.types.zip,
+            types.images,
+            types.pdf,
+            types.doc,
+            types.docx,
+            types.xls,
+            types.xlsx,
+            types.zip,
+            types.plainText,
           ],
+          allowMultiSelection: false,
         });
 
-        if (result && result[0]) {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Document picker result:', result);
+        }
+
+        // Handle the result - new API returns array directly
+        if (result && result.length > 0) {
           const file = result[0];
           await handleFileSelection({
             name: file.name,
@@ -331,9 +341,11 @@ const CreateComplaintScreen = ({ navigation }) => {
           });
         }
       } catch (error) {
-        // Check if user cancelled (only if DocumentPicker was loaded)
-        if (DocumentPicker && DocumentPicker.isCancel && DocumentPicker.isCancel(error)) {
-          // User cancelled file picker
+        // Check if user cancelled
+        if (error.message === 'User canceled document picker') {
+          if (AppConfig.development.enableDebugLogs) {
+            console.log('User cancelled document picker');
+          }
           return;
         }
 
@@ -341,24 +353,15 @@ const CreateComplaintScreen = ({ navigation }) => {
           console.error('Document picker error:', error);
         }
 
-        // Show mock file selection as fallback
+        // Show fallback options
         Alert.alert(
           t('complaints.create.uploadFileTitle'),
-          'File picker not available. Using mock file for testing.',
+          'Document picker failed. Choose an option:',
           [
             { text: t('complaints.create.cancel'), style: 'cancel' },
             {
-              text: t('complaints.create.chooseFile'),
-              onPress: () => {
-                // Mock file for testing
-                handleFileSelection({
-                  name: `document_${attachments.length + 1}.pdf`,
-                  size: 1024 * 1024 * 2, // 2MB
-                  type: 'application/pdf',
-                  uri: 'mock://file.pdf',
-                  mockFile: true,
-                });
-              },
+              text: t('complaints.create.mockDocument'),
+              onPress: () => handleMockFileSelection(),
             },
           ],
         );
@@ -368,28 +371,36 @@ const CreateComplaintScreen = ({ navigation }) => {
         console.error('File selection error:', error);
       }
 
-      // Show mock file selection as final fallback
       Alert.alert(
-        t('complaints.create.uploadFileTitle'),
-        'File picker not available. Using mock file for testing.',
-        [
-          { text: t('complaints.create.cancel'), style: 'cancel' },
-          {
-            text: t('complaints.create.chooseFile'),
-            onPress: () => {
-              // Mock file for testing
-              handleFileSelection({
-                name: `document_${attachments.length + 1}.pdf`,
-                size: 1024 * 1024 * 2, // 2MB
-                type: 'application/pdf',
-                uri: 'mock://file.pdf',
-                mockFile: true,
-              });
-            },
-          },
-        ],
+        t('complaints.create.error'),
+        error.message || 'An error occurred while selecting a file. Please try again.',
       );
     }
+  };
+
+  const handleMockFileSelection = () => {
+    // Mock file selection for documents when document picker fails
+    const fileTypes = [
+      { name: 'Invoice_Receipt.pdf', type: 'application/pdf' },
+      { name: 'Supporting_Document.docx', type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+      { name: 'Evidence_Photo.jpg', type: 'image/jpeg' },
+      { name: 'Spreadsheet_Data.xlsx', type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+      { name: 'Contract_Agreement.pdf', type: 'application/pdf' },
+      { name: 'Bill_Statement.pdf', type: 'application/pdf' },
+      { name: 'Financial_Report.xlsx', type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+      { name: 'Technical_Specs.docx', type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+    ];
+
+    const randomFile = fileTypes[Math.floor(Math.random() * fileTypes.length)];
+    const fileNumber = attachments.length + 1;
+
+    handleFileSelection({
+      name: `${fileNumber}_${randomFile.name}`,
+      size: Math.floor(Math.random() * (5 * 1024 * 1024)) + (500 * 1024), // Random size between 500KB and 5MB
+      type: randomFile.type,
+      uri: 'mock://file.pdf',
+      mockFile: true,
+    });
   };
 
   const handleFileSelection = async (file) => {
@@ -756,9 +767,7 @@ const CreateComplaintScreen = ({ navigation }) => {
         ]}>
         {value || placeholder}
       </Text>
-      <ChevronDown24Regular
-        style={[styles.dropdownIcon, { color: theme.colors.icon }]}
-      />
+      <ChevronDown24Regular />
     </TouchableOpacity>
   );
 
@@ -865,9 +874,7 @@ const CreateComplaintScreen = ({ navigation }) => {
           borderColor: item.error ? '#F44336' : theme.colors.border,
         },
       ]}>
-      <Document24Regular
-        style={[styles.attachmentIcon, { color: theme.colors.primary }]}
-      />
+      <Document24Regular />
       <View style={styles.attachmentInfo}>
         <Text
           style={[
@@ -898,12 +905,7 @@ const CreateComplaintScreen = ({ navigation }) => {
         onPress={() => removeAttachment(item.id)}
         activeOpacity={0.7}
         disabled={item.uploading}>
-        <Delete24Regular
-          style={[
-            styles.removeIcon,
-            { color: item.uploading ? theme.colors.textSecondary : '#F44336' }
-          ]}
-        />
+        <Delete24Regular />
       </TouchableOpacity>
     </View>
   );
@@ -999,12 +1001,7 @@ const CreateComplaintScreen = ({ navigation }) => {
           style={styles.backButton}
           onPress={handleGoBack}
           activeOpacity={0.7}>
-          <ArrowLeft24Regular
-            style={[
-              dynamicStyles.backIcon,
-              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
-            ]}
-          />
+          <ArrowLeft24Regular />
         </TouchableOpacity>
         <Text style={dynamicStyles.headerTitle}>
           {t('complaints.create.title')}
@@ -1194,9 +1191,7 @@ const CreateComplaintScreen = ({ navigation }) => {
             ]}
             onPress={handleAttachFile}
             activeOpacity={0.7}>
-            <Attach24Regular
-              style={[styles.attachIcon, { color: theme.colors.primary }]}
-            />
+            <Attach24Regular />
             <Text
               style={[
                 styles.attachText,
