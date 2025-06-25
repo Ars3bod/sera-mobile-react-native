@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useUser } from '../context/UserContext';
+import SafeContainer from '../components/SafeContainer';
 import {
   People24Regular,
   Briefcase24Regular,
@@ -795,11 +796,13 @@ export default function HomeScreenNew({ navigation }) {
   });
 
   return (
-    <SafeAreaView style={dynamicStyles.safeArea} edges={['top']}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.colors.background}
-      />
+    <SafeContainer
+      style={dynamicStyles.safeArea}
+      edges={['top']}
+      backgroundColor={theme.colors.background}
+      statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      statusBarBackgroundColor={theme.colors.background}
+    >
       <View style={dynamicStyles.container}>
         <ScrollView contentContainerStyle={dynamicStyles.scrollContent}>
           {/* Top Avatar */}
@@ -968,7 +971,7 @@ export default function HomeScreenNew({ navigation }) {
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
-    </SafeAreaView>
+    </SafeContainer>
   );
 }
 

@@ -17,6 +17,24 @@ const resources = {
         notAvailable: "Not Available",
         networkError: "Network connection error",
       },
+      navigation: {
+        restrictedMessage: 'Cannot navigate back to login screens',
+        exitAppMessage: 'Press back again to exit the app',
+      },
+      session: {
+        warning: {
+          title: 'Session Expiring Soon',
+          message: 'Your session will expire in {{minutes}} minutes due to inactivity. Do you want to stay logged in?',
+          stayLoggedIn: 'Stay Logged In',
+          logout: 'Logout Now',
+        },
+        expiry: {
+          title: 'Session Expired',
+          idleMessage: 'Your session has expired due to inactivity. Please login again to continue.',
+          maxDurationMessage: 'Your session has expired due to maximum duration limit. Please login again to continue.',
+          loginAgain: 'Login Again',
+        },
+      },
       permissions: {
         storage: {
           title: "Storage Permission",
@@ -1164,6 +1182,24 @@ const resources = {
         goBack: "العودة",
         notAvailable: "غير متوفر",
         networkError: "خطأ في الاتصال بالشبكة",
+      },
+      navigation: {
+        restrictedMessage: 'لا يمكن العودة إلى شاشات تسجيل الدخول',
+        exitAppMessage: 'اضغط مرة أخرى للخروج من التطبيق',
+      },
+      session: {
+        warning: {
+          title: 'الجلسة ستنتهي قريباً',
+          message: 'ستنتهي جلستك خلال {{minutes}} دقائق بسبب عدم النشاط. هل تريد البقاء متصلاً؟',
+          stayLoggedIn: 'البقاء متصلاً',
+          logout: 'تسجيل الخروج الآن',
+        },
+        expiry: {
+          title: 'انتهت الجلسة',
+          idleMessage: 'انتهت جلستك بسبب عدم النشاط. يرجى تسجيل الدخول مرة أخرى للمتابعة.',
+          maxDurationMessage: 'انتهت جلستك بسبب الوصول للحد الأقصى للمدة. يرجى تسجيل الدخول مرة أخرى للمتابعة.',
+          loginAgain: 'تسجيل الدخول مرة أخرى',
+        },
       },
       permissions: {
         storage: {

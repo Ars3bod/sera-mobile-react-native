@@ -20,9 +20,7 @@
       },
       "UILaunchStoryboardName": "LaunchScreen",
       "UISupportedInterfaceOrientations": [
-        "UIInterfaceOrientationPortrait",
-        "UIInterfaceOrientationLandscapeLeft",
-        "UIInterfaceOrientationLandscapeRight"
+        "UIInterfaceOrientationPortrait"
       ],
       "LSApplicationQueriesSchemes": [
         "nafath",

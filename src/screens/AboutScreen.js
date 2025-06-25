@@ -8,8 +8,9 @@ import {
   StatusBar,
   TouchableOpacity,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import SafeContainer from '../components/SafeContainer';
 import {
   ArrowLeft24Regular,
   Target24Regular,
@@ -18,9 +19,9 @@ import {
   Calendar24Regular,
 } from '@fluentui/react-native-icons';
 
-const AboutScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+const AboutScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const isRTL = i18n.language === 'ar';
 
   const handleGoBack = () => {
@@ -49,10 +50,10 @@ const AboutScreen = ({navigation}) => {
   ];
 
   const values = [
-    {key: 'transparency', color: '#00623B'},
-    {key: 'fairness', color: '#00623B'},
-    {key: 'excellence', color: '#00623B'},
-    {key: 'innovation', color: '#00623B'},
+    { key: 'transparency', color: '#00623B' },
+    { key: 'fairness', color: '#00623B' },
+    { key: 'excellence', color: '#00623B' },
+    { key: 'innovation', color: '#00623B' },
   ];
 
   const renderSection = section => {
@@ -60,11 +61,11 @@ const AboutScreen = ({navigation}) => {
     return (
       <View
         key={section.titleKey}
-        style={[styles.section, {backgroundColor: theme.colors.card}]}>
+        style={[styles.section, { backgroundColor: theme.colors.card }]}>
         <View
           style={[
             styles.sectionHeader,
-            {flexDirection: isRTL ? 'row-reverse' : 'row'},
+            { flexDirection: isRTL ? 'row-reverse' : 'row' },
           ]}>
           <View
             style={[
@@ -76,7 +77,7 @@ const AboutScreen = ({navigation}) => {
               },
             ]}>
             <IconComponent
-              style={[styles.sectionIcon, {color: section.color}]}
+              style={[styles.sectionIcon, { color: section.color }]}
             />
           </View>
           <Text
@@ -105,11 +106,11 @@ const AboutScreen = ({navigation}) => {
   };
 
   const renderValues = () => (
-    <View style={[styles.section, {backgroundColor: theme.colors.card}]}>
+    <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
       <View
         style={[
           styles.sectionHeader,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <View
           style={[
@@ -121,7 +122,7 @@ const AboutScreen = ({navigation}) => {
             },
           ]}>
           <Star24Regular
-            style={[styles.sectionIcon, {color: theme.colors.primary}]}
+            style={[styles.sectionIcon, { color: theme.colors.primary }]}
           />
         </View>
         <Text
@@ -141,12 +142,12 @@ const AboutScreen = ({navigation}) => {
             key={value.key}
             style={[
               styles.valueItem,
-              {backgroundColor: value.color + '15', borderColor: value.color},
+              { backgroundColor: value.color + '15', borderColor: value.color },
             ]}>
             <Text
               style={[
                 styles.valueText,
-                {color: value.color, textAlign: 'center'},
+                { color: value.color, textAlign: 'center' },
               ]}>
               {t(`about.values.${value.key}`)}
             </Text>
@@ -186,17 +187,18 @@ const AboutScreen = ({navigation}) => {
   });
 
   return (
-    <SafeAreaView style={dynamicStyles.container}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.colors.surface}
-      />
+    <SafeContainer
+      style={dynamicStyles.container}
+      backgroundColor={theme.colors.background}
+      statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      statusBarBackgroundColor={theme.colors.surface}
+    >
 
       {/* Header */}
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -205,7 +207,7 @@ const AboutScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -225,18 +227,18 @@ const AboutScreen = ({navigation}) => {
         <View
           style={[
             styles.establishmentHighlight,
-            {backgroundColor: theme.colors.primary + '10'},
+            { backgroundColor: theme.colors.primary + '10' },
           ]}>
           <Text
             style={[
               styles.establishmentYear,
-              {color: theme.colors.primary, textAlign: 'center'},
+              { color: theme.colors.primary, textAlign: 'center' },
             ]}>
             {t('about.establishment.year')}
           </Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </SafeContainer>
   );
 };
 

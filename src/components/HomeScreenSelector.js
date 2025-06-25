@@ -15,14 +15,14 @@ const HomeScreenSelector = ({ navigation }) => {
   }
 
   // If user is authenticated, use HomeScreenNew regardless of config
-  if (isAuthenticated) {
-    return <ServicesScreen navigation={navigation} />;
-  }
+  // if (isAuthenticated) {
+  //   return <ServicesScreen navigation={navigation} />;
+  // }
 
   // Default behavior based on config (for other cases)
-  if (useNewHomeScreen) {
-    return <ServicesScreen navigation={navigation} />;
-  }
+  // if (useNewHomeScreen) {
+  //   return <ServicesScreen navigation={navigation} />;
+  // }
 
   return <ServicesScreen navigation={navigation} />;
 };

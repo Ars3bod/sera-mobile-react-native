@@ -1,5 +1,4 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // Screens
@@ -47,250 +46,259 @@ const screenOptions = {
 
 export default function AppNavigator() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Splash" screenOptions={screenOptions}>
-        <Stack.Screen
-          name="Splash"
-          component={SplashScreen}
-          options={{
-            animation: 'fade',
-            animationDuration: 500,
-          }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{
-            animation: 'slide_from_bottom',
-            animationDuration: 400,
-          }}
-        />
-        <Stack.Screen
-          name="NafathLogin"
-          component={NafathLoginScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="NafathVerification"
-          component={NafathVerificationScreen}
-          options={{
-            animation: 'slide_from_right',
-            gestureEnabled: false, // Prevent going back during verification
-          }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={HomeScreenSelector}
-          options={{
-            animation: 'fade',
-            animationDuration: 500,
-            gestureEnabled: false, // Prevent going back to login
-          }}
-        />
-        <Stack.Screen
-          name="Services"
-          component={ServicesScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="More"
-          component={MoreScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="Settings"
-          component={SettingsScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="About"
-          component={AboutScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="Contact"
-          component={ContactScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="News"
-          component={NewsScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="Policies"
-          component={PoliciesScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="FAQ"
-          component={FAQScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="ImportantLinks"
-          component={ImportantLinksScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="CompensationStandards"
-          component={CompensationStandardsScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="ConsumptionTariff"
-          component={ConsumptionTariffScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="ServiceDescription"
-          component={ServiceDescriptionScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="Complaints"
-          component={ComplaintsScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="CreateComplaint"
-          component={CreateComplaintScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="ViewComplaints"
-          component={ViewComplaintsScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="ComplaintDetails"
-          component={ComplaintDetailsScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="Permits"
-          component={PermitsScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="ViewPermits"
-          component={ViewPermitsScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="CreatePowerGenerationPermit"
-          component={CreatePowerGenerationPermitScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="CreateDistrictCoolingPermit"
-          component={CreateDistrictCoolingPermitScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="UsagePolicy"
-          component={UsagePolicyScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="PrivacyPolicy"
-          component={PrivacyPolicyScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="DataProtection"
-          component={DataProtectionScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="CookiePolicy"
-          component={CookiePolicyScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={{
-            animation: 'slide_from_right',
-            animationDuration: 300,
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator initialRouteName="Splash" screenOptions={screenOptions}>
+      <Stack.Screen
+        name="Splash"
+        component={SplashScreen}
+        options={{
+          animation: 'fade',
+          animationDuration: 500,
+        }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          animation: 'slide_from_bottom',
+          animationDuration: 400,
+        }}
+      />
+      <Stack.Screen
+        name="NafathLogin"
+        component={NafathLoginScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="NafathVerification"
+        component={NafathVerificationScreen}
+        options={{
+          animation: 'slide_from_right',
+          gestureEnabled: false, // Prevent going back during verification
+        }}
+      />
+      <Stack.Screen
+        name="Home"
+        component={HomeScreenSelector}
+        options={{
+          animation: 'fade',
+          animationDuration: 500,
+          gestureEnabled: false, // Prevent going back to login
+        }}
+      />
+      <Stack.Screen
+        name="Services"
+        component={ServicesScreen}
+        options={({ navigation, route }) => ({
+          animation: 'slide_from_right',
+          animationDuration: 300,
+          // Add navigation restriction at stack level
+          beforeRemove: (e) => {
+            const targetRoute = e.data?.action?.payload?.name || e.data?.action?.target;
+            const preLoginScreens = ['Splash', 'Login', 'NafathLogin', 'NafathVerification'];
+
+            // Prevent navigation to pre-login screens
+            if (targetRoute && preLoginScreens.includes(targetRoute)) {
+              e.preventDefault();
+              return;
+            }
+          },
+        })}
+      />
+      <Stack.Screen
+        name="More"
+        component={MoreScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="About"
+        component={AboutScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="Contact"
+        component={ContactScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="News"
+        component={NewsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="Policies"
+        component={PoliciesScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="FAQ"
+        component={FAQScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ImportantLinks"
+        component={ImportantLinksScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="CompensationStandards"
+        component={CompensationStandardsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ConsumptionTariff"
+        component={ConsumptionTariffScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ServiceDescription"
+        component={ServiceDescriptionScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="Complaints"
+        component={ComplaintsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="CreateComplaint"
+        component={CreateComplaintScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ViewComplaints"
+        component={ViewComplaintsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ComplaintDetails"
+        component={ComplaintDetailsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="Permits"
+        component={PermitsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ViewPermits"
+        component={ViewPermitsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="CreatePowerGenerationPermit"
+        component={CreatePowerGenerationPermitScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="CreateDistrictCoolingPermit"
+        component={CreateDistrictCoolingPermitScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="UsagePolicy"
+        component={UsagePolicyScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="PrivacyPolicy"
+        component={PrivacyPolicyScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="DataProtection"
+        component={DataProtectionScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="CookiePolicy"
+        component={CookiePolicyScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+    </Stack.Navigator>
   );
 }
