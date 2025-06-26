@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
+import SafeContainer from '../components/SafeContainer';
 import {
   ArrowLeft24Regular,
   Location24Regular,
@@ -186,11 +187,12 @@ const ContactScreen = ({ navigation }) => {
   });
 
   return (
-    <SafeAreaView style={dynamicStyles.container}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.colors.surface}
-      />
+    <SafeContainer
+      style={dynamicStyles.container}
+      backgroundColor={theme.colors.background}
+      statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      statusBarBackgroundColor={theme.colors.surface}
+    >
 
       {/* Header */}
       <View
@@ -248,7 +250,7 @@ const ContactScreen = ({ navigation }) => {
           </Text> */}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </SafeContainer>
   );
 };
 

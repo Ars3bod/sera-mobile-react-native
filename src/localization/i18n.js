@@ -846,6 +846,10 @@ const resources = {
             fileLocationMessage: "File saved to: {{path}}",
             openError: "Cannot Open File",
             openErrorMessage: "Unable to open the downloaded file. You can find it in your device's file manager.",
+            saveSuccess: "File Saved",
+            saveSuccessMessage: "{{fileName}} has been saved successfully to your selected location.",
+            saveTitle: "Save {{fileName}}",
+            saveMessage: "Choose where to save {{fileName}}",
           },
           survey: {
             title: "Feedback Survey",
@@ -1997,6 +2001,10 @@ const resources = {
             fileLocationMessage: "تم حفظ الملف في: {{path}}",
             openError: "لا يمكن فتح الملف",
             openErrorMessage: "لا يمكن فتح الملف المحمل. يمكنك العثور عليه في مدير الملفات بجهازك.",
+            saveSuccess: "تم حفظ الملف",
+            saveSuccessMessage: "تم حفظ {{fileName}} بنجاح في الموقع المحدد.",
+            saveTitle: "حفظ {{fileName}}",
+            saveMessage: "اختر مكان حفظ {{fileName}}",
           },
           survey: {
             title: "استطلاع رأي",

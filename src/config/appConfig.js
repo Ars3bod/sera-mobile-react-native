@@ -16,19 +16,10 @@ const AppConfig = {
     requestTimeout: 30000,
   },
 
-  // Session Management Configuration
+  // Session Management Configuration - Simplified
   session: {
     // Idle timeout in minutes (15 minutes default for government apps)
     idleTimeoutMinutes: 15,
-
-    // Warning before session expiry in minutes (5 minutes before)
-    warningBeforeExpiryMinutes: 5,
-
-    // Maximum session duration in hours (8 hours for government apps)
-    maxSessionDurationHours: 8,
-
-    // Auto-refresh token before expiry (in minutes)
-    tokenRefreshBeforeExpiryMinutes: 10,
 
     // Enable session management
     enableSessionManagement: true,
@@ -36,23 +27,11 @@ const AppConfig = {
     // Enable idle timeout detection
     enableIdleTimeout: true,
 
-    // Enable session warnings
-    enableSessionWarnings: true,
-
     // Clear app data on logout
     clearDataOnLogout: true,
 
     // Reset navigation stack on session expiry
     resetNavigationOnExpiry: true,
-
-    // Activities that should reset idle timer
-    activitiesResetTimer: [
-      'touch',
-      'scroll',
-      'keypress',
-      'navigation',
-      'api_call',
-    ],
 
     // Screens that should be excluded from idle timeout
     excludedScreens: [
@@ -76,7 +55,6 @@ const AppConfig = {
 
     // Development tools configuration
     developmentTools: {
-      showSessionStatus: false, // Show session status component
       showPerformanceMetrics: false, // Show performance overlay
       showNetworkRequests: false, // Show network request logs
       showNavigationDebug: false, // Show navigation state debug
@@ -92,12 +70,7 @@ const AppConfig = {
       validateContact: false,
     },
 
-    // Session debugging (shorter timeouts for testing)
-    sessionDebug: {
-      enableShortTimeouts: false, // Set to true for testing
-      shortIdleTimeoutMinutes: 2, // 2 minutes for testing
-      shortWarningMinutes: 1, // 1 minute warning for testing
-    },
+
   },
 
   // Feature Flags

@@ -5,8 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
-  StatusBar,
   RefreshControl,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +20,8 @@ import {
   ChevronRight24Regular,
 } from '@fluentui/react-native-icons';
 
+import SafeContainer from '../components/SafeContainer';
+import SessionWrapper from '../components/SessionWrapper';
 import LoginRequiredModal from '../components/LoginRequiredModal';
 
 import complaintsService, {
@@ -440,132 +440,133 @@ const ComplaintsScreen = ({ navigation }) => {
   });
 
   return (
-    <SafeAreaView style={dynamicStyles.container}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.colors.surface}
-      />
-
-      {/* Header */}
-      <View
-        style={[
-          dynamicStyles.header,
-          { flexDirection: isRTL ? 'row-reverse' : 'row' },
-        ]}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleGoBack}
-          activeOpacity={0.7}>
-          <ArrowLeft24Regular
-            style={[
-              dynamicStyles.backIcon,
-              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
-            ]}
-          />
-        </TouchableOpacity>
-        <Text style={dynamicStyles.headerTitle}>{t('complaints.title')}</Text>
-        <View style={styles.placeholderView} />
-      </View>
-
-      {/* Content */}
-      <ScrollView
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={theme.colors.primary}
-            colors={[theme.colors.primary]}
-          />
-        }>
-        {/* Welcome Card */}
+    <SessionWrapper screenName="Complaints">
+      <SafeContainer
+        style={dynamicStyles.container}
+        statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        statusBarBackgroundColor={theme.colors.surface}
+      >
+        {/* Header */}
         <View
           style={[
-            styles.welcomeCard,
-            { backgroundColor: theme.colors.primary + '10' },
+            dynamicStyles.header,
+            { flexDirection: isRTL ? 'row-reverse' : 'row' },
           ]}>
-          <Text
-            style={[
-              styles.welcomeTitle,
-              {
-                color: theme.colors.primary,
-                textAlign: isRTL ? 'right' : 'left',
-              },
-            ]}>
-            {t('complaints.welcomeTitle')}
-          </Text>
-          <Text
-            style={[
-              styles.welcomeText,
-              {
-                color: theme.colors.primary,
-                textAlign: isRTL ? 'right' : 'left',
-              },
-            ]}>
-            {t('complaints.welcomeDescription')}
-          </Text>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={handleGoBack}
+            activeOpacity={0.7}>
+            <ArrowLeft24Regular
+              style={[
+                dynamicStyles.backIcon,
+                { transform: [{ scaleX: isRTL ? -1 : 1 }] },
+              ]}
+            />
+          </TouchableOpacity>
+          <Text style={dynamicStyles.headerTitle}>{t('complaints.title')}</Text>
+          <View style={styles.placeholderView} />
         </View>
 
-        {/* Main Actions */}
-        <View style={styles.actionsSection}>
-          <Text
+        {/* Content */}
+        <ScrollView
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={theme.colors.primary}
+              colors={[theme.colors.primary]}
+            />
+          }>
+          {/* Welcome Card */}
+          <View
             style={[
-              styles.sectionTitle,
-              {
-                color: theme.colors.text,
-                textAlign: isRTL ? 'right' : 'left',
-              },
+              styles.welcomeCard,
+              { backgroundColor: theme.colors.primary + '10' },
             ]}>
-            {t('more.mainActions')}
-          </Text>
-          {mainActions.map(renderMainAction)}
-        </View>
+            <Text
+              style={[
+                styles.welcomeTitle,
+                {
+                  color: theme.colors.primary,
+                  textAlign: isRTL ? 'right' : 'left',
+                },
+              ]}>
+              {t('complaints.welcomeTitle')}
+            </Text>
+            <Text
+              style={[
+                styles.welcomeText,
+                {
+                  color: theme.colors.primary,
+                  textAlign: isRTL ? 'right' : 'left',
+                },
+              ]}>
+              {t('complaints.welcomeDescription')}
+            </Text>
+          </View>
 
-        {/* Quick Filters */}
-        <View style={styles.filtersSection}>
-          <Text
-            style={[
-              styles.sectionTitle,
-              {
-                color: theme.colors.text,
-                textAlign: isRTL ? 'right' : 'left',
-              },
-            ]}>
-            {t('complaints.view.yourComplaints')}
-          </Text>
-          {loading ? (
-            <View style={styles.loadingContainer}>
-              <LoadingSpinner
-                type="rotating"
-                size={30}
-                color={theme.colors.primary}
-                duration={1000}
-              />
-              <Text
-                style={[
-                  styles.loadingText,
-                  { color: theme.colors.textSecondary },
-                ]}>
-                {t('complaints.view.loading')}
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.filtersContainer}>
-              {quickFilters.map(renderQuickFilter)}
-            </View>
-          )}
-        </View>
-      </ScrollView>
+          {/* Main Actions */}
+          <View style={styles.actionsSection}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                {
+                  color: theme.colors.text,
+                  textAlign: isRTL ? 'right' : 'left',
+                },
+              ]}>
+              {t('more.mainActions')}
+            </Text>
+            {mainActions.map(renderMainAction)}
+          </View>
 
-      {/* Login Required Modal */}
-      <LoginRequiredModal
-        visible={showLoginModal}
-        onClose={closeLoginModal}
-        onLogin={handleLoginPress}
-      />
-    </SafeAreaView>
+          {/* Quick Filters */}
+          <View style={styles.filtersSection}>
+            <Text
+              style={[
+                styles.sectionTitle,
+                {
+                  color: theme.colors.text,
+                  textAlign: isRTL ? 'right' : 'left',
+                },
+              ]}>
+              {t('complaints.view.yourComplaints')}
+            </Text>
+            {loading ? (
+              <View style={styles.loadingContainer}>
+                <LoadingSpinner
+                  type="rotating"
+                  size={30}
+                  color={theme.colors.primary}
+                  duration={1000}
+                />
+                <Text
+                  style={[
+                    styles.loadingText,
+                    { color: theme.colors.textSecondary },
+                  ]}>
+                  {t('complaints.view.loading')}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.filtersContainer}>
+                {quickFilters.map(renderQuickFilter)}
+              </View>
+            )}
+          </View>
+        </ScrollView>
+
+        {/* Login Required Modal */}
+        <LoginRequiredModal
+          visible={showLoginModal}
+          onClose={closeLoginModal}
+          onLogin={handleLoginPress}
+        />
+      </SafeContainer>
+    </SessionWrapper>
   );
 };
 

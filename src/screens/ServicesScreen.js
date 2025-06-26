@@ -28,7 +28,7 @@ import {
 } from '@fluentui/react-native-icons';
 import NavigationBar from '../components/NavigationBar';
 import SessionWrapper from '../components/SessionWrapper';
-import SessionStatus from '../components/SessionStatus';
+
 import LoginRequiredModal from '../components/LoginRequiredModal';
 
 /**
@@ -645,8 +645,7 @@ const ServicesScreen = ({ navigation }) => {
           showComplaints={true}
         />
 
-        {/* Session Status Debug Component - Only shown when development tools are enabled */}
-        <SessionStatus isVisible={true} />
+
 
         {/* Coming Soon Modal */}
         <Modal

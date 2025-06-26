@@ -35,6 +35,7 @@ class ComplaintsService {
 
       // Convert language code to numeric format
       const numericLangCode = langCode === 'ar' ? 1025 : 1033;
+      const channel = "a352fcbb-bb51-f011-b820-c260552d74b3";
 
       const requestData = {
         langCode: numericLangCode,
@@ -43,6 +44,7 @@ class ComplaintsService {
         pageSize: pageSize,
         phoneNumber: phoneNumber,
         nin: nin,
+        channel: channel
       };
 
       if (AppConfig.development.enableDebugLogs) {

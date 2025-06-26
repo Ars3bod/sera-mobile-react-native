@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
     View,
     Text,
@@ -14,10 +14,12 @@ import {
     PermissionsAndroid,
     Linking,
     Share,
+    FlatList,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useFocusEffect } from '@react-navigation/native';
+import SafeContainer from '../components/SafeContainer';
 import {
     ArrowLeft24Regular,
     Document24Regular,
@@ -32,6 +34,8 @@ import complaintsService from '../services/complaintsService';
 import AppConfig from '../config/appConfig';
 import RNFS from 'react-native-fs';
 import ActionToast from '../components/ActionToast';
+
+// Using built-in React Native Share API for cross-platform compatibility
 
 const ComplaintDetailsScreen = ({ navigation, route }) => {
     const { t, i18n } = useTranslation();
@@ -181,38 +185,13 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
         }
     };
 
-    // Perform the actual download and immediately share
+    // Perform the actual download with Android Storage Access Framework
     const performDownloadAndShare = async (attachment) => {
         try {
             if (AppConfig.development.enableDebugLogs) {
                 console.log('=== PERFORM DOWNLOAD STARTED ===');
                 console.log('Platform OS:', Platform.OS);
                 console.log('Attachment name:', attachment.Name);
-            }
-
-
-
-            if (AppConfig.development.enableDebugLogs) {
-                console.log('Requesting storage permission...');
-            }
-
-            // Request storage permission
-            const hasPermission = await requestStoragePermission();
-
-            if (AppConfig.development.enableDebugLogs) {
-                console.log('Storage permission result:', hasPermission);
-            }
-
-            if (!hasPermission) {
-                if (AppConfig.development.enableDebugLogs) {
-                    console.log('Permission denied, showing error');
-                }
-                Alert.alert(
-                    t('complaints.details.attachment.downloadTitle'),
-                    t('permissions.storage.denied'),
-                    [{ text: t('common.ok') }]
-                );
-                return;
             }
 
             // Get base64 data
@@ -225,57 +204,19 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
             const fileName = attachment.Name || `attachment_${Date.now()}.pdf`;
             const fileExtension = fileName.split('.').pop()?.toLowerCase() || 'pdf';
 
-            // Determine download path based on platform
-            let downloadPath;
-            if (Platform.OS === 'android') {
-                // Use app's external files directory for Android
-                const downloadsDir = `${RNFS.ExternalDirectoryPath}/Downloads`;
-
-                // Ensure downloads directory exists
-                try {
-                    await RNFS.mkdir(downloadsDir);
-                } catch (mkdirError) {
-                    // Directory might already exist, ignore error
-                }
-
-                downloadPath = `${downloadsDir}/${fileName}`;
-            } else {
-                // iOS - use documents directory
-                downloadPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
-            }
-
             if (AppConfig.development.enableDebugLogs) {
-                console.log('Download path:', downloadPath);
+                console.log('File name:', fileName);
                 console.log('File extension:', fileExtension);
                 console.log('Base64 data length:', cleanBase64.length);
             }
 
-            // Write file to device
-            await RNFS.writeFile(downloadPath, cleanBase64, 'base64');
-
-            // Verify file was created
-            const fileExists = await RNFS.exists(downloadPath);
-            if (!fileExists) {
-                throw new Error('File was not created successfully');
+            if (Platform.OS === 'android') {
+                // Use Android Storage Access Framework for file saving
+                await saveFileWithAndroidSAF(cleanBase64, fileName, fileExtension);
+            } else {
+                // iOS - use traditional method
+                await saveFileForIOS(cleanBase64, fileName, fileExtension);
             }
-
-            // Get file info
-            const fileInfo = await RNFS.stat(downloadPath);
-
-            if (AppConfig.development.enableDebugLogs) {
-                console.log('File downloaded successfully:', {
-                    path: downloadPath,
-                    size: fileInfo.size,
-                    isFile: fileInfo.isFile()
-                });
-            }
-
-            // Immediately show native share modal
-            if (AppConfig.development.enableDebugLogs) {
-                console.log('File downloaded successfully, showing share modal');
-            }
-
-            await openDownloadedFile(downloadPath, fileExtension);
 
         } catch (error) {
             if (AppConfig.development.enableDebugLogs) {
@@ -287,6 +228,9 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                 errorMessage = t('permissions.storage.denied');
             } else if (error.message.includes('space')) {
                 errorMessage = t('errors.insufficientStorage');
+            } else if (error.message.includes('cancelled')) {
+                // User cancelled the save dialog - don't show error
+                return;
             }
 
             Alert.alert(
@@ -294,6 +238,212 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                 errorMessage,
                 [{ text: t('common.ok') }]
             );
+        }
+    };
+
+    // Get MIME type based on file extension
+    const getMimeType = (extension) => {
+        switch (extension.toLowerCase()) {
+            case 'pdf':
+                return 'application/pdf';
+            case 'jpg':
+            case 'jpeg':
+                return 'image/jpeg';
+            case 'png':
+                return 'image/png';
+            case 'doc':
+                return 'application/msword';
+            case 'docx':
+                return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+            case 'xls':
+                return 'application/vnd.ms-excel';
+            case 'xlsx':
+                return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+            case 'txt':
+                return 'text/plain';
+            default:
+                return 'application/octet-stream';
+        }
+    };
+
+    // Save file using Android Storage Access Framework with Share API
+    const saveFileWithAndroidSAF = async (base64Data, fileName, fileExtension) => {
+        try {
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('=== ANDROID SAF SAVE STARTED ===');
+                console.log('File name:', fileName);
+            }
+
+            // First, save to temporary location
+            const tempDir = `${RNFS.CachesDirectoryPath}/temp`;
+
+            // Ensure temp directory exists
+            try {
+                await RNFS.mkdir(tempDir);
+            } catch (mkdirError) {
+                // Directory might already exist, ignore error
+            }
+
+            const tempFilePath = `${tempDir}/${fileName}`;
+
+            // Write file to temp location
+            await RNFS.writeFile(tempFilePath, base64Data, 'base64');
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('File written to temp location:', tempFilePath);
+            }
+
+            // Use built-in Share API for Android file sharing
+            const shareResult = await Share.share({
+                url: `file://${tempFilePath}`,
+                title: t('complaints.details.attachment.saveTitle', { fileName }),
+                message: t('complaints.details.attachment.saveMessage', { fileName }),
+            });
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('Android share result:', shareResult);
+            }
+
+            // Handle results from built-in Share API
+            if (shareResult.action === Share.sharedAction) {
+                // File was shared/saved successfully
+                Alert.alert(
+                    t('complaints.details.attachment.saveSuccess'),
+                    t('complaints.details.attachment.saveSuccessMessage', { fileName }),
+                    [{ text: t('common.ok') }]
+                );
+            } else {
+                // User dismissed the share dialog or it failed
+                if (AppConfig.development.enableDebugLogs) {
+                    console.log('User dismissed share dialog or share failed');
+                }
+            }
+
+            // Clean up temp file after a delay
+            setTimeout(async () => {
+                try {
+                    await RNFS.unlink(tempFilePath);
+                    if (AppConfig.development.enableDebugLogs) {
+                        console.log('Temp file cleaned up:', tempFilePath);
+                    }
+                } catch (cleanupError) {
+                    if (AppConfig.development.enableDebugLogs) {
+                        console.log('Failed to clean up temp file:', cleanupError);
+                    }
+                }
+            }, 5000); // 5 second delay to ensure share is complete
+
+        } catch (error) {
+            if (AppConfig.development.enableDebugLogs) {
+                console.error('Android SAF save error:', error);
+            }
+
+            // Check if user cancelled the share dialog
+            if (error.message && error.message.includes('cancelled')) {
+                if (AppConfig.development.enableDebugLogs) {
+                    console.log('User cancelled share dialog');
+                }
+                return; // Don't show error for user cancellation
+            }
+
+            // Fallback to app directory if share fails
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('Share failed, falling back to app directory');
+            }
+
+            await saveFileToAppDirectory(base64Data, fileName, fileExtension);
+        }
+    };
+
+    // Fallback: Save file to app directory and share
+    const saveFileToAppDirectory = async (base64Data, fileName, fileExtension) => {
+        try {
+            // Request storage permission for fallback method
+            const hasPermission = await requestStoragePermission();
+
+            if (!hasPermission) {
+                Alert.alert(
+                    t('complaints.details.attachment.downloadTitle'),
+                    t('permissions.storage.denied'),
+                    [{ text: t('common.ok') }]
+                );
+                return;
+            }
+
+            // Use app's external files directory
+            const downloadsDir = `${RNFS.ExternalDirectoryPath}/Downloads`;
+
+            // Ensure downloads directory exists
+            try {
+                await RNFS.mkdir(downloadsDir);
+            } catch (mkdirError) {
+                // Directory might already exist, ignore error
+            }
+
+            const downloadPath = `${downloadsDir}/${fileName}`;
+
+            // Write file to device
+            await RNFS.writeFile(downloadPath, base64Data, 'base64');
+
+            // Verify file was created
+            const fileExists = await RNFS.exists(downloadPath);
+            if (!fileExists) {
+                throw new Error('File was not created successfully');
+            }
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('File saved to app directory:', downloadPath);
+            }
+
+            // Show share dialog as fallback
+            await openDownloadedFile(downloadPath, fileExtension);
+
+        } catch (error) {
+            if (AppConfig.development.enableDebugLogs) {
+                console.error('App directory save error:', error);
+            }
+            throw error;
+        }
+    };
+
+    // Save file for iOS using traditional method
+    const saveFileForIOS = async (base64Data, fileName, fileExtension) => {
+        try {
+            // iOS - use documents directory
+            const downloadPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('iOS download path:', downloadPath);
+            }
+
+            // Write file to device
+            await RNFS.writeFile(downloadPath, base64Data, 'base64');
+
+            // Verify file was created
+            const fileExists = await RNFS.exists(downloadPath);
+            if (!fileExists) {
+                throw new Error('File was not created successfully');
+            }
+
+            // Get file info
+            const fileInfo = await RNFS.stat(downloadPath);
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('iOS file downloaded successfully:', {
+                    path: downloadPath,
+                    size: fileInfo.size,
+                    isFile: fileInfo.isFile()
+                });
+            }
+
+            // Show iOS share modal using built-in Share API
+            await openDownloadedFile(downloadPath, fileExtension);
+
+        } catch (error) {
+            if (AppConfig.development.enableDebugLogs) {
+                console.error('iOS save error:', error);
+            }
+            throw error;
         }
     };
 
@@ -333,7 +483,7 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                     );
                 }
             } else {
-                // For iOS, use React Native Share API
+                // For iOS, use built-in Share API
                 if (AppConfig.development.enableDebugLogs) {
                     console.log('Attempting to share file on iOS:', filePath);
                 }
@@ -676,28 +826,30 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
 
     if (loading) {
         return (
-            <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <StatusBar
-                    barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-                    backgroundColor={theme.colors.background}
-                />
+            <SafeContainer
+                style={[styles.container, { backgroundColor: theme.colors.background }]}
+                backgroundColor={theme.colors.background}
+                statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+                statusBarBackgroundColor={theme.colors.background}
+            >
                 <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color={theme.colors.primary} />
                     <Text style={[styles.loadingText, { color: theme.colors.text }]}>
                         {t('complaints.details.loading')}
                     </Text>
                 </View>
-            </SafeAreaView>
+            </SafeContainer>
         );
     }
 
     if (!complaint) {
         return (
-            <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <StatusBar
-                    barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-                    backgroundColor={theme.colors.background}
-                />
+            <SafeContainer
+                style={[styles.container, { backgroundColor: theme.colors.background }]}
+                backgroundColor={theme.colors.background}
+                statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+                statusBarBackgroundColor={theme.colors.background}
+            >
                 <View style={styles.errorContainer}>
                     <Text style={[styles.errorText, { color: theme.colors.text }]}>
                         {t('complaints.details.notFound')}
@@ -712,16 +864,17 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                         </Text>
                     </TouchableOpacity>
                 </View>
-            </SafeAreaView>
+            </SafeContainer>
         );
     }
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-            <StatusBar
-                barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-                backgroundColor={theme.colors.background}
-            />
+        <SafeContainer
+            style={[styles.container, { backgroundColor: theme.colors.background }]}
+            backgroundColor={theme.colors.background}
+            statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            statusBarBackgroundColor={theme.colors.background}
+        >
 
             {/* Header */}
             <View style={[
@@ -992,7 +1145,7 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                 onConfirm={handleToastConfirm}
                 onCancel={handleToastCancel}
             />
-        </SafeAreaView>
+        </SafeContainer>
     );
 };
 

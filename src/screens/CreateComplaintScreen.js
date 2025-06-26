@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useUser } from '../context/UserContext';
 import { useFocusEffect } from '@react-navigation/native';
+import SafeContainer from '../components/SafeContainer';
 // Safe import for FluentUI icons with fallbacks
 let ArrowLeft24Regular, ChevronDown24Regular, Attach24Regular, Delete24Regular, Document24Regular;
 try {
@@ -354,17 +355,17 @@ const CreateComplaintScreen = ({ navigation }) => {
         }
 
         // Show fallback options
-        Alert.alert(
-          t('complaints.create.uploadFileTitle'),
-          'Document picker failed. Choose an option:',
-          [
-            { text: t('complaints.create.cancel'), style: 'cancel' },
-            {
-              text: t('complaints.create.mockDocument'),
-              onPress: () => handleMockFileSelection(),
-            },
-          ],
-        );
+        // Alert.alert(
+        //   t('complaints.create.uploadFileTitle'),
+        //   'Document picker failed. Choose an option:',
+        //   [
+        //     { text: t('complaints.create.cancel'), style: 'cancel' },
+        //     {
+        //       text: t('complaints.create.mockDocument'),
+        //       onPress: () => handleMockFileSelection(),
+        //     },
+        //   ],
+        // );
       }
     } catch (error) {
       if (AppConfig.development.enableDebugLogs) {
@@ -956,11 +957,12 @@ const CreateComplaintScreen = ({ navigation }) => {
 
   if (initialLoading) {
     return (
-      <SafeAreaView style={dynamicStyles.container}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={theme.colors.surface}
-        />
+      <SafeContainer
+        style={dynamicStyles.container}
+        backgroundColor={theme.colors.background}
+        statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        statusBarBackgroundColor={theme.colors.surface}
+      >
         <View style={styles.loadingContainer}>
           <LoadingSpinner
             type="rotating"
@@ -972,16 +974,17 @@ const CreateComplaintScreen = ({ navigation }) => {
             Loading form data...
           </Text>
         </View>
-      </SafeAreaView>
+      </SafeContainer>
     );
   }
 
   return (
-    <SafeAreaView style={dynamicStyles.container}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.colors.surface}
-      />
+    <SafeContainer
+      style={dynamicStyles.container}
+      backgroundColor={theme.colors.background}
+      statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      statusBarBackgroundColor={theme.colors.surface}
+    >
 
       {/* Toast Notification */}
       <Toast
@@ -1268,7 +1271,7 @@ const CreateComplaintScreen = ({ navigation }) => {
         () => { }, // Handled by handleComplaintTypeSelect
         'complaintType',
       )}
-    </SafeAreaView>
+    </SafeContainer>
   );
 };
 

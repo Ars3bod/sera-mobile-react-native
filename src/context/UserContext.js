@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useState, useEffect} from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserContext = createContext();
@@ -14,9 +14,9 @@ export const useUser = () => {
 const USER_STORAGE_KEY = '@sera_user_data';
 const TOKEN_STORAGE_KEY = '@sera_tokens';
 
-export const UserProvider = ({children}) => {
+export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [tokens, setTokens] = useState({accessToken: null, wToken: null});
+  const [tokens, setTokens] = useState({ accessToken: null, wToken: null });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isGuestMode, setIsGuestMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -73,7 +73,7 @@ export const UserProvider = ({children}) => {
 
   const updateUserProfile = async profileData => {
     try {
-      const updatedUser = {...user, ...profileData};
+      const updatedUser = { ...user, ...profileData };
       await saveUserData(updatedUser);
     } catch (error) {
       console.log('Error updating user profile:', error);
@@ -87,7 +87,7 @@ export const UserProvider = ({children}) => {
         AsyncStorage.removeItem(TOKEN_STORAGE_KEY),
       ]);
       setUser(null);
-      setTokens({accessToken: null, wToken: null});
+      setTokens({ accessToken: null, wToken: null });
       setIsAuthenticated(false);
       setIsGuestMode(false);
     } catch (error) {
@@ -100,7 +100,7 @@ export const UserProvider = ({children}) => {
     if (isGuest) {
       setIsAuthenticated(false);
       setUser(null);
-      setTokens({accessToken: null, wToken: null});
+      setTokens({ accessToken: null, wToken: null });
     }
   };
 
@@ -150,7 +150,7 @@ export const UserProvider = ({children}) => {
 
       await Promise.all([saveUserData(userData), saveTokens(tokenData)]);
 
-      return {userData, tokenData};
+      return { userData, tokenData };
     } catch (error) {
       console.log('Error storing Nafath auth data:', error);
       throw error;
@@ -159,6 +159,7 @@ export const UserProvider = ({children}) => {
 
   // Get formatted data for validatecontact API
   const getValidateContactData = () => {
+    const channel = "a352fcbb-bb51-f011-b820-c260552d74b3";
     if (!user) return null;
 
     // Format dobH from "14161009" to "1416-10"
@@ -182,6 +183,7 @@ export const UserProvider = ({children}) => {
       amname: user.arFather,
       nationality: user.arNationality,
       nin: user.nationalId,
+      channel: channel
     };
   };
 

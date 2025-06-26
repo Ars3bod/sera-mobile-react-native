@@ -15,13 +15,7 @@ export const shouldShowDevelopmentTools = () => {
     return AppConfig.development.showDevelopmentTools;
 };
 
-/**
- * Check if session status component should be shown
- * @returns {boolean} True if session status should be displayed
- */
-export const shouldShowSessionStatus = () => {
-    return shouldShowDevelopmentTools() && AppConfig.development.developmentTools.showSessionStatus;
-};
+
 
 /**
  * Check if testing controls should be enabled
@@ -78,20 +72,7 @@ export const debugLog = (message, data = null) => {
     }
 };
 
-/**
- * Log a session-related debug message
- * @param {string} message - The session message to log
- * @param {any} data - Optional session data
- */
-export const sessionDebugLog = (message, data = null) => {
-    if (isDebugLoggingEnabled()) {
-        if (data) {
-            console.log(`[SESSION] ${message}`, data);
-        } else {
-            console.log(`[SESSION] ${message}`);
-        }
-    }
-};
+
 
 /**
  * Get development configuration for easy access
@@ -101,33 +82,15 @@ export const getDevelopmentConfig = () => {
     return AppConfig.development;
 };
 
-/**
- * Get session debug configuration
- * @returns {object} Session debug configuration object
- */
-export const getSessionDebugConfig = () => {
-    return AppConfig.development.sessionDebug;
-};
 
-/**
- * Check if short session timeouts are enabled for testing
- * @returns {boolean} True if short timeouts are enabled
- */
-export const isShortSessionTimeoutsEnabled = () => {
-    return AppConfig.development.sessionDebug.enableShortTimeouts;
-};
 
 export default {
     shouldShowDevelopmentTools,
-    shouldShowSessionStatus,
     shouldEnableTestingControls,
     shouldShowPerformanceMetrics,
     shouldShowNetworkRequests,
     shouldShowNavigationDebug,
     isDebugLoggingEnabled,
     debugLog,
-    sessionDebugLog,
     getDevelopmentConfig,
-    getSessionDebugConfig,
-    isShortSessionTimeoutsEnabled,
 }; 

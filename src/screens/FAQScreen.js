@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,9 @@ import {
   TextInput,
   FlatList,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import SafeContainer from '../components/SafeContainer';
 import {
   ArrowLeft24Regular,
   Search24Regular,
@@ -20,9 +21,9 @@ import {
   ChevronUp24Regular,
 } from '@fluentui/react-native-icons';
 
-const FAQScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+const FAQScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const isRTL = i18n.language === 'ar';
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,14 +35,14 @@ const FAQScreen = ({navigation}) => {
   };
 
   const categories = [
-    {key: 'general', labelKey: 'faq.categories.general'},
-    {key: 'services', labelKey: 'faq.categories.services'},
-    {key: 'billing', labelKey: 'faq.categories.billing'},
-    {key: 'technical', labelKey: 'faq.categories.technical'},
+    { key: 'general', labelKey: 'faq.categories.general' },
+    { key: 'services', labelKey: 'faq.categories.services' },
+    { key: 'billing', labelKey: 'faq.categories.billing' },
+    { key: 'technical', labelKey: 'faq.categories.technical' },
   ];
 
   // Mock FAQ data - في التطبيق الحقيقي سيتم جلبها من API
-  const faqData = t('faq.questions', {returnObjects: true}) || [];
+  const faqData = t('faq.questions', { returnObjects: true }) || [];
 
   const filteredFAQs = faqData.filter(item => {
     const matchesCategory =
@@ -96,12 +97,12 @@ const FAQScreen = ({navigation}) => {
     </TouchableOpacity>
   );
 
-  const renderFAQItem = ({item}) => {
+  const renderFAQItem = ({ item }) => {
     const isExpanded = expandedItems.has(item.id);
     const ChevronIcon = isExpanded ? ChevronUp24Regular : ChevronDown24Regular;
 
     return (
-      <View style={[styles.faqItem, {backgroundColor: theme.colors.card}]}>
+      <View style={[styles.faqItem, { backgroundColor: theme.colors.card }]}>
         <TouchableOpacity
           style={styles.questionContainer}
           onPress={() => toggleExpand(item.id)}
@@ -109,7 +110,7 @@ const FAQScreen = ({navigation}) => {
           <View
             style={[
               styles.questionHeader,
-              {flexDirection: isRTL ? 'row-reverse' : 'row'},
+              { flexDirection: isRTL ? 'row-reverse' : 'row' },
             ]}>
             <View
               style={[
@@ -121,7 +122,7 @@ const FAQScreen = ({navigation}) => {
                 },
               ]}>
               <QuestionCircle24Regular
-                style={[styles.questionIcon, {color: theme.colors.primary}]}
+                style={[styles.questionIcon, { color: theme.colors.primary }]}
               />
             </View>
             <Text
@@ -138,7 +139,7 @@ const FAQScreen = ({navigation}) => {
               {item.question}
             </Text>
             <ChevronIcon
-              style={[styles.chevronIcon, {color: theme.colors.icon}]}
+              style={[styles.chevronIcon, { color: theme.colors.icon }]}
             />
           </View>
         </TouchableOpacity>
@@ -203,17 +204,18 @@ const FAQScreen = ({navigation}) => {
   });
 
   return (
-    <SafeAreaView style={dynamicStyles.container}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.colors.surface}
-      />
+    <SafeContainer
+      style={dynamicStyles.container}
+      backgroundColor={theme.colors.background}
+      statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      statusBarBackgroundColor={theme.colors.surface}
+    >
 
       {/* Header */}
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -222,7 +224,7 @@ const FAQScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -236,7 +238,7 @@ const FAQScreen = ({navigation}) => {
           style={[
             styles.searchBar,
             dynamicStyles.searchInput,
-            {flexDirection: isRTL ? 'row-reverse' : 'row'},
+            { flexDirection: isRTL ? 'row-reverse' : 'row' },
           ]}>
           <Search24Regular
             style={[
@@ -282,7 +284,7 @@ const FAQScreen = ({navigation}) => {
       ) : (
         <View style={styles.emptyContainer}>
           <QuestionCircle24Regular
-            style={[styles.emptyIcon, {color: theme.colors.textSecondary}]}
+            style={[styles.emptyIcon, { color: theme.colors.textSecondary }]}
           />
           <Text
             style={[
@@ -296,7 +298,7 @@ const FAQScreen = ({navigation}) => {
           </Text>
         </View>
       )}
-    </SafeAreaView>
+    </SafeContainer>
   );
 };
 

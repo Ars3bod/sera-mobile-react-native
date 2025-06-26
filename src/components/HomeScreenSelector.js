@@ -10,9 +10,9 @@ const HomeScreenSelector = ({ navigation }) => {
   const { isAuthenticated, isGuestMode } = useUser();
 
   // If user is in guest mode, always use the old HomeScreen
-  if (isGuestMode && !isAuthenticated) {
-    return <ServicesScreen navigation={navigation} />;
-  }
+  // if (isGuestMode && !isAuthenticated) {
+  //   return <ServicesScreen navigation={navigation} />;
+  // }
 
   // If user is authenticated, use HomeScreenNew regardless of config
   // if (isAuthenticated) {

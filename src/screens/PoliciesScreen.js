@@ -8,42 +8,43 @@ import {
   StatusBar,
   TouchableOpacity,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import SafeContainer from '../components/SafeContainer';
 
 // Simple icon components as fallback
-const ArrowLeftIcon = ({style, ...props}) => (
-  <Text style={[{fontSize: 20, color: '#007AFF'}, style]} {...props}>
+const ArrowLeftIcon = ({ style, ...props }) => (
+  <Text style={[{ fontSize: 20, color: '#007AFF' }, style]} {...props}>
     ←
   </Text>
 );
 
-const ChevronRightIcon = ({style, ...props}) => (
-  <Text style={[{fontSize: 16, color: '#999'}, style]} {...props}>
+const ChevronRightIcon = ({ style, ...props }) => (
+  <Text style={[{ fontSize: 16, color: '#999' }, style]} {...props}>
     →
   </Text>
 );
 
-const ShieldIcon = ({style, ...props}) => (
-  <Text style={[{fontSize: 20}, style]} {...props}>
+const ShieldIcon = ({ style, ...props }) => (
+  <Text style={[{ fontSize: 20 }, style]} {...props}>
     🛡️
   </Text>
 );
 
-const DocumentIcon = ({style, ...props}) => (
-  <Text style={[{fontSize: 20}, style]} {...props}>
+const DocumentIcon = ({ style, ...props }) => (
+  <Text style={[{ fontSize: 20 }, style]} {...props}>
     📄
   </Text>
 );
 
-const LockIcon = ({style, ...props}) => (
-  <Text style={[{fontSize: 20}, style]} {...props}>
+const LockIcon = ({ style, ...props }) => (
+  <Text style={[{ fontSize: 20 }, style]} {...props}>
     🔒
   </Text>
 );
 
-const GlobeIcon = ({style, ...props}) => (
-  <Text style={[{fontSize: 20}, style]} {...props}>
+const GlobeIcon = ({ style, ...props }) => (
+  <Text style={[{ fontSize: 20 }, style]} {...props}>
     🌐
   </Text>
 );
@@ -74,9 +75,9 @@ try {
   ChevronRight24Regular = ChevronRightIcon;
 }
 
-const PoliciesScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+const PoliciesScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const isRTL = i18n.language === 'ar';
 
   const handleGoBack = () => {
@@ -127,13 +128,13 @@ const PoliciesScreen = ({navigation}) => {
     return (
       <TouchableOpacity
         key={policy.titleKey}
-        style={[styles.policyItem, {backgroundColor: theme.colors.card}]}
+        style={[styles.policyItem, { backgroundColor: theme.colors.card }]}
         onPress={policy.onPress}
         activeOpacity={0.7}>
         <View
           style={[
             styles.policyContent,
-            {flexDirection: isRTL ? 'row-reverse' : 'row'},
+            { flexDirection: isRTL ? 'row-reverse' : 'row' },
           ]}>
           <View
             style={[
@@ -144,7 +145,7 @@ const PoliciesScreen = ({navigation}) => {
                 marginLeft: isRTL ? 16 : 0,
               },
             ]}>
-            <IconComponent style={[styles.policyIcon, {color: policy.color}]} />
+            <IconComponent style={[styles.policyIcon, { color: policy.color }]} />
           </View>
           <View
             style={[
@@ -180,7 +181,7 @@ const PoliciesScreen = ({navigation}) => {
             style={[
               styles.chevronIcon,
               {
-                transform: [{scaleX: isRTL ? -1 : 1}],
+                transform: [{ scaleX: isRTL ? -1 : 1 }],
                 color: theme.colors.icon,
               },
             ]}
@@ -220,17 +221,18 @@ const PoliciesScreen = ({navigation}) => {
   });
 
   return (
-    <SafeAreaView style={dynamicStyles.container}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.colors.surface}
-      />
+    <SafeContainer
+      style={dynamicStyles.container}
+      backgroundColor={theme.colors.background}
+      statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      statusBarBackgroundColor={theme.colors.surface}
+    >
 
       {/* Header */}
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -239,7 +241,7 @@ const PoliciesScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -256,7 +258,7 @@ const PoliciesScreen = ({navigation}) => {
         <View
           style={[
             styles.introCard,
-            {backgroundColor: theme.colors.primary + '10'},
+            { backgroundColor: theme.colors.primary + '10' },
           ]}>
           <Text
             style={[
@@ -276,7 +278,7 @@ const PoliciesScreen = ({navigation}) => {
         </View>
 
         {/* Footer Note */}
-        <View style={[styles.footerCard, {backgroundColor: theme.colors.card}]}>
+        <View style={[styles.footerCard, { backgroundColor: theme.colors.card }]}>
           <Text
             style={[
               styles.footerTitle,
@@ -299,7 +301,7 @@ const PoliciesScreen = ({navigation}) => {
           </Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </SafeContainer>
   );
 };
 
