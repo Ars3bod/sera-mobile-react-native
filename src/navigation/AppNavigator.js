@@ -32,6 +32,7 @@ import CompensationStandardsScreen from '../screens/CompensationStandardsScreen'
 import ConsumptionTariffScreen from '../screens/ConsumptionTariffScreen';
 import ServiceDescriptionScreen from '../screens/ServiceDescriptionScreen';
 import ComplaintDetailsScreen from '../screens/ComplaintDetailsScreen';
+import SurveyScreen from '../screens/SurveyScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -294,6 +295,14 @@ export default function AppNavigator() {
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="Survey"
+        component={SurveyScreen}
         options={{
           animation: 'slide_from_right',
           animationDuration: 300,

@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useFocusEffect } from '@react-navigation/native';
 import SafeContainer from '../components/SafeContainer';
+import SurveyModal from '../components/SurveyModal';
 import {
     ArrowLeft24Regular,
     Document24Regular,
@@ -51,6 +52,7 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
     const [refreshing, setRefreshing] = useState(false);
     const [showActionToast, setShowActionToast] = useState(false);
     const [selectedAttachment, setSelectedAttachment] = useState(null);
+    const [showSurveyModal, setShowSurveyModal] = useState(false);
 
     // Load complaint details
     const loadComplaintDetails = async (showRefreshing = false) => {
@@ -544,7 +546,11 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
 
     // Handle survey
     const handleSurvey = () => {
-        if (complaint?.SurveyCode) {
+        if (complaint?.SurveyCode && complaint?.SurveyResponseId) {
+            // Open survey modal for embedded survey (comment in English)
+            setShowSurveyModal(true);
+        } else if (complaint?.SurveyCode) {
+            // Fallback: Show alert if no survey response ID (comment in English)
             Alert.alert(
                 t('complaints.details.survey.title'),
                 t('complaints.details.survey.message'),
@@ -553,7 +559,6 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                     {
                         text: t('complaints.details.survey.takeSurvey'),
                         onPress: () => {
-                            // In a real implementation, this would open the survey
                             Alert.alert(
                                 t('complaints.details.survey.thankYou'),
                                 t('complaints.details.survey.completed')
@@ -563,6 +568,16 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                 ]
             );
         }
+    };
+
+    // Handle survey completion
+    const handleSurveyComplete = (responses, action = 'completed') => {
+        if (AppConfig.development.enableDebugLogs) {
+            console.log('Survey completed:', { responses, action });
+        }
+
+        // Optionally refresh complaint details to get updated status (comment in English)
+        loadComplaintDetails(true);
     };
 
     // Format date
@@ -1144,6 +1159,17 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                 cancelText={t('common.cancel')}
                 onConfirm={handleToastConfirm}
                 onCancel={handleToastCancel}
+            />
+
+            {/* Survey Modal */}
+            <SurveyModal
+                visible={showSurveyModal}
+                onClose={() => setShowSurveyModal(false)}
+                surveyCode={complaint?.SurveyCode}
+                surveyResponseId={complaint?.SurveyResponseId}
+                onSurveyComplete={handleSurveyComplete}
+                title={t('complaints.details.survey.title')}
+                description={t('complaints.details.survey.message')}
             />
         </SafeContainer>
     );

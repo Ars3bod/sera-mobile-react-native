@@ -36,6 +36,19 @@ export const API_ENDPOINTS = {
     create: '/create',
     details: '/details',
   },
+  // Survey/Feedback
+  survey: {
+    base: '/survey',
+    getSurveyByCode: '/getsurveybycode',
+    getSurveyStatus: '/GetStatusFullSurvey',
+    updateSurveyResponse: '/updatesurveyresponse',
+    updateFullSurvey: '/surveyupdatefullsurvey',
+  },
+  // Lookup Codes
+  lookupscode: {
+    base: '/lookupscode',
+    listActionTypes: '/listactiontypes',
+  },
   // Other endpoints can be added here
 };
 

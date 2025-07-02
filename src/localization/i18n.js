@@ -853,11 +853,39 @@ const resources = {
           },
           survey: {
             title: "Feedback Survey",
+            defaultTitle: "Service Evaluation Survey",
             message: "Would you like to provide feedback about this complaint?",
             takeSurvey: "Take Survey",
             button: "Rate This Service",
             thankYou: "Thank You",
             completed: "Your feedback has been recorded",
+            loading: "Loading survey...",
+            progress: "Question {{current}} of {{total}}",
+            comment: {
+              placeholder: "Enter your comments here..."
+            },
+            buttons: {
+              skip: "Skip Survey",
+              previous: "Previous",
+              next: "Next",
+              submit: "Submit Survey"
+            },
+            completion: {
+              title: "Survey Completed",
+              message: "Thank you for your feedback! Your responses have been recorded."
+            },
+            cancel: {
+              title: "Cancel Survey",
+              message: "Are you sure you want to cancel this survey? Your progress will be lost."
+            },
+            errors: {
+              title: "Survey Error",
+              loadFailed: "Failed to load survey questions",
+              submitFailed: "Failed to submit survey responses",
+              networkError: "Network error. Please check your connection.",
+              missingParameters: "Survey parameters are missing",
+              surveyNotActive: "This survey is no longer active"
+            }
           },
           reopen: {
             title: "Reopen Complaint",
@@ -2008,11 +2036,39 @@ const resources = {
           },
           survey: {
             title: "استطلاع رأي",
+            defaultTitle: "استطلاع تقييم الخدمة",
             message: "هل تود تقديم ملاحظاتك حول هذه الشكوى؟",
             takeSurvey: "أخذ الاستطلاع",
             button: "قيم هذه الخدمة",
             thankYou: "شكراً لك",
             completed: "تم تسجيل ملاحظاتك",
+            loading: "جاري تحميل الاستطلاع...",
+            progress: "السؤال {{current}} من {{total}}",
+            comment: {
+              placeholder: "أدخل تعليقاتك هنا..."
+            },
+            buttons: {
+              skip: "تخطي الاستطلاع",
+              previous: "السابق",
+              next: "التالي",
+              submit: "إرسال الاستطلاع"
+            },
+            completion: {
+              title: "تم إكمال الاستطلاع",
+              message: "شكراً لك على ملاحظاتك! تم تسجيل إجاباتك."
+            },
+            cancel: {
+              title: "إلغاء الاستطلاع",
+              message: "هل أنت متأكد من رغبتك في إلغاء هذا الاستطلاع؟ سيتم فقدان تقدمك."
+            },
+            errors: {
+              title: "خطأ في الاستطلاع",
+              loadFailed: "فشل في تحميل أسئلة الاستطلاع",
+              submitFailed: "فشل في إرسال إجابات الاستطلاع",
+              networkError: "خطأ في الشبكة. يرجى التحقق من اتصالك.",
+              missingParameters: "معاملات الاستطلاع مفقودة",
+              surveyNotActive: "هذا الاستطلاع لم يعد نشطاً"
+            }
           },
           reopen: {
             title: "إعادة فتح الشكوى",
