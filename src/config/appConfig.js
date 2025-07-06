@@ -68,7 +68,7 @@ const AppConfig = {
       permits: false, // Permits viewing and management
       nafath: false,
       validateContact: false,
-      survey: false, // Survey system (use true for mock data) - temporarily enabled for debugging
+      survey: false, // Survey system (use true for mock data) - API fixed, using real endpoints
     },
 
 

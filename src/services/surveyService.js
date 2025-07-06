@@ -232,12 +232,55 @@ class SurveyService {
         try {
             const url = `${this.baseUrl}/survey/updatesurveyresponse`;
 
-            if (AppConfig.development.enableDebugLogs) {
-                console.log('Updating survey response with URL:', url);
-                console.log('Survey response data:', surveyResponseData);
+            // Validate input data (comment in English)
+            if (!surveyResponseData) {
+                throw new Error('Survey response data is required');
             }
 
-            const response = await axios.post(url, surveyResponseData, {
+            if (!surveyResponseData.surveyResponseId) {
+                throw new Error('Survey response ID is required');
+            }
+
+            if (!surveyResponseData.surveyCode) {
+                throw new Error('Survey code is required');
+            }
+
+            if (!surveyResponseData.actionType) {
+                throw new Error('Action type is required');
+            }
+
+            // Ensure action types are loaded for GUID lookup (comment in English)
+            if (!this.cachedActionTypes) {
+                try {
+                    await this.getActionTypes();
+                } catch (error) {
+                    if (AppConfig.development.enableDebugLogs) {
+                        console.warn('Failed to load action types, using fallback GUIDs:', error.message);
+                    }
+                }
+            }
+
+            const actionTypeGuid = this.getActionTypeGuid(surveyResponseData.actionType);
+
+            // Correct payload format based on documentation (comment in English)
+            // First encoding: Convert survey data to JSON
+            const surveyDataJson = JSON.stringify(surveyResponseData.surveyData || {});
+            // Second encoding: Escape and encode again for safe transmission
+            const doubleEncodedJson = JSON.stringify(this.escapeDoubleQuotes(surveyDataJson));
+
+            const payload = {
+                json: doubleEncodedJson,                           // Double-encoded survey data
+                actionType: actionTypeGuid,                        // Action type GUID
+                surveyResponse: surveyResponseData.surveyResponseId // Survey response ID
+            };
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('Updating survey response with URL:', url);
+                console.log('Original survey response data:', surveyResponseData);
+                console.log('Formatted payload:', payload);
+            }
+
+            const response = await axios.post(url, payload, {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -263,6 +306,8 @@ class SurveyService {
         } catch (error) {
             if (AppConfig.development.enableDebugLogs) {
                 console.error('Update survey response error:', error);
+                console.error('Error response:', error.response?.data);
+                console.error('Error status:', error.response?.status);
             }
 
             if (error.response) {
@@ -289,12 +334,36 @@ class SurveyService {
         try {
             const url = `${this.baseUrl}/survey/surveyupdatefullsurvey`;
 
-            if (AppConfig.development.enableDebugLogs) {
-                console.log('Updating full survey with URL:', url);
-                console.log('Full survey data:', fullSurveyData);
+            // Ensure action types are loaded for GUID lookup (comment in English)
+            if (!this.cachedActionTypes) {
+                try {
+                    await this.getActionTypes();
+                } catch (error) {
+                    if (AppConfig.development.enableDebugLogs) {
+                        console.warn('Failed to load action types, using fallback GUIDs:', error.message);
+                    }
+                }
             }
 
-            const response = await axios.post(url, fullSurveyData, {
+            // Correct payload format for full survey based on documentation (comment in English)
+            // First encoding: Convert survey data to JSON
+            const surveyDataJson = JSON.stringify(fullSurveyData.surveyData || {});
+            // Second encoding: Escape and encode again for safe transmission
+            const doubleEncodedJson = JSON.stringify(this.escapeDoubleQuotes(surveyDataJson));
+
+            const payload = {
+                json: doubleEncodedJson,                        // Double-encoded survey data
+                actionType: this.getActionTypeGuid(fullSurveyData.actionType), // Action type GUID
+                surveyResponse: fullSurveyData.invitationNumber // Survey response/invitation number
+            };
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('Updating full survey with URL:', url);
+                console.log('Original full survey data:', fullSurveyData);
+                console.log('Formatted payload:', payload);
+            }
+
+            const response = await axios.post(url, payload, {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -320,6 +389,8 @@ class SurveyService {
         } catch (error) {
             if (AppConfig.development.enableDebugLogs) {
                 console.error('Update full survey error:', error);
+                console.error('Error response:', error.response?.data);
+                console.error('Error status:', error.response?.status);
             }
 
             if (error.response) {
@@ -369,6 +440,9 @@ class SurveyService {
                     response.data.result ||
                     response.data.data ||
                     (Array.isArray(response.data) ? response.data : []);
+
+                // Cache action types for GUID lookup (comment in English)
+                this.cacheActionTypes(actionTypes);
 
                 return {
                     success: true,
@@ -650,11 +724,76 @@ class SurveyService {
     }
 
     /**
+ * Convert action type string to GUID (comment in English)
+ * @param {string} actionType - Action type string
+ * @returns {string} Action type GUID
+ */
+    getActionTypeGuid(actionType) {
+        // Validate input (comment in English)
+        if (!actionType) {
+            throw new Error('Action type is required');
+        }
+
+        // Check if we have cached action types with GUIDs
+        if (this.cachedActionTypes && this.cachedActionTypes.length > 0) {
+            const actionTypeData = this.cachedActionTypes.find(at =>
+                at.ntw_name === actionType || at.value === actionType || at.key === actionType.toLowerCase()
+            );
+            if (actionTypeData && actionTypeData.ntw_actiontypeid) {
+                return actionTypeData.ntw_actiontypeid;
+            }
+        }
+
+        // Fallback GUID mapping for common action types (comment in English)
+        const actionTypeGuidMap = {
+            'Confirmed': '00000000-0000-0000-0000-000000000001',
+            'Rejected': '00000000-0000-0000-0000-000000000002',
+            'Cancelled': '00000000-0000-0000-0000-000000000003',
+            'New Confirm': '00000000-0000-0000-0000-000000000004'
+        };
+
+        return actionTypeGuidMap[actionType] || actionTypeGuidMap['Confirmed'];
+    }
+
+    /**
+     * Cache action types for GUID lookup (comment in English)
+     * @param {Array} actionTypes - Action types from API
+     */
+    cacheActionTypes(actionTypes) {
+        this.cachedActionTypes = actionTypes;
+    }
+
+    /**
+     * Escape double quotes in JSON strings (comment in English)
+     * @param {string} input - Input string to escape
+     * @returns {string} Escaped string
+     */
+    escapeDoubleQuotes(input) {
+        return input.replace(/"/g, '\\"');
+    }
+
+    /**
      * Main method to update survey response (with mock fallback)
      * @param {Object} surveyResponseData - Survey response data
      * @returns {Promise<Object>} Update response
      */
     async updateSurveyResponseSafely(surveyResponseData) {
+        if (AppConfig.development.enableDebugLogs) {
+            console.log('=== Survey Response Update Debug ===');
+            console.log('Input data:', surveyResponseData);
+            console.log('Should use mock data:', this.shouldUseMockData());
+            console.log('Mock service config:', AppConfig.development.mockServices?.survey);
+            console.log('API useMockData:', AppConfig.api.useMockData);
+        }
+
+        // Validate survey data (comment in English)
+        if (!surveyResponseData.surveyData || typeof surveyResponseData.surveyData !== 'object') {
+            if (AppConfig.development.enableDebugLogs) {
+                console.warn('Survey data is empty or invalid, using empty object');
+            }
+            surveyResponseData.surveyData = {};
+        }
+
         if (this.shouldUseMockData()) {
             if (AppConfig.development.enableDebugLogs) {
                 console.log('Using mock survey response update for:', surveyResponseData);
@@ -674,7 +813,8 @@ class SurveyService {
             return await this.updateSurveyResponse(surveyResponseData);
         } catch (error) {
             if (AppConfig.development.enableDebugLogs) {
-                console.warn('Survey update API failed, using mock success response:', error.message);
+                console.error('Survey API Error:', error.message);
+                console.warn('Using mock success response as fallback');
             }
 
             // Fallback to mock success response if API fails (comment in English)
@@ -685,7 +825,12 @@ class SurveyService {
                 fallbackUsed: true,
                 responseId: `FALLBACK-${Date.now()}`,
                 timestamp: new Date().toISOString(),
-                originalError: error.message
+                originalError: error.message,
+                apiErrorDetails: {
+                    status: error.response?.status,
+                    statusText: error.response?.statusText,
+                    data: error.response?.data
+                }
             };
         }
     }

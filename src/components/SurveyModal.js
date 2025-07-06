@@ -163,6 +163,35 @@ const SurveyModal = ({
         setSubmitting(true);
 
         try {
+            // Validate required fields before submission (comment in English)
+            if (!surveyResponseId) {
+                throw new Error('Survey response ID is missing');
+            }
+
+            if (!surveyCode) {
+                throw new Error('Survey code is missing');
+            }
+
+            // Check if required questions are answered (comment in English)
+            if (!isCurrentPageValid()) {
+                const currentQuestions = surveyData.questions.slice(currentPage, currentPage + 1);
+                const missingQuestions = currentQuestions.filter(question => {
+                    if (!question.isRequired) return false;
+                    const response = responses[question.name];
+                    return response === undefined || response === null || response === '';
+                });
+
+                if (missingQuestions.length > 0) {
+                    const questionTitles = missingQuestions.map(q => {
+                        const title = typeof q.title === 'object'
+                            ? q.title[i18n.language] || q.title.en
+                            : q.title;
+                        return title;
+                    }).join(', ');
+                    throw new Error(`Please answer the following required questions: ${questionTitles}`);
+                }
+            }
+
             const actionType = actionTypes.find(type => type.key === 'confirmed')?.value || 'Confirmed';
 
             const surveyResponseData = {
@@ -172,6 +201,15 @@ const SurveyModal = ({
                 surveyCode: surveyCode,
                 completedAt: new Date().toISOString()
             };
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('=== Survey Modal Submit Debug ===');
+                console.log('Survey Response ID:', surveyResponseId);
+                console.log('Survey Code:', surveyCode);
+                console.log('Action Type:', actionType);
+                console.log('Responses:', responses);
+                console.log('Survey Response Data:', surveyResponseData);
+            }
 
             const response = await surveyService.updateSurveyResponseSafely(surveyResponseData);
 
