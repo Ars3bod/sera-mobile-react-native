@@ -1043,3 +1043,121 @@ This status system provides a comprehensive workflow for complaint management fr
 }
 ```
 
+# Complete Survey System Logic
+
+## 1. Survey Architecture Overview
+
+The survey system uses the **SurveyJS**  and integrates with a backend API system. The system supports both:
+
+- **Standalone surveys** 
+- **Embedded surveys** 
+
+---
+
+## 2. Core API Endpoints
+
+// Get Survey Questions
+GET: https://eservicesapiflux.sera.gov.sa/survey/getsurveybycode?SurveyCode={code}
+
+// Get Survey Status
+GET: https://eservicesapiflux.sera.gov.sa/survey/GetStatusFullSurvey?InvitationNumber={number}
+
+// Update Survey Response (for embedded surveys)
+POST: https://eservicesapiflux.sera.gov.sa/survey/updatesurveyresponse
+
+// Update Full Survey (for standalone surveys)
+POST: https://eservicesapiflux.sera.gov.sa/survey/surveyupdatefullsurvey
+
+// Get Action Types
+GET: https://eservicesapiflux.sera.gov.sa/lookupscode/listactiontypes
+
+
+
+---
+
+## 3. Survey Flow Types
+
+### A. Embedded Surveys (In-App)
+
+These appear as **modals** within the main application.
+
+#### Trigger Points:
+
+- After successful complaint submission 
+- After successful inquiry submission 
+- During complaint processing 
+- In inquiry results 
+
+#### Flow:
+
+1. **Survey Response ID Generation**: When a complaint/inquiry is created, the backend returns a `surveyResponseId`
+2. **Action Types Fetching**: System fetches available action types (Confirmed, Rejected, Cancelled, etc.)
+3. **Survey Questions Loading**: Fetches survey JSON metadata using `SurveyCode`
+4. **User Interaction**: User fills out the survey
+5. **Submission**: On completion, sends data with appropriate action type
+
+---
+
+### B. Standalone Surveys (External)
+
+Accessed via direct **URL** with parameters.
+
+#### URL Structure:
+
+Apply to :
+/survey?SurveyCode={code}&InvitationNumber={number}
+
+
+Flow:
+Status Validation: Checks if survey is active using InvitationNumber
+Questions Loading: Fetches survey questions if active
+Real-time Updates: Saves progress on each page change
+Final Submission: Sends completed survey data
+4. Action Types System
+The system uses predefined action types to track survey states:
+// Common Action Types
+- "Confirmed": User completed survey positively
+- "Rejected": User declined to take survey  
+- "Cancelled": User started but didn't complete
+- "New Confirm": User is progressing through survey
+
+6. Integration Points
+Complaint Flow:
+User submits complaint → Backend creates case + survey response
+Success modal shows → User chooses to evaluate or decline
+If evaluate → Opens EvaluationForm modal with survey
+Survey completion → Updates survey response with results
+Inquiry Flow:
+User submits inquiry → Backend creates inquiry + survey response
+Success modal shows → User chooses to evaluate or decline
+If evaluate → Opens InquiryEvaluationForm modal
+Survey completion → Updates survey response with results
+7. Survey States & Error Handling
+States:
+isActive: Whether survey can be taken (statecode === 0)
+initialDataLoaded: Whether initial data has been fetched
+error: Error state for failed API calls
+Error Scenarios:
+No invitation number provided
+Survey not found or inactive
+API connection failures
+Invalid survey response ID
+8. UI Components
+Survey Components:
+Survey from survey-react-ui: Main survey renderer
+Model from survey-core: Survey data model
+Custom styling via SurveyAppSass.scss
+Modal Integration:
+Bootstrap modals for embedded surveys
+Custom success/error messages
+Loading states and animations
+9. Survey Codes
+Different survey types use specific codes:
+SURV-1001: Complaint evaluation survey
+SURV-1002: Inquiry evaluation survey
+Dynamic codes for other survey types
+10. Real-time Features
+Progress Saving:
+Saves survey progress on each page change
+Uses "New Confirm" action type for partial saves
+Prevents data loss if user navigates away

@@ -32,6 +32,7 @@ import CompensationStandardsScreen from '../screens/CompensationStandardsScreen'
 import ConsumptionTariffScreen from '../screens/ConsumptionTariffScreen';
 import ServiceDescriptionScreen from '../screens/ServiceDescriptionScreen';
 import ComplaintDetailsScreen from '../screens/ComplaintDetailsScreen';
+import ComplaintCommentScreen from '../screens/ComplaintCommentScreen';
 import SurveyScreen from '../screens/SurveyScreen';
 
 const Stack = createNativeStackNavigator();
@@ -223,6 +224,14 @@ export default function AppNavigator() {
       <Stack.Screen
         name="ComplaintDetails"
         component={ComplaintDetailsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ComplaintComment"
+        component={ComplaintCommentScreen}
         options={{
           animation: 'slide_from_right',
           animationDuration: 300,

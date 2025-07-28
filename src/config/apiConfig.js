@@ -35,6 +35,9 @@ export const API_ENDPOINTS = {
     search: '/casesearch',
     create: '/create',
     details: '/details',
+    addComment: '/addcomment',
+    getComments: '/getcomments',
+    markResultRead: '/markresultread',
   },
   // Survey/Feedback
   survey: {

@@ -69,6 +69,7 @@ const AppConfig = {
       nafath: false,
       validateContact: false,
       survey: false, // Survey system (use true for mock data) - API fixed, using real endpoints
+      comments: true, // Comment system (use true for mock data during development)
     },
 
 

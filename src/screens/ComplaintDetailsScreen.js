@@ -1108,6 +1108,22 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                     renderComments()
                 )}
 
+                {/* Add Comment Button */}
+                <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
+                    <TouchableOpacity
+                        style={[styles.commentButton, { backgroundColor: theme.colors.secondary }]}
+                        onPress={() => navigation.navigate('ComplaintComment', {
+                            caseNumber: complaint?.CaseNumber,
+                            complaintTitle: complaint?.CaseType?.Value
+                        })}
+                        activeOpacity={0.7}
+                    >
+                        <Text style={[styles.commentButtonText, { color: theme.colors.onSecondary }]}>
+                            {t('comments.addComment')}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+
                 {/* Survey Section */}
                 {complaint.SurveyCode && (
                     <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
@@ -1375,6 +1391,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     reopenButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    commentButton: {
+        paddingVertical: 12,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    commentButtonText: {
         fontSize: 16,
         fontWeight: '600',
     },
