@@ -38,7 +38,7 @@ const ComplaintCommentScreen = ({ navigation, route }) => {
     const isRTL = i18n.language === 'ar';
 
     // Get parameters from route
-    const { caseNumber, complaintTitle } = route.params;
+    const { caseNumber, complaintTitle, complaintStatus, isComplaintClosed } = route.params;
 
     // State
     const [comments, setComments] = useState([]);
@@ -55,17 +55,11 @@ const ComplaintCommentScreen = ({ navigation, route }) => {
                 setLoading(true);
             }
 
-            // For development, use mock data if enabled
-            if (AppConfig.development.enableMockData) {
-                const mockComments = commentService.generateMockComments(caseNumber);
-                setComments(mockComments);
+            const response = await commentService.getComments(caseNumber);
+            if (response.success) {
+                setComments(response.comments || []);
             } else {
-                const response = await commentService.getComments(caseNumber);
-                if (response.success) {
-                    setComments(response.comments || []);
-                } else {
-                    throw new Error(response.message || 'Failed to load comments');
-                }
+                throw new Error(response.message || 'Failed to load comments');
             }
         } catch (error) {
             if (AppConfig.development.enableDebugLogs) {
@@ -102,6 +96,12 @@ const ComplaintCommentScreen = ({ navigation, route }) => {
 
     // Load comments on mount
     useEffect(() => {
+        // Test service configuration first
+        const isConfigured = commentService.testServiceConfiguration();
+        if (!isConfigured) {
+            console.warn('Comment service configuration issue detected');
+        }
+
         loadComments();
     }, [caseNumber]);
 
@@ -155,12 +155,27 @@ const ComplaintCommentScreen = ({ navigation, route }) => {
                         {complaintTitle || `${t('complaints.details.caseNumber')}: ${caseNumber}`}
                     </Text>
                 </View>
-                <TouchableOpacity
-                    onPress={() => setShowAddCommentModal(true)}
-                    style={[styles.addButton, { backgroundColor: theme.colors.primary }]}
-                >
-                    <AddIcon color={theme.colors.onPrimary} />
-                </TouchableOpacity>
+                {/* Add Comment Button - Only show if complaint is not closed */}
+                {!isComplaintClosed ? (
+                    <TouchableOpacity
+                        onPress={() => setShowAddCommentModal(true)}
+                        style={[styles.addButton, { backgroundColor: theme.colors.primary }]}
+                    >
+                        <AddIcon color={theme.colors.onPrimary} />
+                    </TouchableOpacity>
+                ) : (
+                    <View style={[styles.statusIndicator, { backgroundColor: theme.colors.surface }]}>
+                        <Text style={[
+                            styles.statusText,
+                            {
+                                color: theme.colors.textSecondary,
+                                textAlign: 'center',
+                            }
+                        ]}>
+                            {t('comments.closedComplaint')}
+                        </Text>
+                    </View>
+                )}
             </View>
 
             {/* Comments List */}
@@ -241,6 +256,19 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    statusIndicator: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
+    },
+    statusText: {
+        fontSize: 10,
+        fontWeight: '500',
     },
     headerButton: {
         padding: 8,

@@ -925,6 +925,7 @@ const resources = {
         saveAttachmentMessage: 'Choose where to save {{fileName}}',
         you: 'You',
         seraTeam: 'SERA Team',
+        closedComplaint: 'Closed',
       },
       permits: {
         title: 'Permit Requests',
@@ -2140,6 +2141,7 @@ const resources = {
         saveAttachmentMessage: 'اختر مكان حفظ {{fileName}}',
         you: 'أنت',
         seraTeam: 'فريق الهيئة',
+        closedComplaint: 'مغلقة',
       },
       permits: {
         title: 'طلب التصريح',

@@ -562,6 +562,8 @@ Manages communication between users and SERA through comments and file attachmen
 }
 ```
 
+**Note**: The comment system includes comprehensive fallback mechanisms. When API endpoints return 404 errors or are unavailable, the service automatically falls back to mock data in development mode to ensure continuous functionality.
+
 ##### Upload Comment Attachment
 - **URL**: `POST /attachment/uploadattachment`
 - **Purpose**: Upload file attachments for comments

@@ -333,14 +333,46 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
       }
 
     } catch (err) {
+      if (AppConfig.development.enableDebugLogs) {
+        console.error('Error loading complaints:', err);
+      }
+
       setError(err.message);
 
-      // Fallback to mock data on error
-      const mockComplaints = MOCK_COMPLAINTS_DATA.all.filter(complaint => {
-        if (currentFilter === 'all') return true;
-        return complaint.status === currentFilter;
-      });
-      setComplaints(mockComplaints);
+      // Show error toast/alert to user instead of silently using mock data
+      Alert.alert(
+        t('common.error'),
+        err.message || t('complaints.view.loadError'),
+        [
+          {
+            text: t('common.retry'),
+            onPress: () => {
+              setError(null);
+              loadComplaints();
+            }
+          },
+          {
+            text: t('common.cancel'),
+            style: 'cancel'
+          }
+        ]
+      );
+
+      // Only use mock data if specifically configured for development
+      if (AppConfig.development.mockServices.complaints) {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Using mock data as configured for development');
+        }
+
+        const mockComplaints = MOCK_COMPLAINTS_DATA.all.filter(complaint => {
+          if (currentFilter === 'all') return true;
+          return complaint.status === currentFilter;
+        });
+        setComplaints(mockComplaints);
+      } else {
+        // Don't load any data, let the error state show
+        setComplaints([]);
+      }
     } finally {
       if (showLoading) setLoading(false);
       setRefreshing(false);

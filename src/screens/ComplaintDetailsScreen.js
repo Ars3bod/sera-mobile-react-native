@@ -633,6 +633,18 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
         }
     };
 
+    // Check if complaint is closed based on status code
+    const isComplaintClosed = (statusKey) => {
+        if (!statusKey) return false;
+
+        const statusCode = statusKey.toString();
+
+        // Status codes that indicate closed complaints
+        const closedStatusCodes = ['266990010', '266990011', '266990005'];
+
+        return closedStatusCodes.includes(statusCode);
+    };
+
     // Handle ActionToast confirm - proceed with download and share
     const handleToastConfirm = () => {
         setShowActionToast(false);
@@ -1108,21 +1120,25 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                     renderComments()
                 )}
 
-                {/* Add Comment Button */}
-                <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
-                    <TouchableOpacity
-                        style={[styles.commentButton, { backgroundColor: theme.colors.secondary }]}
-                        onPress={() => navigation.navigate('ComplaintComment', {
-                            caseNumber: complaint?.CaseNumber,
-                            complaintTitle: complaint?.CaseType?.Value
-                        })}
-                        activeOpacity={0.7}
-                    >
-                        <Text style={[styles.commentButtonText, { color: theme.colors.onSecondary }]}>
-                            {t('comments.addComment')}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+                {/* Add Comment Button - Only show if complaint is not closed */}
+                {!isComplaintClosed(complaint?.Status?.Key) && (
+                    <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
+                        <TouchableOpacity
+                            style={[styles.commentButton, { backgroundColor: theme.colors.secondary }]}
+                            onPress={() => navigation.navigate('ComplaintComment', {
+                                caseNumber: complaint?.CaseNumber,
+                                complaintTitle: complaint?.CaseType?.Value,
+                                complaintStatus: complaint?.Status?.Key,
+                                isComplaintClosed: isComplaintClosed(complaint?.Status?.Key)
+                            })}
+                            activeOpacity={0.7}
+                        >
+                            <Text style={[styles.commentButtonText, { color: theme.colors.onSecondary }]}>
+                                {t('comments.addComment')}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
 
                 {/* Survey Section */}
                 {complaint.SurveyCode && (

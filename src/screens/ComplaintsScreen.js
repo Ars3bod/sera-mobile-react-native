@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
@@ -254,14 +255,42 @@ const ComplaintsScreen = ({ navigation }) => {
         console.error('Error fetching complaints counts:', error);
       }
 
-      // Fallback to mock data counts on error
-      const counts = complaintsService.getComplaintCounts(MOCK_COMPLAINTS_DATA.all);
+      // Show error toast to user instead of silently using mock data
+      Alert.alert(
+        t('common.error'),
+        error.message || t('complaints.view.loadError'),
+        [
+          {
+            text: t('common.retry'),
+            onPress: () => fetchComplaintsCounts(false)
+          },
+          {
+            text: t('common.cancel'),
+            style: 'cancel'
+          }
+        ]
+      );
 
-      setComplaintsCounts({
-        open: counts.open,
-        closed: counts.closed,
-        total: counts.all,
-      });
+      // Only use mock data if specifically configured for development
+      if (AppConfig.development.mockServices.complaints) {
+        if (AppConfig.development.enableDebugLogs) {
+          console.log('Using mock data as configured for development');
+        }
+
+        const counts = complaintsService.getComplaintCounts(MOCK_COMPLAINTS_DATA.all);
+        setComplaintsCounts({
+          open: counts.open,
+          closed: counts.closed,
+          total: counts.all,
+        });
+      } else {
+        // Set counts to zero to show the error state
+        setComplaintsCounts({
+          open: 0,
+          closed: 0,
+          total: 0,
+        });
+      }
     } finally {
       if (showLoading) setLoading(false);
       setRefreshing(false);

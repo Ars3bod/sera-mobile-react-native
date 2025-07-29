@@ -21,7 +21,20 @@ class CommentService {
      */
     async addComment(commentData, attachments = []) {
         try {
-            const url = `${getEndpointUrl('base', '', this.environment)}/case/addcomment`;
+            // Check if mock data is enabled
+            if (AppConfig.development.mockServices.comments) {
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                return {
+                    success: true,
+                    message: 'Comment added successfully (mock)',
+                    commentId: `comment-${Date.now()}`,
+                    rawData: { mock: true },
+                };
+            }
+
+            const url = getEndpointUrl('case', 'addComment', this.environment);
 
             // Prepare request data
             const requestData = {
@@ -69,6 +82,8 @@ class CommentService {
                 console.error('Add comment error:', error);
             }
 
+            // Don't fallback silently - let errors propagate to UI for proper user notification
+
             if (error.response) {
                 throw new Error(
                     `Failed to add comment: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
@@ -89,7 +104,20 @@ class CommentService {
      */
     async getComments(caseNumber) {
         try {
-            const url = `${getEndpointUrl('base', '', this.environment)}/case/getcomments`;
+            // Check if mock data is enabled
+            if (AppConfig.development.mockServices.comments) {
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                const mockComments = this.generateMockComments(caseNumber);
+                return {
+                    success: true,
+                    comments: mockComments,
+                    rawData: { mock: true },
+                };
+            }
+
+            const url = getEndpointUrl('case', 'getComments', this.environment);
 
             const requestData = {
                 caseNumber: caseNumber,
@@ -128,6 +156,8 @@ class CommentService {
                 console.error('Get comments error:', error);
             }
 
+            // Don't fallback silently - let errors propagate to UI for proper user notification
+
             if (error.response) {
                 throw new Error(
                     `Failed to get comments: ${error.response.status} - ${error.response.data?.errorMessage || error.response.statusText
@@ -154,7 +184,21 @@ class CommentService {
      */
     async uploadCommentAttachment(attachmentData) {
         try {
-            const url = `${getEndpointUrl('base', '', this.environment)}/attachment/uploadattachment`;
+            // Check if mock data is enabled
+            if (AppConfig.development.mockServices.comments) {
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                return {
+                    success: true,
+                    message: 'File uploaded successfully (mock)',
+                    rawData: { mock: true },
+                };
+            }
+
+            // Note: Using a direct URL construction since this might be a different base path
+            const baseUrl = getEndpointUrl('case', 'getComments', this.environment).replace('/case/getcomments', '');
+            const url = `${baseUrl}/attachment/uploadattachment`;
 
             // Sanitize file name (replace spaces with underscores)
             const sanitizedFileName = attachmentData.fileName.replace(/\s+/g, '_');
@@ -204,6 +248,8 @@ class CommentService {
             if (AppConfig.development.enableDebugLogs) {
                 console.error('Upload comment attachment error:', error);
             }
+
+            // Don't fallback silently - let errors propagate to UI for proper user notification
 
             if (error.response) {
                 throw new Error(
@@ -313,6 +359,46 @@ ${attachmentDataElements}
                 isFromUser: true,
             },
         ];
+    }
+
+    /**
+     * Test method to check if comment service is properly configured
+     * @returns {boolean} True if service is configured correctly
+     */
+    testServiceConfiguration() {
+        try {
+            // Test URL construction
+            const getCommentsUrl = getEndpointUrl('case', 'getComments', this.environment);
+            const addCommentUrl = getEndpointUrl('case', 'addComment', this.environment);
+
+            if (AppConfig.development.enableDebugLogs) {
+                console.log('Comment service URLs:');
+                console.log('Get comments:', getCommentsUrl);
+                console.log('Add comment:', addCommentUrl);
+                console.log('Mock data enabled:', AppConfig.development.mockServices.comments);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Comment service configuration error:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Set the environment for API calls
+     * @param {'prod'|'flux'|'staging'} env - Environment to use
+     */
+    setEnvironment(env) {
+        this.environment = env;
+    }
+
+    /**
+     * Get current environment
+     * @returns {string} Current environment
+     */
+    getEnvironment() {
+        return this.environment;
     }
 }
 
