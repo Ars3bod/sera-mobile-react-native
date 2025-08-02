@@ -328,36 +328,36 @@ ${attachmentDataElements}
      */
     generateMockComments(caseNumber) {
         return [
-            {
-                id: 'comment-1',
-                text: 'Thank you for your complaint. We have received it and will investigate the matter.',
-                author: 'SERA Team',
-                date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-                attachments: [],
-                isFromUser: false,
-            },
-            {
-                id: 'comment-2',
-                text: 'We have contacted the service provider and requested additional information.',
-                author: 'SERA Team',
-                date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                attachments: [],
-                isFromUser: false,
-            },
-            {
-                id: 'comment-3',
-                text: 'I would like to provide additional details about the power outage duration.',
-                author: 'Customer',
-                date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-                attachments: [
-                    {
-                        name: 'additional_evidence.pdf',
-                        type: '.pdf',
-                        size: '1.2 MB',
-                    }
-                ],
-                isFromUser: true,
-            },
+            // {
+            //     id: 'comment-1',
+            //     text: 'Thank you for your complaint. We have received it and will investigate the matter.',
+            //     author: 'SERA Team',
+            //     date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            //     attachments: [],
+            //     isFromUser: false,
+            // },
+            // {
+            //     id: 'comment-2',
+            //     text: 'We have contacted the service provider and requested additional information.',
+            //     author: 'SERA Team',
+            //     date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+            //     attachments: [],
+            //     isFromUser: false,
+            // },
+            // {
+            //     id: 'comment-3',
+            //     text: 'I would like to provide additional details about the power outage duration.',
+            //     author: 'Customer',
+            //     date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            //     attachments: [
+            //         {
+            //             name: 'additional_evidence.pdf',
+            //             type: '.pdf',
+            //             size: '1.2 MB',
+            //         }
+            //     ],
+            //     isFromUser: true,
+            // },
         ];
     }
 

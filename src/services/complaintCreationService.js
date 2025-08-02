@@ -603,49 +603,49 @@ export default new ComplaintCreationService();
 
 // Mock data for fallback/testing
 export const MOCK_SERVICE_PROVIDERS = [
-  {
-    accountName: 'الشركة السعودية للكهرباء',
-    englishName: 'SEC',
-    accountid: '1eff1c6e-6fb0-ed11-bada-00155d00725a',
-    ntw_code: '01',
-  },
-  {
-    accountName: 'شركة مرافق',
-    englishName: 'MARAFEK',
-    accountid: '8bfbba8e-6fb0-ed11-bada-00155d00725a',
-    ntw_code: '02',
-  },
+  // {
+  //   accountName: 'الشركة السعودية للكهرباء',
+  //   englishName: 'SEC',
+  //   accountid: '1eff1c6e-6fb0-ed11-bada-00155d00725a',
+  //   ntw_code: '01',
+  // },
+  // {
+  //   accountName: 'شركة مرافق',
+  //   englishName: 'MARAFEK',
+  //   accountid: '8bfbba8e-6fb0-ed11-bada-00155d00725a',
+  //   ntw_code: '02',
+  // },
 ];
 
 export const MOCK_CONSUMPTION_CATEGORIES = {
-  ar: [
-    { name: 'سكني', value: 266990001 },
-    { name: 'تجاري', value: 266990000 },
-    { name: 'صناعي', value: 266990002 },
-    { name: 'حكومي', value: 266990003 },
-  ],
-  en: [
-    { name: 'Residential', value: 266990001 },
-    { name: 'Commercial', value: 266990000 },
-    { name: 'Industrial', value: 266990002 },
-    { name: 'Government', value: 266990003 },
-  ],
+  // ar: [
+  //   { name: 'سكني', value: 266990001 },
+  //   { name: 'تجاري', value: 266990000 },
+  //   { name: 'صناعي', value: 266990002 },
+  //   { name: 'حكومي', value: 266990003 },
+  // ],
+  // en: [
+  //   { name: 'Residential', value: 266990001 },
+  //   { name: 'Commercial', value: 266990000 },
+  //   { name: 'Industrial', value: 266990002 },
+  //   { name: 'Government', value: 266990003 },
+  // ],
 };
 
 export const MOCK_COMPLAINT_TYPES = [
-  {
-    caseType: 'انقطاع الخدمة الكهربائية',
-    caseTypeId: 'bb5c2eb9-57a9-ed11-bada-00155d00725a',
-    ntw_codenum: null,
-  },
-  {
-    caseType: 'الفواتير',
-    caseTypeId: '6e4ceb2d-57a9-ed11-bada-00155d00725a',
-    ntw_codenum: null,
-  },
-  {
-    caseType: 'جودة الخدمة الكهربائية',
-    caseTypeId: '825daad3-57a9-ed11-bada-00155d00725a',
-    ntw_codenum: null,
-  },
+  // {
+  //   caseType: 'انقطاع الخدمة الكهربائية',
+  //   caseTypeId: 'bb5c2eb9-57a9-ed11-bada-00155d00725a',
+  //   ntw_codenum: null,
+  // },
+  // {
+  //   caseType: 'الفواتير',
+  //   caseTypeId: '6e4ceb2d-57a9-ed11-bada-00155d00725a',
+  //   ntw_codenum: null,
+  // },
+  // {
+  //   caseType: 'جودة الخدمة الكهربائية',
+  //   caseTypeId: '825daad3-57a9-ed11-bada-00155d00725a',
+  //   ntw_codenum: null,
+  // },
 ];
