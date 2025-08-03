@@ -42,7 +42,7 @@ export default function NafathVerificationScreen({ route, navigation }) {
 
   const [transId, setTransId] = useState(initialTransId);
   const [random, setRandom] = useState(initialRandom);
-  const [remaining, setRemaining] = useState(120); // 2 minutes
+  const [remaining, setRemaining] = useState(60); // 1 minute
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [canResend, setCanResend] = useState(false);

@@ -930,6 +930,7 @@ const CreateComplaintScreen = ({ navigation }) => {
       width: 24,
       height: 24,
       color: theme.colors.primary,
+      transform: [{ scaleX: isRTL ? -1 : 1 }],
     },
     headerTitle: {
       fontSize: 24,
@@ -1004,7 +1005,7 @@ const CreateComplaintScreen = ({ navigation }) => {
           style={styles.backButton}
           onPress={handleGoBack}
           activeOpacity={0.7}>
-          <ArrowLeft24Regular />
+          <ArrowLeft24Regular style={dynamicStyles.backIcon} />
         </TouchableOpacity>
         <Text style={dynamicStyles.headerTitle}>
           {t('complaints.create.title')}

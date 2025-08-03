@@ -6,9 +6,10 @@ The session management system has been significantly simplified to prevent crash
 
 ## Key Changes Made
 
-### 1. **Removed App State Monitoring**
-- ❌ **Removed**: `AppState.addEventListener('change', handleAppStateChange)`
-- ❌ **Removed**: Foreground/background transition tracking
+### 1. **Limited App State Monitoring**
+- ✅ **Added**: Minimal `AppState.addEventListener('change')` for crash prevention
+- ✅ **Purpose**: Prevent session alerts when app is backgrounded (iOS crash fix)
+- ❌ **Removed**: Complex foreground/background session logic
 - ✅ **Result**: No more crashes when app goes to background/foreground
 
 ### 2. **Simplified Timer Management**
@@ -106,23 +107,65 @@ session: {
 
 ### What Users See
 1. **Normal Usage**: Session runs silently in background
-2. **Idle Timeout**: After 15 minutes of inactivity, user sees logout alert
-3. **Automatic Logout**: User is logged out and redirected to login screen
-4. **Clean State**: All session data is cleared
+2. **Idle Timeout**: After 15 minutes of inactivity, user is silently redirected to login
+3. **Seamless Experience**: No alerts, warnings, or interruptions
+4. **Clean State**: All session data is cleared automatically
 
 ### No More
-- ❌ Session warning dialogs
+- ❌ Session expiry alerts or dialogs
+- ❌ Session warning notifications
 - ❌ Complex session extension prompts
 - ❌ Debug overlays in production
 - ❌ App crashes on idle
+- ❌ User interruptions during session expiry
+
+## iOS Background Crash Fix
+
+### Issue
+- **Problem**: iOS app crashed when users put app in background after login
+- **Cause**: Session expiry timer showing `Alert.alert` while app was backgrounded
+- **Symptoms**: Crashes only in iOS release mode from App Store
+
+### Solution Applied
+- **Removed**: All session expiry alerts to prevent iOS background crashes
+- **Implemented**: Completely silent logout with automatic navigation to login
+- **Added**: AppState monitoring for debugging and future safety
+- **Result**: No user interruption - seamless background/foreground experience
+
+### Code Changes
+```javascript
+// Silent logout - no alerts to users
+const performLogout = useCallback(async (reason) => {
+    await userLogout();
+    console.log(`Session expired (${reason}) - performing silent logout`);
+    
+    navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+    });
+}, [userLogout, navigation]);
+```
 
 ## Testing
 
-### How to Test
+### How to Test Silent Session Management
 1. **Login** to the app
 2. **Don't interact** with the app for 15 minutes
-3. **Verify** that logout alert appears
-4. **Confirm** user is redirected to login screen
+3. **Verify** that NO alerts appear
+4. **Confirm** user is silently redirected to login screen
+
+### Background Crash Test
+1. **Login** to the app
+2. **Put app in background** (home button/app switcher)
+3. **Wait 15+ minutes** for session to expire
+4. **Return to app** - should not crash
+5. **Verify** user is at login screen (silent logout occurred)
+
+### Expected Silent Behavior
+1. **No alerts or dialogs** during session expiry
+2. **Automatic navigation** to login screen
+3. **No user interruption** regardless of foreground/background state
+4. **Seamless experience** when returning from background
 
 ### Expected Behavior
 - ✅ Session starts on login

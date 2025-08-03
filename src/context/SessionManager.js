@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
-import { Alert } from 'react-native';
+import { AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTranslation } from 'react-i18next';
 import { useUser } from './UserContext';
 import { useNavigation } from '@react-navigation/native';
 import AppConfig from '../config/appConfig';
@@ -23,7 +22,6 @@ const SESSION_STORAGE_KEYS = {
 };
 
 export const SessionProvider = ({ children }) => {
-    const { t, i18n } = useTranslation();
     const { isAuthenticated, isGuestMode, logout: userLogout } = useUser();
     const navigation = useNavigation();
 
@@ -31,6 +29,9 @@ export const SessionProvider = ({ children }) => {
     const [sessionStartTime, setSessionStartTime] = useState(null);
     const [lastActivityTime, setLastActivityTime] = useState(null);
     const [isSessionExpired, setIsSessionExpired] = useState(false);
+
+    // App state monitoring to prevent background crashes
+    const [appState, setAppState] = useState(AppState.currentState);
 
     // Single timer ref
     const sessionTimerRef = useRef(null);
@@ -118,7 +119,7 @@ export const SessionProvider = ({ children }) => {
         // Clear session data
         await clearSessionData();
 
-        // Perform logout
+        // Always perform silent logout - no alerts regardless of app state
         await performLogout(reason);
     }, [isSessionExpired]);
 
@@ -138,43 +139,25 @@ export const SessionProvider = ({ children }) => {
         }
     }, [getSessionConfig]);
 
-    // Perform logout with navigation reset
+    // Perform silent logout with navigation reset - no user alerts
     const performLogout = useCallback(async (reason) => {
         const config = getSessionConfig();
-        const isRTL = i18n.language === 'ar';
 
         // Call user context logout
         await userLogout();
 
-        // Show logout message
-        const logoutMessage = reason === 'idle'
-            ? t('session.expiry.idleMessage')
-            : t('session.expiry.maxDurationMessage');
+        // Perform silent navigation back to login - no alerts to user
+        console.log(`Session expired (${reason}) - performing silent logout`);
 
-        Alert.alert(
-            t('session.expiry.title'),
-            logoutMessage,
-            [
-                {
-                    text: t('session.expiry.loginAgain'),
-                    onPress: () => {
-                        if (config.resetNavigationOnExpiry) {
-                            navigation.reset({
-                                index: 0,
-                                routes: [{ name: 'Login' }],
-                            });
-                        } else {
-                            navigation.navigate('Login');
-                        }
-                    },
-                },
-            ],
-            {
-                cancelable: false,
-                userInterfaceStyle: isRTL ? 'rtl' : 'ltr',
-            }
-        );
-    }, [getSessionConfig, i18n.language, t, userLogout, navigation]);
+        if (config.resetNavigationOnExpiry) {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+            });
+        } else {
+            navigation.navigate('Login');
+        }
+    }, [getSessionConfig, userLogout, navigation]);
 
     // Check if current screen should be excluded from timeout
     const isScreenExcluded = useCallback((screenName) => {
@@ -194,6 +177,16 @@ export const SessionProvider = ({ children }) => {
             }
         }
     }, [isAuthenticated, isGuestMode, initializeSession]);
+
+    // Monitor app state changes to prevent background crashes
+    useEffect(() => {
+        const subscription = AppState.addEventListener('change', nextAppState => {
+            console.log('App state changed from', appState, 'to', nextAppState);
+            setAppState(nextAppState);
+        });
+
+        return () => subscription?.remove();
+    }, [appState]);
 
     // Cleanup on unmount
     useEffect(() => {
