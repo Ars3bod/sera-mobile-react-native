@@ -8,13 +8,14 @@ import {
   StyleSheet,
   Dimensions,
   ScrollView,
+  AppState,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useUser } from '../context/UserContext';
 import { pollNafathStatus, loginNafath } from '../services/nafathService';
-import { LoadingSpinner } from '../animations';
+import LoadingSpinner from '../animations/components/LoadingSpinner';
 import DeepLinkService from '../services/deepLinkService';
 import {
   ArrowLeft24Regular,
@@ -46,35 +47,53 @@ export default function NafathVerificationScreen({ route, navigation }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [canResend, setCanResend] = useState(false);
+  const [appState, setAppState] = useState(AppState.currentState);
   const timerRef = useRef();
   const pollingRef = useRef(true);
 
   const handleGoBack = () => {
     pollingRef.current = false;
+    clearInterval(timerRef.current);
     navigation.goBack();
   };
 
-  // Timer logic
+  // Timer logic - pause when app is backgrounded
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      setRemaining(prev => prev - 1);
+      // Only update timer if app is active
+      if (AppState.currentState === 'active') {
+        setRemaining(prev => prev - 1);
+      }
     }, 1000);
     return () => clearInterval(timerRef.current);
   }, []);
 
   // Polling logic with UserContext integration
   const startPolling = useCallback(() => {
+    console.log('Starting polling with pollingRef:', pollingRef.current);
     pollingRef.current = true;
     setLoading(true);
     setError(null);
 
     async function poll() {
       try {
+        // Prevent network calls when app is backgrounded to avoid iOS crashes
+        if (AppState.currentState.match(/inactive|background/)) {
+          console.log('Skipping poll - app is backgrounded');
+          pollingRef.current = false;
+          return;
+        }
+
+        console.log('Starting pollNafathStatus with shouldContinue check');
         await pollNafathStatus(
           transId,
           random,
           nationalId,
-          () => pollingRef.current,
+          () => {
+            const shouldContinue = pollingRef.current;
+            console.log('shouldContinue check:', shouldContinue, 'appState:', AppState.currentState);
+            return shouldContinue;
+          },
           authData => {
             console.log('Authentication successful with data:', authData);
 
@@ -90,14 +109,43 @@ export default function NafathVerificationScreen({ route, navigation }) {
         );
       } catch (e) {
         console.error('Polling error:', e);
-        setError(isArabic ? 'فشل في التحقق' : 'Verification failed');
-        setLoading(false);
-        setCanResend(true);
+
+        // Only show error if app is still in foreground and component is still mounted
+        if (AppState.currentState === 'active' && pollingRef.current !== false) {
+          setError(isArabic ? 'فشل في التحقق' : 'Verification failed');
+          setLoading(false);
+          setCanResend(true);
+        }
       }
     }
 
     poll();
   }, [transId, random, nationalId, navigation, isArabic, userContext]);
+
+  // Monitor app state changes to prevent background network calls
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      console.log('NafathVerification app state changed:', appState, '→', nextAppState);
+
+      if (appState.match(/inactive|background/) && nextAppState === 'active') {
+        console.log('App returned to foreground - resuming polling');
+        // Resume polling when app returns to foreground if we were polling before
+        if (loading && !error) {
+          console.log('Resuming polling after background return');
+          pollingRef.current = true;
+          startPolling();
+        }
+      } else if (nextAppState.match(/inactive|background/)) {
+        console.log('App went to background - pausing polling');
+        // Pause polling when app goes to background to prevent iOS crashes
+        pollingRef.current = false;
+      }
+
+      setAppState(nextAppState);
+    });
+
+    return () => subscription?.remove();
+  }, [appState, loading, error, startPolling]);
 
   useEffect(() => {
     startPolling();
@@ -106,9 +154,20 @@ export default function NafathVerificationScreen({ route, navigation }) {
     };
   }, [startPolling]);
 
+  // Cleanup on component unmount
+  useEffect(() => {
+    return () => {
+      pollingRef.current = false;
+      clearInterval(timerRef.current);
+      console.log('NafathVerificationScreen cleanup completed');
+    };
+  }, []);
+
   // Timer expiration
   useEffect(() => {
     if (remaining <= 0) {
+      console.log('Timer expired, stopping polling');
+      pollingRef.current = false; // Stop polling when timer expires
       setError(isArabic ? 'انتهت المهلة الزمنية' : 'Time expired');
       setLoading(false);
       setCanResend(true);
@@ -135,7 +194,10 @@ export default function NafathVerificationScreen({ route, navigation }) {
       // Restart timer
       clearInterval(timerRef.current);
       timerRef.current = setInterval(() => {
-        setRemaining(prev => prev - 1);
+        // Only update timer if app is active
+        if (AppState.currentState === 'active') {
+          setRemaining(prev => prev - 1);
+        }
       }, 1000);
     } catch (e) {
       console.error('Resend error:', e);

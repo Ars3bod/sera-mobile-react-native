@@ -89,7 +89,7 @@ android {
         applicationId "com.sera.seraapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 11
+        versionCode 14
         versionName "1.1.1"
     }
     signingConfigs {
