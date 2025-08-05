@@ -17,15 +17,27 @@ import { useUser } from '../context/UserContext';
 import { pollNafathStatus, loginNafath } from '../services/nafathService';
 import LoadingSpinner from '../animations/components/LoadingSpinner';
 import DeepLinkService from '../services/deepLinkService';
-import {
-  ArrowLeft24Regular,
-  Shield24Regular,
-  Clock24Regular,
-  Phone24Regular,
-  Refresh24Regular,
-  Info24Regular,
-  CheckmarkCircle24Regular,
-} from '@fluentui/react-native-icons';
+// Safe import for FluentUI icons with fallbacks
+let ArrowLeft24Regular, Shield24Regular, Clock24Regular, Phone24Regular, Refresh24Regular, Info24Regular, CheckmarkCircle24Regular;
+try {
+  const icons = require('@fluentui/react-native-icons');
+  ArrowLeft24Regular = icons.ArrowLeft24Regular;
+  Shield24Regular = icons.Shield24Regular;
+  Clock24Regular = icons.Clock24Regular;
+  Phone24Regular = icons.Phone24Regular;
+  Refresh24Regular = icons.Refresh24Regular || icons.ArrowClockwise24Regular || (() => <Text style={{ fontSize: 20 }}>🔄</Text>);
+  Info24Regular = icons.Info24Regular;
+  CheckmarkCircle24Regular = icons.CheckmarkCircle24Regular;
+} catch (error) {
+  // Fallback components using emoji
+  ArrowLeft24Regular = () => <Text style={{ fontSize: 20 }}>←</Text>;
+  Shield24Regular = () => <Text style={{ fontSize: 20 }}>🛡️</Text>;
+  Clock24Regular = () => <Text style={{ fontSize: 20 }}>⏰</Text>;
+  Phone24Regular = () => <Text style={{ fontSize: 20 }}>📱</Text>;
+  Refresh24Regular = () => <Text style={{ fontSize: 20 }}>🔄</Text>;
+  Info24Regular = () => <Text style={{ fontSize: 20 }}>ℹ️</Text>;
+  CheckmarkCircle24Regular = () => <Text style={{ fontSize: 20 }}>✅</Text>;
+}
 
 const { width, height } = Dimensions.get('window');
 
@@ -112,7 +124,13 @@ export default function NafathVerificationScreen({ route, navigation }) {
 
         // Only show error if app is still in foreground and component is still mounted
         if (AppState.currentState === 'active' && pollingRef.current !== false) {
-          setError(isArabic ? 'فشل في التحقق' : 'Verification failed');
+          // Handle specific error types
+          if (e.message === 'Verification expired or rejected') {
+            console.log('Verification expired or rejected - allowing user to resend');
+            setError(isArabic ? 'انتهت صلاحية التحقق أو تم رفضه' : 'Verification expired or rejected');
+          } else {
+            setError(isArabic ? 'فشل في التحقق' : 'Verification failed');
+          }
           setLoading(false);
           setCanResend(true);
         }
