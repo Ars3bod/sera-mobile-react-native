@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -11,29 +11,30 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {loginNafath} from '../services/nafathService';
-import {LoadingSpinner} from '../animations';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { loginNafath } from '../services/nafathService';
+import { LoadingSpinner } from '../animations';
 import {
   ArrowLeft24Regular,
   Person24Regular,
   Info24Regular,
 } from '@fluentui/react-native-icons';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 // You can add Nafath logo here if available
 // const nafathLogo = require('../assets/images/nafath_logo.png');
 
-export default function NafathLoginScreen({navigation, route}) {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+export default function NafathLoginScreen({ navigation, route }) {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const isArabic = i18n.language === 'ar';
   const [nationalId, setNationalId] = useState('');
   const [loading, setLoading] = useState(false);
+  const [inputError, setInputError] = useState('');
 
-  const {fromModal} = route.params || {};
+  const { fromModal } = route.params || {};
 
   const handleGoBack = () => {
     if (fromModal) {
@@ -45,7 +46,36 @@ export default function NafathLoginScreen({navigation, route}) {
     }
   };
 
+  // Input validation handler to ensure only English digits (0-9) are entered
+  const handleNationalIdChange = (text) => {
+    // Check if user tried to input non-English digits
+    const hasNonEnglishDigits = /[^0-9]/.test(text);
+
+    if (hasNonEnglishDigits) {
+      // Show error message for non-English digits
+      setInputError(
+        isArabic
+          ? 'يرجى استخدام الأرقام الإنجليزية فقط (0-9)'
+          : 'Please use English digits only (0-9)'
+      );
+
+      // Clear error after 3 seconds
+      setTimeout(() => setInputError(''), 3000);
+    } else {
+      // Clear error if input is valid
+      setInputError('');
+    }
+
+    // Filter out any non-English numeric characters
+    // Only allow digits 0-9 (ASCII 48-57)
+    const filteredText = text.replace(/[^0-9]/g, '');
+    setNationalId(filteredText);
+  };
+
   const handleContinue = async () => {
+    // Clear any existing input errors when user tries to continue
+    setInputError('');
+
     if (!nationalId) {
       Alert.alert(
         isArabic ? 'خطأ' : 'Error',
@@ -62,6 +92,17 @@ export default function NafathLoginScreen({navigation, route}) {
         isArabic
           ? 'رقم الهوية يجب أن يكون 10 أرقام'
           : 'National ID must be 10 digits',
+      );
+      return;
+    }
+
+    // Additional validation: ensure all characters are English digits
+    if (!/^\d{10}$/.test(nationalId)) {
+      Alert.alert(
+        isArabic ? 'خطأ' : 'Error',
+        isArabic
+          ? 'رقم الهوية يجب أن يحتوي على أرقام إنجليزية فقط'
+          : 'National ID must contain only English digits',
       );
       return;
     }
@@ -108,7 +149,7 @@ export default function NafathLoginScreen({navigation, route}) {
       width: 24,
       height: 24,
       color: theme.colors.primary,
-      transform: [{scaleX: isArabic ? -1 : 1}],
+      transform: [{ scaleX: isArabic ? -1 : 1 }],
     },
     headerTitle: {
       fontSize: 20,
@@ -144,7 +185,7 @@ export default function NafathLoginScreen({navigation, route}) {
       padding: 24,
       marginBottom: 24,
       shadowColor: '#000',
-      shadowOffset: {width: 0, height: 8},
+      shadowOffset: { width: 0, height: 8 },
       shadowOpacity: 0.15,
       shadowRadius: 16,
       elevation: 8,
@@ -195,13 +236,24 @@ export default function NafathLoginScreen({navigation, route}) {
       paddingVertical: 16,
       textAlign: isArabic ? 'right' : 'left',
     },
+    errorContainer: {
+      marginTop: -16,
+      marginBottom: 16,
+      paddingHorizontal: 4,
+    },
+    errorText: {
+      fontSize: 12,
+      color: '#FF3B30', // iOS red color
+      textAlign: isArabic ? 'right' : 'left',
+      fontWeight: '500',
+    },
     continueButton: {
       backgroundColor: theme.colors.primary,
       borderRadius: 16,
       paddingVertical: 18,
       alignItems: 'center',
       shadowColor: theme.colors.primary,
-      shadowOffset: {width: 0, height: 6},
+      shadowOffset: { width: 0, height: 6 },
       shadowOpacity: 0.3,
       shadowRadius: 10,
       elevation: 6,
@@ -301,7 +353,10 @@ export default function NafathLoginScreen({navigation, route}) {
             {isArabic ? 'رقم الهوية الوطنية' : 'National ID Number'}
           </Text>
 
-          <View style={dynamicStyles.inputContainer}>
+          <View style={[
+            dynamicStyles.inputContainer,
+            inputError && { borderColor: '#FF3B30' }
+          ]}>
             <Person24Regular style={dynamicStyles.inputIcon} />
             <TextInput
               style={dynamicStyles.textInput}
@@ -310,12 +365,19 @@ export default function NafathLoginScreen({navigation, route}) {
               }
               placeholderTextColor={theme.colors.textSecondary}
               value={nationalId}
-              onChangeText={setNationalId}
+              onChangeText={handleNationalIdChange}
               keyboardType="numeric"
               maxLength={10}
               autoFocus={true}
             />
           </View>
+
+          {/* Inline Error Message */}
+          {inputError ? (
+            <View style={dynamicStyles.errorContainer}>
+              <Text style={dynamicStyles.errorText}>{inputError}</Text>
+            </View>
+          ) : null}
 
           {loading ? (
             <View style={dynamicStyles.loadingContainer}>
@@ -328,7 +390,7 @@ export default function NafathLoginScreen({navigation, route}) {
               <Text
                 style={[
                   dynamicStyles.sectionDescription,
-                  {textAlign: 'center', marginTop: 12},
+                  { textAlign: 'center', marginTop: 12 },
                 ]}>
                 {isArabic ? 'جاري الاتصال بنفاذ...' : 'Connecting to Nafath...'}
               </Text>

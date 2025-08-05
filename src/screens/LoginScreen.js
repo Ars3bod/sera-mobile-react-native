@@ -221,7 +221,7 @@ export default function LoginScreen({ navigation }) {
             </Text>
             <Text style={dynamicStyles.welcomeSubtitle}>
               {isArabic
-                ? 'هيئة تنظيم الكهرباء والإنتاج المزدوج'
+                ? 'هيئة السعودية لتنظيم الكهرباء'
                 : 'Electricity & Cogeneration Regulatory Authority'}
             </Text>
           </View>
@@ -274,7 +274,7 @@ export default function LoginScreen({ navigation }) {
         <View style={dynamicStyles.footer}>
           <Text style={dynamicStyles.footerText}>
             {isArabic
-              ? '© 2025 هيئة تنظيم الكهرباء والإنتاج المزدوج\nالمملكة العربية السعودية'
+              ? '© 2025 هيئة تنظيم الكهرباء\nالمملكة العربية السعودية'
               : '© 2025 Electricity & Cogeneration Regulatory Authority\nKingdom of Saudi Arabia'}
           </Text>
         </View>

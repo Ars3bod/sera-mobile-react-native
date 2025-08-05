@@ -399,7 +399,7 @@ const resources = {
         },
         phone: {
           title: 'Phone',
-          number: '+966 11 461 0666',
+          number: '+966 11 201 9000',
         },
         email: {
           title: 'Email',
@@ -411,7 +411,7 @@ const resources = {
         },
         workingHours: {
           title: 'Working Hours',
-          schedule: 'Sunday - Thursday: 8:00 AM - 4:00 PM',
+          schedule: 'Sunday - Thursday: 7:00 AM - 3:00 PM',
         },
       },
       news: {
@@ -1381,7 +1381,7 @@ const resources = {
         language: 'EN',
         comingSoon: 'قريباً',
         description: {
-          title: 'الخدمات الحكومية الرقمية',
+          title: 'الخدمات الرقمية',
           subtitle: 'اطلع على الخدمات الرقمية للهيئة في أي وقت ومن أي مكان. قدم طلباتك، تابع حالة المعاملات، وأدر حسابك بسهولة وأمان.',
         },
         permitRequest: {
@@ -1605,7 +1605,7 @@ const resources = {
           innovation: 'الابتكار',
         },
         establishment: {
-          title: 'تأسيس',
+          title: 'التأسيس',
           year: 'تأسست عام 2001',
           description:
             'الهيئة السعودية لتنظيم الكهرباء تأسست لتنظيم ورقابة قطاع الكهرباء في المملكة العربية السعودية.',
@@ -1621,7 +1621,7 @@ const resources = {
         },
         phone: {
           title: 'الهاتف',
-          number: '+966 11 461 0666',
+          number: '+966 11 201 9000',
         },
         email: {
           title: 'البريد الإلكتروني',
@@ -1633,7 +1633,7 @@ const resources = {
         },
         workingHours: {
           title: 'ساعات العمل',
-          schedule: 'الأحد - الخميس: من 8:00 صباعا إلى 4:00 مساء',
+          schedule: 'الأحد - الخميس: من 7:00 صباعا إلى 3:00 مساء',
         },
       },
       news: {
