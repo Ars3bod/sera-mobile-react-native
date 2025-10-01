@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Dimensions, StatusBar, Image } from 'react-native';
 import Video from 'react-native-video';
+import { useUser } from '../context/UserContext';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -15,6 +16,7 @@ const { width, height } = Dimensions.get('window');
 export default function SplashScreen({ navigation }) {
   const logoOpacity = useSharedValue(0);
   const logoScale = useSharedValue(0.8);
+  const { isAuthenticated, isLoading } = useUser();
 
   useEffect(() => {
     // Animate logo appearance
@@ -34,21 +36,43 @@ export default function SplashScreen({ navigation }) {
       }),
     );
 
-    // Navigate to Login screen after 3 seconds
-    const timer = setTimeout(() => {
+    // Check authentication and biometric status after splash animation
+    const timer = setTimeout(async () => {
       // Fade out animation before navigation
       logoOpacity.value = withTiming(0, {
-        duration: 300,
+        duration: 200,
         easing: Easing.in(Easing.cubic),
       });
 
-      setTimeout(() => {
-        navigation.replace('Login');
-      }, 300);
-    }, 2500);
+      setTimeout(async () => {
+        await handleNavigation();
+      }, 200);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [navigation]);
+
+  const handleNavigation = async (retryCount = 0) => {
+    try {
+      // Wait for user context to finish loading (max 2 seconds)
+      if (isLoading && retryCount < 20) {
+        setTimeout(() => handleNavigation(retryCount + 1), 100);
+        return;
+      }
+
+      // Check if user is already authenticated
+      if (isAuthenticated) {
+        navigation.replace('Home');
+      } else {
+        // Navigate to login screen (biometric will be handled there)
+        navigation.replace('Login');
+      }
+    } catch (error) {
+      console.log('Error in navigation:', error);
+      // Default to login screen on error
+      navigation.replace('Login');
+    }
+  };
 
   const logoAnimatedStyle = useAnimatedStyle(() => {
     return {

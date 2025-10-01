@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,13 @@ import {
   SafeAreaView,
   StatusBar,
   Switch,
-  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
+import biometricService from '../services/biometricService';
+import ActionToast from '../components/ActionToast';
+import Toast from '../components/Toast';
 import SafeContainer from '../components/SafeContainer';
 import {
   ArrowLeft24Regular,
@@ -32,19 +35,166 @@ const APP_CONFIG = {
 const SettingsScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const { theme, isDarkMode, toggleTheme } = useTheme();
+  const { isAuthenticated, user, tokens } = useUser();
   const isRTL = i18n.language === 'ar';
 
   // State for toggle settings
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricType, setBiometricType] = useState('Biometric');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Toast states
+  const [actionToastVisible, setActionToastVisible] = useState(false);
+  const [actionToastData, setActionToastData] = useState({});
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('success');
+
+  // Initialize biometric settings on component mount
+  useEffect(() => {
+    initializeBiometricSettings();
+  }, []);
+
+  // Re-initialize when authentication state changes
+  useEffect(() => {
+    if (isAuthenticated !== undefined) { // Only run when isAuthenticated is not undefined
+      initializeBiometricSettings();
+    }
+  }, [isAuthenticated]);
+
+  const initializeBiometricSettings = async () => {
+    try {
+      // Check if biometric is available on device
+      const { available, biometryType } = await biometricService.isBiometricAvailable();
+      setBiometricAvailable(available);
+
+      if (available) {
+        // Get biometric type name for UI
+        const typeName = await biometricService.getBiometricTypeName();
+        setBiometricType(typeName);
+
+        // Check if biometric is currently enabled
+        const isEnabled = await biometricService.isBiometricEnabled();
+        setBiometricEnabled(isEnabled);
+      }
+    } catch (error) {
+      console.log('Error initializing biometric settings:', error);
+    }
+  };
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
+  // Helper functions for custom toasts
+  const showActionToast = (title, message, onConfirm, onCancel, type = 'info') => {
+    setActionToastData({
+      title,
+      message,
+      onConfirm,
+      onCancel,
+      type,
+    });
+    setActionToastVisible(true);
+  };
+
+  const hideActionToast = () => {
+    setActionToastVisible(false);
+  };
+
+  const showToast = (message, type = 'success') => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastVisible(true);
+  };
+
+  const hideToast = () => {
+    setToastVisible(false);
+  };
+
   const handleLanguageChange = () => {
     const newLanguage = i18n.language === 'ar' ? 'en' : 'ar';
     i18n.changeLanguage(newLanguage);
+  };
+
+  const handleBiometricToggle = async (enabled) => {
+    // Check if user is logged in
+    if (!isAuthenticated) {
+      showToast(t('settings.biometric.loginRequired'), 'error');
+      return;
+    }
+
+    // Check if biometric is available
+    if (!biometricAvailable) {
+      showToast(t('settings.biometric.notAvailable'), 'error');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      if (enabled) {
+        // Show confirmation dialog for enabling
+        showActionToast(
+          t('settings.biometric.enableTitle'),
+          t('settings.biometric.enableMessage', { biometricType }),
+          async () => {
+            hideActionToast();
+            try {
+              // Prepare user credentials for secure storage
+              const credentials = {
+                nationalId: user?.nationalId || user?.id,
+                userId: user?.id,
+                tokens: tokens,
+                userData: user,
+                enabledAt: new Date().toISOString(),
+              };
+
+              // Enable biometric with user credentials
+              await biometricService.setBiometricEnabled(true, credentials);
+              setBiometricEnabled(true);
+
+              showToast(t('settings.biometric.enabled'), 'success');
+            } catch (error) {
+              console.log('Error enabling biometric:', error);
+              showToast(error.message || t('settings.biometric.authFailed'), 'error');
+            }
+          },
+          () => {
+            hideActionToast();
+          },
+          'info'
+        );
+      } else {
+        // Show confirmation dialog for disabling
+        showActionToast(
+          t('settings.biometric.disableTitle'),
+          t('settings.biometric.disableMessage'),
+          async () => {
+            hideActionToast();
+            try {
+              await biometricService.setBiometricEnabled(false);
+              setBiometricEnabled(false);
+
+              showToast(t('settings.biometric.disabled'), 'success');
+            } catch (error) {
+              console.log('Error disabling biometric:', error);
+              showToast(error.message || t('common.error'), 'error');
+            }
+          },
+          () => {
+            hideActionToast();
+          },
+          'warning'
+        );
+      }
+    } catch (error) {
+      console.log('Error handling biometric toggle:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleClearCache = () => {
@@ -231,103 +381,125 @@ const SettingsScreen = ({ navigation }) => {
   });
 
   return (
-    <SafeContainer
-      style={dynamicStyles.container}
-      backgroundColor={theme.colors.background}
-      statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
-      statusBarBackgroundColor={theme.colors.surface}
-    >
+    <>
+      <SafeContainer
+        style={dynamicStyles.container}
+        backgroundColor={theme.colors.background}
+        statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        statusBarBackgroundColor={theme.colors.surface}
+      >
 
-      {/* Header */}
-      <View
-        style={[
-          dynamicStyles.header,
-          { flexDirection: isRTL ? 'row-reverse' : 'row' },
-        ]}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleGoBack}
-          activeOpacity={0.7}>
-          <ArrowLeft24Regular
-            style={[
-              dynamicStyles.backIcon,
-              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
-            ]}
-          />
-        </TouchableOpacity>
-        <Text style={dynamicStyles.headerTitle}>{t('settings.title')}</Text>
-        <View style={styles.placeholderView} />
-      </View>
+        {/* Header */}
+        <View
+          style={[
+            dynamicStyles.header,
+            { flexDirection: isRTL ? 'row-reverse' : 'row' },
+          ]}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={handleGoBack}
+            activeOpacity={0.7}>
+            <ArrowLeft24Regular
+              style={[
+                dynamicStyles.backIcon,
+                { transform: [{ scaleX: isRTL ? -1 : 1 }] },
+              ]}
+            />
+          </TouchableOpacity>
+          <Text style={dynamicStyles.headerTitle}>{t('settings.title')}</Text>
+          <View style={styles.placeholderView} />
+        </View>
 
-      {/* Settings List */}
-      <ScrollView
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
-        {/* Language Setting */}
-        {renderActionSetting(
-          LocalLanguage24Regular,
-          'settings.language.title',
-          'settings.language.description',
-          handleLanguageChange,
-        )}
+        {/* Settings List */}
+        <ScrollView
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}>
+          {/* Language Setting */}
+          {renderActionSetting(
+            LocalLanguage24Regular,
+            'settings.language.title',
+            'settings.language.description',
+            handleLanguageChange,
+          )}
 
-        {/* Notifications Toggle */}
-        {renderToggleSetting(
-          Alert24Regular,
-          'settings.notifications.title',
-          'settings.notifications.description',
-          notificationsEnabled,
-          setNotificationsEnabled,
-        )}
+          {/* Notifications Toggle */}
+          {renderToggleSetting(
+            Alert24Regular,
+            'settings.notifications.title',
+            'settings.notifications.description',
+            notificationsEnabled,
+            setNotificationsEnabled,
+          )}
 
-        {/* Dark Mode Toggle */}
-        {renderToggleSetting(
-          WeatherMoon24Regular,
-          'settings.darkMode.title',
-          'settings.darkMode.description',
-          isDarkMode,
-          toggleTheme,
-        )}
+          {/* Dark Mode Toggle */}
+          {renderToggleSetting(
+            WeatherMoon24Regular,
+            'settings.darkMode.title',
+            'settings.darkMode.description',
+            isDarkMode,
+            toggleTheme,
+          )}
 
-        {/* Biometric Toggle */}
-        {/* {renderToggleSetting(
-          Fingerprint24Regular,
-          'settings.biometric.title',
-          'settings.biometric.description',
-          biometricEnabled,
-          setBiometricEnabled,
-        )} */}
+          {/* Biometric Toggle - Only show if user is authenticated and biometric is available */}
+          {isAuthenticated && biometricAvailable && renderToggleSetting(
+            Fingerprint24Regular,
+            'settings.biometric.title',
+            'settings.biometric.description',
+            biometricEnabled,
+            handleBiometricToggle,
+          )}
 
-        {/* Font Size Setting */}
-        {/* {renderActionSetting(
+          {/* Font Size Setting */}
+          {/* {renderActionSetting(
           TextFont24Regular,
           'settings.fontSize.title',
           'settings.fontSize.description',
           () => console.log('Font size pressed'),
         )} */}
 
-        {/* Clear Cache */}
-        {renderActionSetting(
-          Delete24Regular,
-          'settings.clearCache.title',
-          'settings.clearCache.description',
-          handleClearCache,
-          theme.colors.warning,
-          false,
-        )}
+          {/* Clear Cache */}
+          {renderActionSetting(
+            Delete24Regular,
+            'settings.clearCache.title',
+            'settings.clearCache.description',
+            handleClearCache,
+            theme.colors.warning,
+            false,
+          )}
 
-        {/* Logout */}
-        {renderActionSetting(
-          SignOut24Regular,
-          'settings.logout.title',
-          'settings.logout.description',
-          handleLogout,
-          theme.colors.error,
-          false,
-        )}
-      </ScrollView>
-    </SafeContainer>
+          {/* Logout */}
+          {renderActionSetting(
+            SignOut24Regular,
+            'settings.logout.title',
+            'settings.logout.description',
+            handleLogout,
+            theme.colors.error,
+            false,
+          )}
+        </ScrollView>
+      </SafeContainer>
+
+      {/* Custom Action Toast for confirmations */}
+      <ActionToast
+        visible={actionToastVisible}
+        title={actionToastData.title}
+        message={actionToastData.message}
+        onConfirm={actionToastData.onConfirm}
+        onCancel={actionToastData.onCancel}
+        confirmText={t('common.ok')}
+        cancelText={t('common.cancel')}
+        type={actionToastData.type}
+      />
+
+      {/* Custom Toast for notifications */}
+      <Toast
+        visible={toastVisible}
+        message={toastMessage}
+        type={toastType}
+        onHide={hideToast}
+      />
+    </>
   );
 };
 
