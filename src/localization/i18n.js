@@ -125,6 +125,11 @@ const resources = {
           message: 'This feature is coming soon. Stay tuned for updates!',
           okButton: 'OK',
         },
+        greeting: {
+          morning: 'Good Morning',
+          afternoon: 'Good Afternoon',
+          evening: 'Good Evening',
+        },
         homeNew: {
           lastVisit: 'Last visit',
           accountVerified: 'Account Verified',
@@ -1402,6 +1407,11 @@ const resources = {
           title: 'قريباً',
           message: 'هذه الميزة قادمة قريباً. ترقبوا التحديثات!',
           okButton: 'حسناً',
+        },
+        greeting: {
+          morning: 'صباح الخير',
+          afternoon: 'مساء الخير',
+          evening: 'مساء الخير',
         },
         homeNew: {
           lastVisit: 'آخر زيارة',

@@ -115,7 +115,7 @@ const ServiceDescriptionScreen = ({ navigation, route }) => {
             en: 'E-portal - Call Center',
             ar: 'البوابة الإلكترونية - مركز الاتصال'
         },
-        submitUrl: 'https://eservices.sera.gov.sa/Complaint-menu',
+        //submitUrl: 'https://eservices.sera.gov.sa/Complaint-menu',
         guideUrl: 'https://sera.gov.sa/-/media/wera/pdfs/e-service/electricity-services-complaint-en.pdf'
     };
 
@@ -140,11 +140,24 @@ const ServiceDescriptionScreen = ({ navigation, route }) => {
 
     const handleLinkPress = async (url) => {
         try {
-            const supported = await Linking.canOpenURL(url);
-            if (supported) {
+            // For common URL schemes, skip canOpenURL check as they're universally supported
+            // Android 11+ requires intent filters declared in AndroidManifest.xml for canOpenURL
+            const isCommonScheme = url.startsWith('http://') ||
+                url.startsWith('https://') ||
+                url.startsWith('tel:') ||
+                url.startsWith('mailto:');
+
+            if (isCommonScheme) {
+                // Directly open common URLs without checking
                 await Linking.openURL(url);
             } else {
-                console.log('Cannot open URL:', url);
+                // For other schemes, check first
+                const supported = await Linking.canOpenURL(url);
+                if (supported) {
+                    await Linking.openURL(url);
+                } else {
+                    console.log('Cannot open URL:', url);
+                }
             }
         } catch (error) {
             console.error('Error opening URL:', error);

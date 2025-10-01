@@ -44,7 +44,7 @@ import LoginRequiredModal from '../components/LoginRequiredModal';
 const ServicesScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const { theme, isDarkMode } = useTheme();
-  const { isAuthenticated, isGuestMode } = useUser();
+  const { isAuthenticated, isGuestMode, user } = useUser();
   const { updateActivity } = useSession();
   const isRTL = i18n.language === 'ar';
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
@@ -54,6 +54,22 @@ const ServicesScreen = ({ navigation }) => {
 
   // Define pre-login screens that users shouldn't navigate back to
   const preLoginScreens = ['Splash', 'Login', 'NafathLogin', 'NafathVerification'];
+
+  // Get time-based greeting from i18n
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return t('home.greeting.morning');
+    if (hour < 17) return t('home.greeting.afternoon');
+    return t('home.greeting.evening');
+  };
+
+  // Get user's first name from context
+  const getUserFirstName = () => {
+    if (user) {
+      return isRTL ? user.arFirst || 'مستخدم' : user.enFirst || 'User';
+    }
+    return isRTL ? 'مستخدم' : 'User';
+  };
 
   // Navigation restriction effect
   useEffect(() => {
@@ -429,13 +445,22 @@ const ServicesScreen = ({ navigation }) => {
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
     },
-
+    headerContent: {
+      flex: 1,
+      alignItems: isRTL ? 'flex-end' : 'flex-start',
+    },
+    greetingText: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: theme.colors.textSecondary,
+      textAlign: isRTL ? 'right' : 'left',
+      marginBottom: 4,
+    },
     headerTitle: {
       fontSize: 24,
       fontWeight: 'bold',
       color: theme.colors.primary,
-      textAlign: 'center',
-      flex: 1,
+      textAlign: isRTL ? 'right' : 'left',
     },
     // Modal styles
     modalOverlay: {
@@ -596,7 +621,14 @@ const ServicesScreen = ({ navigation }) => {
 
         {/* Header */}
         <View style={dynamicStyles.header}>
-          <Text style={dynamicStyles.headerTitle}>{t('services.title')}</Text>
+          <View style={dynamicStyles.headerContent}>
+            {isAuthenticated && (
+              <Text style={dynamicStyles.greetingText}>
+                {getGreeting()}, {getUserFirstName()}
+              </Text>
+            )}
+            <Text style={dynamicStyles.headerTitle}>{t('services.title')}</Text>
+          </View>
         </View>
 
         {/* Services Description Section */}

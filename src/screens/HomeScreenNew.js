@@ -239,11 +239,20 @@ export default function HomeScreenNew({ navigation }) {
     },
   ];
 
+  // Get time-based greeting from i18n
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return isRTL ? 'صباح الخير' : 'Good Morning';
-    if (hour < 17) return isRTL ? 'مساء الخير' : 'Good Afternoon';
-    return isRTL ? 'مساء الخير' : 'Good Evening';
+    if (hour < 12) return t('home.greeting.morning');
+    if (hour < 17) return t('home.greeting.afternoon');
+    return t('home.greeting.evening');
+  };
+
+  // Get user's first name from context
+  const getUserFirstName = () => {
+    if (user) {
+      return isRTL ? user.arFirst || 'مستخدم' : user.enFirst || 'User';
+    }
+    return isRTL ? 'مستخدم' : 'User';
   };
 
   const handleComingSoon = () => {
@@ -817,7 +826,7 @@ export default function HomeScreenNew({ navigation }) {
           {/* Welcome Card */}
           <View style={dynamicStyles.welcomeCard}>
             <Text style={dynamicStyles.greetingText}>
-              {getGreeting()}, {userData.name}
+              {getGreeting()}, {getUserFirstName()}
             </Text>
             <Text style={dynamicStyles.lastVisitText}>
               {translations.lastVisit}: {userData.lastVisit}
