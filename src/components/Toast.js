@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,16 +7,16 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import {useTheme} from '../context/ThemeContext';
+import { useTheme } from '../context/ThemeContext';
 
 const Toast = ({
   visible,
   message,
   type = 'success',
-  duration = 7000,
+  duration = 2000,
   onHide,
 }) => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const slideAnim = useRef(new Animated.Value(-100)).current;
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const Toast = ({
   const getToastColor = () => {
     switch (type) {
       case 'success':
-        return '#4CAF50';
+        return '#00623B';
       case 'error':
         return '#F44336';
       case 'warning':
@@ -72,7 +72,7 @@ const Toast = ({
             styles.toast,
             {
               backgroundColor: getToastColor(),
-              transform: [{translateY: slideAnim}],
+              transform: [{ translateY: slideAnim }],
             },
           ]}>
           <Text style={styles.toastText}>{message}</Text>

@@ -366,6 +366,9 @@ const resources = {
         clearCache: {
           title: 'Clear Cache',
           description: 'Free up storage space',
+          confirmTitle: 'Clear Cache',
+          confirmMessage: 'Are you sure you want to clear the cache? This will free up storage space.',
+          success: 'Cache cleared successfully',
         },
         logout: {
           title: 'Logout',
@@ -684,7 +687,7 @@ const resources = {
         title: 'Important Links',
         government: {
           title: 'Government Portals',
-          saudiGov: 'Saudi.gov.sa',
+          saudiGov: 'DGA',
           vision2030: 'Vision 2030',
           nationalPortal: 'National Portal',
         },
@@ -702,6 +705,42 @@ const resources = {
         },
       },
       retry: 'Retry',
+      survey: {
+        title: "Feedback Survey",
+        defaultTitle: "Service Evaluation Survey",
+        message: "Would you like to provide feedback about this complaint?",
+        takeSurvey: "Take Survey",
+        button: "Rate This Service",
+        thankYou: "Thank You",
+        completed: "Your feedback has been recorded",
+        loading: "Loading survey...",
+        progress: "Question {{current}} of {{total}}",
+        comment: {
+          placeholder: "Enter your comments here..."
+        },
+        buttons: {
+          skip: "Skip Survey",
+          previous: "Previous",
+          next: "Next",
+          submit: "Submit Survey"
+        },
+        completion: {
+          title: "Survey Completed",
+          message: "Thank you for your feedback! Your responses have been recorded."
+        },
+        cancel: {
+          title: "Cancel Survey",
+          message: "Are you sure you want to cancel this survey? Your progress will be lost."
+        },
+        errors: {
+          title: "Survey Error",
+          loadFailed: "Failed to load survey questions",
+          submitFailed: "Failed to submit survey responses",
+          networkError: "Network error. Please check your connection.",
+          missingParameters: "Survey parameters are missing",
+          surveyNotActive: "This survey is no longer active"
+        }
+      },
       complaints: {
         title: 'Complaints',
         description: 'Submit and track your complaints easily',
@@ -1539,7 +1578,7 @@ const resources = {
         },
         complaints: {
           title: 'الشكاوى',
-          description: 'تقديم ومتابعة شكاويك بسهولة',
+          description: 'تقديم ومتابعة الشكاوى الخاصة بك بسهولة',
         },
         compensationStandards: {
           title: 'معايير التعويضات',
@@ -1601,6 +1640,9 @@ const resources = {
         clearCache: {
           title: 'مسح التخزين',
           description: 'تخفيض مساحة التخزين',
+          confirmTitle: 'مسح التخزين',
+          confirmMessage: 'هل أنت متأكد أنك تريد مسح التخزين المؤقت؟ سيؤدي هذا إلى تحرير مساحة التخزين.',
+          success: 'تم مسح التخزين المؤقت بنجاح',
         },
         logout: {
           title: 'تسجيل الخروج',
@@ -1625,10 +1667,10 @@ const resources = {
         },
         values: {
           title: 'قيمنا',
-          transparency: 'الشفافية',
-          fairness: 'العدالة',
-          excellence: 'الكفاءة',
-          innovation: 'الابتكار',
+          transparency: 'الموثوقية',
+          fairness: 'حماية المستهلك',
+          excellence: 'الاستدامة',
+          innovation: 'مركزية العميل',
         },
         establishment: {
           title: 'التأسيس',
@@ -1762,7 +1804,7 @@ const resources = {
         },
         cookiePolicy: {
           title: 'سياسة الكوكيز',
-          description: 'تعرف على كيفية استخدامنا للكوكيز وتكنولوجيات مماثلة.',
+          description: 'تعرف على كيفية استخدامنا للكوكيز وتقنيات مماثلة.',
           introduction:
             'توضح سياسة الكوكيز هذه كيفية استخدامنا للكوكيز والتقنيات المماثلة عند زيارة موقعنا الإلكتروني أو استخدام خدماتنا.',
           whatAreCookies: {
@@ -1840,7 +1882,7 @@ const resources = {
             content:
               'قد نقوم بتخزين ما يسمى بملفات تعريف الارتباط "Cookies" على الجهاز الخاص بك عندما تقوم بزيارة موقعنا. حيث أن ملفات تعريف الارتباط "Cookies" هي جزء من البيانات التي تحددك كمستخدم بشكل فريد. كما يمكن استخدامها لتحسين معرفتك بهذه البوابة الإلكترونية ولفهم قاعدة مستخدم هذه البوابة على نحو أفضل.',
           },
-          lastUpdated: 'آخر تحديث: 28 أغسطس 2024',
+          lastUpdated: 'آخر تحديث: 28 أغسطس 2025',
         },
       },
       faq: {
@@ -1850,7 +1892,7 @@ const resources = {
           general: 'عام',
           services: 'الخدمات',
           billing: 'الفوترة',
-          technical: 'دعم تكنولوجي',
+          technical: 'دعم تقني',
         },
         noResults: 'لم يتم العثور على أسئلة مطابقة لبحثك.',
         questions: [
@@ -1915,7 +1957,7 @@ const resources = {
         title: 'الروابط المهمة',
         government: {
           title: 'بوابات الحكومة',
-          saudiGov: 'saudi.gov.sa',
+          saudiGov: 'هيئة الحكومة الرقمية',
           vision2030: 'رؤية 2030',
           nationalPortal: 'بوابة الموقع الوطني',
         },
@@ -1933,9 +1975,45 @@ const resources = {
         },
       },
       retry: 'إعادة المحاولة',
+      survey: {
+        title: "استطلاع رأي",
+        defaultTitle: "استطلاع تقييم الخدمة",
+        message: "هل تود تقديم ملاحظاتك حول هذه الشكوى؟",
+        takeSurvey: "أخذ الاستطلاع",
+        button: "قيم هذه الخدمة",
+        thankYou: "شكراً لك",
+        completed: "تم تسجيل ملاحظاتك",
+        loading: "جاري تحميل الاستطلاع...",
+        progress: "السؤال {{current}} من {{total}}",
+        comment: {
+          placeholder: "أدخل تعليقاتك هنا..."
+        },
+        buttons: {
+          skip: "تخطي الاستطلاع",
+          previous: "السابق",
+          next: "التالي",
+          submit: "إرسال الاستطلاع"
+        },
+        completion: {
+          title: "تم إكمال الاستطلاع",
+          message: "شكراً لك على ملاحظاتك! تم تسجيل إجاباتك."
+        },
+        cancel: {
+          title: "إلغاء الاستطلاع",
+          message: "هل أنت متأكد من رغبتك في إلغاء هذا الاستطلاع؟ سيتم فقدان تقدمك."
+        },
+        errors: {
+          title: "خطأ في الاستطلاع",
+          loadFailed: "فشل في تحميل أسئلة الاستطلاع",
+          submitFailed: "فشل في إرسال إجابات الاستطلاع",
+          networkError: "خطأ في الشبكة. يرجى التحقق من اتصالك.",
+          missingParameters: "معاملات الاستطلاع مفقودة",
+          surveyNotActive: "هذا الاستطلاع لم يعد نشطاً"
+        }
+      },
       complaints: {
         title: 'الشكاوى',
-        description: 'تقديم ومتابعة شكاويك بسهولة',
+        description: 'تقديم ومتابعة الشكاوى الخاصة بك بسهولة',
         welcomeTitle: 'مركز الشكاوى',
         welcomeDescription: 'تقديم الشكاوى ومتابعة حالتها بسهولة وشفافية',
         newComplaint: {
@@ -1944,7 +2022,7 @@ const resources = {
         },
         viewComplaints: {
           title: 'عرض الشكاوى',
-          description: 'عرض ومتابعة شكاويك الحالية',
+          description: 'عرض ومتابعة الشكاوى الخاصة بك الحالية',
         },
         filters: {
           all: 'الكل',
@@ -2002,7 +2080,7 @@ const resources = {
           loading: 'جاري التحميل...',
           noComplaints: 'لا توجد شكاوى',
           noComplaintsMessage: 'لم يتم العثور على أي شكاوى بالفلتر المحدد',
-          yourComplaints: 'شكاويك',
+          yourComplaints: 'الشكاوى الخاصة بك',
           invalidDate: 'تاريخ غير صحيح',
           priority: {
             high: 'عالية',

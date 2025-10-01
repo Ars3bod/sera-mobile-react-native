@@ -198,41 +198,38 @@ const SettingsScreen = ({ navigation }) => {
   };
 
   const handleClearCache = () => {
-    Alert.alert(
-      'Clear Cache',
-      'Are you sure you want to clear the cache? This will free up storage space.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Clear',
-          style: 'destructive',
-          onPress: () => {
-            console.log('Cache cleared');
-            // Add actual cache clearing logic here
-          },
-        },
-      ],
+    showActionToast(
+      t('settings.clearCache.confirmTitle'),
+      t('settings.clearCache.confirmMessage'),
+      () => {
+        hideActionToast();
+        // Add actual cache clearing logic here
+        console.log('Cache cleared');
+        showToast(t('settings.clearCache.success'), 'success');
+      },
+      () => {
+        hideActionToast();
+      },
+      'warning'
     );
   };
 
   const handleLogout = () => {
-    Alert.alert(
+    showActionToast(
       t('settings.logout.confirmTitle'),
       t('settings.logout.confirmMessage'),
-      [
-        { text: t('settings.logout.cancel'), style: 'cancel' },
-        {
-          text: t('settings.logout.confirm'),
-          style: 'destructive',
-          onPress: () => {
-            // Add logout logic here
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' }],
-            });
-          },
-        },
-      ],
+      () => {
+        hideActionToast();
+        // Add logout logic here
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
+      },
+      () => {
+        hideActionToast();
+      },
+      'warning'
     );
   };
 
