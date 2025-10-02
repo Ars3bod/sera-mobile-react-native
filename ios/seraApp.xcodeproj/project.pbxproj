@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		681D2E5046C40B3C7DB707D2 /* libPods-seraApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AFBE8F391B20ABB4F0057F0 /* libPods-seraApp.a */; };
+		59A73D4DAD651A8A9DB3DDF5 /* libPods-seraApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3641C7209A8C53756785716F /* libPods-seraApp.a */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8DB7ACD742F7650DB646D1C3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
@@ -19,9 +19,9 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = seraApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = seraApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = seraApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		2C0C9CC633AEDD4EF7E13B9E /* Pods-seraApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-seraApp.debug.xcconfig"; path = "Target Support Files/Pods-seraApp/Pods-seraApp.debug.xcconfig"; sourceTree = "<group>"; };
-		402098E2612BB6489D307742 /* Pods-seraApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-seraApp.release.xcconfig"; path = "Target Support Files/Pods-seraApp/Pods-seraApp.release.xcconfig"; sourceTree = "<group>"; };
-		6AFBE8F391B20ABB4F0057F0 /* libPods-seraApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-seraApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3641C7209A8C53756785716F /* libPods-seraApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-seraApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		516C9BC5F2BD6FCA15F33D7A /* Pods-seraApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-seraApp.release.xcconfig"; path = "Target Support Files/Pods-seraApp/Pods-seraApp.release.xcconfig"; sourceTree = "<group>"; };
+		64FF158F15FCF4EB04C18926 /* Pods-seraApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-seraApp.debug.xcconfig"; path = "Target Support Files/Pods-seraApp/Pods-seraApp.debug.xcconfig"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = seraApp/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = seraApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -32,7 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				681D2E5046C40B3C7DB707D2 /* libPods-seraApp.a in Frameworks */,
+				59A73D4DAD651A8A9DB3DDF5 /* libPods-seraApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,7 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				6AFBE8F391B20ABB4F0057F0 /* libPods-seraApp.a */,
+				3641C7209A8C53756785716F /* libPods-seraApp.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -92,8 +92,8 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				2C0C9CC633AEDD4EF7E13B9E /* Pods-seraApp.debug.xcconfig */,
-				402098E2612BB6489D307742 /* Pods-seraApp.release.xcconfig */,
+				64FF158F15FCF4EB04C18926 /* Pods-seraApp.debug.xcconfig */,
+				516C9BC5F2BD6FCA15F33D7A /* Pods-seraApp.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -105,13 +105,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "seraApp" */;
 			buildPhases = (
-				F5E41E9761B872F011D60530 /* [CP] Check Pods Manifest.lock */,
+				BFD293C8C2B8F1967E886263 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				7E419CA20B3759AF7833BA50 /* [CP] Embed Pods Frameworks */,
-				B76100393CECF8B9B8622B97 /* [CP] Copy Pods Resources */,
+				2FF1E40B5E6ECD882432F947 /* [CP] Embed Pods Frameworks */,
+				A1696A7EA6DD1AE6D81B1486 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -183,7 +183,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		7E419CA20B3759AF7833BA50 /* [CP] Embed Pods Frameworks */ = {
+		2FF1E40B5E6ECD882432F947 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -191,20 +191,16 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-seraApp/Pods-seraApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-seraApp/Pods-seraApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-seraApp/Pods-seraApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B76100393CECF8B9B8622B97 /* [CP] Copy Pods Resources */ = {
+		A1696A7EA6DD1AE6D81B1486 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -212,20 +208,16 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-seraApp/Pods-seraApp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-seraApp/Pods-seraApp-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-seraApp/Pods-seraApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F5E41E9761B872F011D60530 /* [CP] Check Pods Manifest.lock */ = {
+		BFD293C8C2B8F1967E886263 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -263,7 +255,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2C0C9CC633AEDD4EF7E13B9E /* Pods-seraApp.debug.xcconfig */;
+			baseConfigurationReference = 64FF158F15FCF4EB04C18926 /* Pods-seraApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -292,7 +284,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 402098E2612BB6489D307742 /* Pods-seraApp.release.xcconfig */;
+			baseConfigurationReference = 516C9BC5F2BD6FCA15F33D7A /* Pods-seraApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -386,7 +378,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -455,7 +450,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

@@ -34,6 +34,17 @@ import ServiceDescriptionScreen from '../screens/ServiceDescriptionScreen';
 import ComplaintDetailsScreen from '../screens/ComplaintDetailsScreen';
 import ComplaintCommentScreen from '../screens/ComplaintCommentScreen';
 import SurveyScreen from '../screens/SurveyScreen';
+import DataShareScreen from '../screens/DataShareScreen';
+import ViewDataShareScreen from '../screens/ViewDataShareScreen';
+import DataShareDetailsScreen from '../screens/DataShareDetailsScreen';
+import CreateDataShareScreen from '../screens/CreateDataShareScreen';
+import FOIScreen from '../screens/FOIScreen';
+import ViewFOIScreen from '../screens/ViewFOIScreen';
+import FOIDetailsScreen from '../screens/FOIDetailsScreen';
+import CreateFOIScreen from '../screens/CreateFOIScreen';
+import ChatbotScreen from '../screens/ChatbotScreen';
+import LiveChatScreen from '../screens/LiveChatScreen';
+import ForceUpdateScreen from '../screens/ForceUpdateScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -315,6 +326,95 @@ export default function AppNavigator() {
         options={{
           animation: 'slide_from_right',
           animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="DataShare"
+        component={DataShareScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ViewDataShare"
+        component={ViewDataShareScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="DataShareDetails"
+        component={DataShareDetailsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="CreateDataShare"
+        component={CreateDataShareScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="FOI"
+        component={FOIScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ViewFOI"
+        component={ViewFOIScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="FOIDetails"
+        component={FOIDetailsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="CreateFOI"
+        component={CreateFOIScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="Chatbot"
+        component={ChatbotScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="LiveChat"
+        component={LiveChatScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ForceUpdate"
+        component={ForceUpdateScreen}
+        options={{
+          animation: 'fade',
+          animationDuration: 300,
+          gestureEnabled: false,
         }}
       />
     </Stack.Navigator>

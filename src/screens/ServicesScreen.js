@@ -44,7 +44,7 @@ import LoginRequiredModal from '../components/LoginRequiredModal';
 const ServicesScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const { theme, isDarkMode } = useTheme();
-  const { isAuthenticated, isGuestMode } = useUser();
+  const { isAuthenticated, isGuestMode, user } = useUser();
   const { updateActivity } = useSession();
   const isRTL = i18n.language === 'ar';
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
@@ -54,6 +54,22 @@ const ServicesScreen = ({ navigation }) => {
 
   // Define pre-login screens that users shouldn't navigate back to
   const preLoginScreens = ['Splash', 'Login', 'NafathLogin', 'NafathVerification'];
+
+  // Get time-based greeting from i18n
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return t('home.greeting.morning');
+    if (hour < 17) return t('home.greeting.afternoon');
+    return t('home.greeting.evening');
+  };
+
+  // Get user's first name from context
+  const getUserFirstName = () => {
+    if (user) {
+      return isRTL ? user.arFirst || 'مستخدم' : user.enFirst || 'User';
+    }
+    return isRTL ? 'مستخدم' : 'User';
+  };
 
   // Navigation restriction effect
   useEffect(() => {
@@ -179,6 +195,24 @@ const ServicesScreen = ({ navigation }) => {
       isAvailable: true,
     },
     {
+      id: 4,
+      titleKey: 'services.dataSharing.title',
+      descriptionKey: 'services.dataSharing.description',
+      detailedDescriptionKey: 'services.dataSharing.detailedDescription',
+      icon: Share24Regular,
+      color: theme.colors.primary,
+      isAvailable: true,
+    },
+    {
+      id: 5,
+      titleKey: 'services.freedomOfInformation.title',
+      descriptionKey: 'services.freedomOfInformation.description',
+      detailedDescriptionKey: 'services.freedomOfInformation.detailedDescription',
+      icon: FolderOpen24Regular,
+      color: theme.colors.primary,
+      isAvailable: true,
+    },
+    {
       id: 1,
       titleKey: 'services.permitRequest.title',
       descriptionKey: 'services.permitRequest.description',
@@ -193,24 +227,6 @@ const ServicesScreen = ({ navigation }) => {
       descriptionKey: 'services.licenseIssuance.description',
       detailedDescriptionKey: 'services.licenseIssuance.detailedDescription',
       icon: Certificate24Regular,
-      color: theme.colors.primary,
-      isAvailable: false, // Coming soon
-    },
-    {
-      id: 4,
-      titleKey: 'services.dataSharing.title',
-      descriptionKey: 'services.dataSharing.description',
-      detailedDescriptionKey: 'services.dataSharing.detailedDescription',
-      icon: Share24Regular,
-      color: theme.colors.primary,
-      isAvailable: false, // Coming soon
-    },
-    {
-      id: 5,
-      titleKey: 'services.freedomOfInformation.title',
-      descriptionKey: 'services.freedomOfInformation.description',
-      detailedDescriptionKey: 'services.freedomOfInformation.detailedDescription',
-      icon: FolderOpen24Regular,
       color: theme.colors.primary,
       isAvailable: false, // Coming soon
     },
@@ -239,6 +255,20 @@ const ServicesScreen = ({ navigation }) => {
     if (service.id === 2) {
       // Complaints service
       navigation.navigate('Complaints');
+      return;
+    }
+
+    // Handle data sharing service specifically
+    if (service.id === 4) {
+      // Data Sharing service - navigate to DataShare screen
+      navigation.navigate('DataShare');
+      return;
+    }
+
+    // Handle freedom of information service specifically
+    if (service.id === 5) {
+      // Freedom of Information service - navigate to FOI screen
+      navigation.navigate('FOI');
       return;
     }
 
@@ -403,6 +433,156 @@ const ServicesScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
             )}
+            {service.id === 4 && service.isAvailable && ( // Only show for data sharing service when available
+              <TouchableOpacity
+                style={[styles.serviceDescriptionLink, { alignSelf: isRTL ? 'flex-end' : 'flex-start' }]}
+                onPress={() => {
+                  navigation.navigate('ServiceDescription', {
+                    serviceData: {
+                      id: 'dataSharing',
+                      title: {
+                        en: 'Data Sharing',
+                        ar: 'مشاركة البيانات'
+                      },
+                      description: {
+                        en: 'The service enables you to share your electricity consumption data with third parties of your choice. This allows you to grant access to your consumption information for various purposes such as financial services, energy management, or other authorized services.',
+                        ar: 'تتيح لك الخدمة مشاركة بيانات استهلاك الكهرباء الخاصة بك مع الجهات الخارجية التي تختارها. يمكنك منح حق الوصول إلى معلومات الاستهلاك الخاصة بك لأغراض متعددة مثل الخدمات المالية، إدارة الطاقة، أو الخدمات المعتمدة الأخرى.'
+                      },
+                      steps: {
+                        en: [
+                          'Choose "Data Sharing"',
+                          'Fill the request form',
+                          'Review the request',
+                          'Confirm'
+                        ],
+                        ar: [
+                          'اختر "مشاركة البيانات"',
+                          'املأ نموذج الطلب',
+                          'راجع الطلب',
+                          'ارسال الطلب'
+                        ]
+                      },
+                      requirements: {
+                        en: [
+                          'Required data details',
+                          'Legal reference'
+                        ],
+                        ar: [
+                          'تفاصيل البيانات المطلوبة',
+                          'المرجعية القانونية'
+                        ]
+                      },
+                      targetedAudience: {
+                        en: 'Consumer - Service Provider - Investor',
+                        ar: 'المستهلك - مقدم الخدمة - المستثمر'
+                      },
+                      completionPeriod: {
+                        en: 'Immediate',
+                        ar: 'فوري'
+                      },
+                      fees: {
+                        en: 'Free',
+                        ar: 'مجاني'
+                      },
+                      supportedLanguages: {
+                        en: 'Arabic-English',
+                        ar: 'العربية - الإنجليزية'
+                      },
+                      contactNumber: '19944',
+                      deliveryChannels: {
+                        en: 'E-portal',
+                        ar: 'البوابة الإلكترونية'
+                      },
+                      submitUrl: 'https://eservices.sera.gov.sa/DataSharing'
+                    }
+                  });
+                }}
+                activeOpacity={0.7}>
+                <Text style={[styles.serviceDescriptionLinkText, {
+                  color: theme.colors.primary,
+                  textAlign: isRTL ? 'right' : 'left'
+                }]}>
+                  {isRTL ? 'وصف الخدمة ←' : 'Service Description →'}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {service.id === 5 && service.isAvailable && ( // Only show for FOI service when available
+              <TouchableOpacity
+                style={[styles.serviceDescriptionLink, { alignSelf: isRTL ? 'flex-end' : 'flex-start' }]}
+                onPress={() => {
+                  navigation.navigate('ServiceDescription', {
+                    serviceData: {
+                      id: 'freedomOfInformation',
+                      title: {
+                        en: 'Freedom of Information',
+                        ar: 'حرية المعلومات'
+                      },
+                      description: {
+                        en: 'Believing in the principle of transparency and freedom of data and information circulation, SERA provides public data to all portal visitors and beneficiaries in accordance with the Freedom of Information policy issued by the National Data Management Office and in compliance with all other relevant regulatory controls.',
+                        ar: 'إيمانا بمبدأ الشفافية وحرية تداول البيانات والمعلومات توفر الهيئة السعودية لتنظيم الكهرباء البيانات العامة لجميع زوّار البوابة والمستفيدين وذلك حسب سياسة حرية المعلومات الصادرة عن مكتب إدارة البيانات الوطنية والتزماً بجميع الضوابط التنظيمية الأخرى ذات العلاقة.'
+                      },
+                      steps: {
+                        en: [
+                          'Choose "Freedom of Information"',
+                          'Fill the request form',
+                          'Submit the request',
+                          'Track your request'
+                        ],
+                        ar: [
+                          'اختر "حرية المعلومات"',
+                          'املأ نموذج الطلب',
+                          'أرسل الطلب',
+                          'تابع طلبك'
+                        ]
+                      },
+                      requirements: {
+                        en: [
+                          'Name, address and national identity',
+                          'Description of public information required',
+                          'Purpose of requesting access to public information',
+                          'Method of delivering notification'
+                        ],
+                        ar: [
+                          'الاسم والعنوان والهوية الوطنية',
+                          'وصف للمعلومات العامة المطلوبة من مقدم الطلب',
+                          'الغرض من طلب الوصول إلى المعلومات العامة',
+                          'طريقة توصيل الإشعار إلى مقدم الطلب'
+                        ]
+                      },
+                      targetedAudience: {
+                        en: 'Consumer - Service Provider - Investor',
+                        ar: 'المستهلك - مقدم الخدمة - المستثمر'
+                      },
+                      completionPeriod: {
+                        en: '30 days',
+                        ar: '30 يوم'
+                      },
+                      fees: {
+                        en: 'Free',
+                        ar: 'مجاني'
+                      },
+                      supportedLanguages: {
+                        en: 'Arabic-English',
+                        ar: 'العربية - الإنجليزية'
+                      },
+                      contactNumber: '19944',
+                      deliveryChannels: {
+                        en: 'E-portal',
+                        ar: 'البوابة الإلكترونية'
+                      },
+                      submitUrl: 'https://eservices.sera.gov.sa/FOI'
+                    }
+                  });
+                }}
+                activeOpacity={0.7}>
+                <Text style={[styles.serviceDescriptionLinkText, {
+                  color: theme.colors.primary,
+                  textAlign: isRTL ? 'right' : 'left'
+                }]}>
+                  {isRTL ? 'وصف الخدمة ←' : 'Service Description →'}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
 
           {/* Arrow Indicator */}
@@ -429,13 +609,22 @@ const ServicesScreen = ({ navigation }) => {
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
     },
-
+    headerContent: {
+      flex: 1,
+      alignItems: isRTL ? 'flex-end' : 'flex-start',
+    },
+    greetingText: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: theme.colors.textSecondary,
+      textAlign: isRTL ? 'right' : 'left',
+      marginBottom: 4,
+    },
     headerTitle: {
       fontSize: 24,
       fontWeight: 'bold',
       color: theme.colors.primary,
-      textAlign: 'center',
-      flex: 1,
+      textAlign: isRTL ? 'right' : 'left',
     },
     // Modal styles
     modalOverlay: {
@@ -596,7 +785,14 @@ const ServicesScreen = ({ navigation }) => {
 
         {/* Header */}
         <View style={dynamicStyles.header}>
-          <Text style={dynamicStyles.headerTitle}>{t('services.title')}</Text>
+          <View style={dynamicStyles.headerContent}>
+            {isAuthenticated && (
+              <Text style={dynamicStyles.greetingText}>
+                {getGreeting()}, {getUserFirstName()}
+              </Text>
+            )}
+            <Text style={dynamicStyles.headerTitle}>{t('services.title')}</Text>
+          </View>
         </View>
 
         {/* Services Description Section */}
@@ -797,6 +993,77 @@ const ServicesScreen = ({ navigation }) => {
                           },
                           submitUrl: 'https://eservices.sera.gov.sa/Complaint-menu',
                           guideUrl: 'https://sera.gov.sa/-/media/wera/pdfs/e-service/electricity-services-complaint-en.pdf'
+                        }
+                      });
+                    }}
+                    activeOpacity={0.8}>
+                    <Text style={dynamicStyles.descriptionModalButtonText}>
+                      {isRTL ? 'وصف الخدمة' : 'Service Description'}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {selectedService?.id === 4 && ( // Only show for data sharing service
+                  <TouchableOpacity
+                    style={dynamicStyles.descriptionModalButton}
+                    onPress={() => {
+                      closeDescriptionModal();
+                      navigation.navigate('ServiceDescription', {
+                        serviceData: {
+                          id: 'dataSharing',
+                          title: {
+                            en: 'Data Sharing',
+                            ar: 'مشاركة البيانات'
+                          },
+                          description: {
+                            en: 'The service enables you to share your electricity consumption data with third parties of your choice. This allows you to grant access to your consumption information for various purposes such as financial services, energy management, or other authorized services.',
+                            ar: 'تتيح لك الخدمة مشاركة بيانات استهلاك الكهرباء الخاصة بك مع الجهات الخارجية التي تختارها. يمكنك منح حق الوصول إلى معلومات الاستهلاك الخاصة بك لأغراض متعددة مثل الخدمات المالية، إدارة الطاقة، أو الخدمات المعتمدة الأخرى.'
+                          },
+                          steps: {
+                            en: [
+                              'Choose "Data Sharing"',
+                              'Fill the request form',
+                              'Review the request',
+                              'Confirm'
+                            ],
+                            ar: [
+                              'اختر "مشاركة البيانات"',
+                              'املأ نموذج الطلب',
+                              'راجع الطلب',
+                              'ارسال الطلب'
+                            ]
+                          },
+                          requirements: {
+                            en: [
+                              'Required data details',
+                              'Legal reference'
+                            ],
+                            ar: [
+                              'تفاصيل البيانات المطلوبة',
+                              'المرجعية القانونية'
+                            ]
+                          },
+                          targetedAudience: {
+                            en: 'Consumer - Service Provider - Investor',
+                            ar: 'المستهلك - مقدم الخدمة - المستثمر'
+                          },
+                          completionPeriod: {
+                            en: 'Immediate',
+                            ar: 'فوري'
+                          },
+                          fees: {
+                            en: 'Free',
+                            ar: 'مجاني'
+                          },
+                          supportedLanguages: {
+                            en: 'Arabic-English',
+                            ar: 'العربية - الإنجليزية'
+                          },
+                          contactNumber: '19944',
+                          deliveryChannels: {
+                            en: 'E-portal',
+                            ar: 'البوابة الإلكترونية'
+                          },
+                          submitUrl: 'https://eservices.sera.gov.sa/DataSharing'
                         }
                       });
                     }}

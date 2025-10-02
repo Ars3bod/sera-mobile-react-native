@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useUser } from '../context/UserContext';
+import biometricService from '../services/biometricService';
+import ActionToast from '../components/ActionToast';
+import Toast from '../components/Toast';
 import {
   Globe24Regular,
   Shield24Regular,
@@ -25,8 +28,154 @@ const { width, height } = Dimensions.get('window');
 export default function LoginScreen({ navigation }) {
   const { t, i18n } = useTranslation();
   const { theme, isDarkMode } = useTheme();
-  const { setGuestMode } = useUser();
+  const { setGuestMode, saveUserData, saveTokens } = useUser();
   const isArabic = i18n.language === 'ar';
+
+  // Biometric state
+  const [isCheckingBiometric, setIsCheckingBiometric] = useState(true);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+
+  // Toast state
+  const [actionToastVisible, setActionToastVisible] = useState(false);
+  const [actionToastData, setActionToastData] = useState({});
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState('success');
+
+  useEffect(() => {
+    // Check and trigger biometric authentication on mount
+    checkBiometricAuth();
+  }, []);
+
+  const checkBiometricAuth = async () => {
+    try {
+      // Check if biometric is enabled
+      const isBiometricEnabled = await biometricService.isBiometricEnabled();
+
+      if (isBiometricEnabled) {
+        // Check if biometric hardware is available
+        const { available } = await biometricService.isBiometricAvailable();
+
+        if (available) {
+          // Get current failed attempts
+          const attempts = await biometricService.getFailedAttempts();
+          setFailedAttempts(attempts);
+
+          // Wait a short delay then trigger biometric prompt
+          setTimeout(() => {
+            handleBiometricAuth();
+          }, 500);
+          return; // Keep loading state active while biometric is in progress
+        }
+      }
+
+      // No biometric needed, allow user interaction
+      setIsCheckingBiometric(false);
+    } catch (error) {
+      console.log('Error checking biometric auth:', error);
+      // On error, allow user to proceed with normal login
+      setIsCheckingBiometric(false);
+    }
+  };
+
+  const handleBiometricAuth = async () => {
+    try {
+      const result = await biometricService.authenticateWithBiometric(
+        t('settings.biometric.authPrompt')
+      );
+
+      if (result.success && result.credentials) {
+        // Authentication successful - restore user session
+        await restoreUserSession(result.credentials);
+
+        // Navigate to main app
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+      } else {
+        // Handle authentication failure
+        handleAuthFailure(result);
+        // Allow user to interact with login screen after biometric fails/cancels
+        setIsCheckingBiometric(false);
+      }
+    } catch (error) {
+      console.log('Biometric authentication error:', error);
+      handleAuthFailure({ success: false, error: error.message });
+      // Allow user to interact with login screen after error
+      setIsCheckingBiometric(false);
+    }
+  };
+
+  const restoreUserSession = async (credentials) => {
+    try {
+      // Restore user data and tokens
+      if (credentials.userData) {
+        await saveUserData(credentials.userData);
+      }
+
+      if (credentials.tokens) {
+        await saveTokens(credentials.tokens);
+      }
+    } catch (error) {
+      console.log('Error restoring user session:', error);
+      throw error;
+    }
+  };
+
+  const handleAuthFailure = async (result) => {
+    const newFailedAttempts = await biometricService.getFailedAttempts();
+    setFailedAttempts(newFailedAttempts);
+
+    if (result.requiresLogin || newFailedAttempts >= 3) {
+      // Too many failed attempts - disable biometric and show message
+      await biometricService.disableBiometricAfterFailure();
+      showToast(t('settings.biometric.tooManyAttempts'), 'error');
+    } else if (result.cancelled) {
+      // User cancelled - do nothing, let them use normal login
+      console.log('Biometric authentication cancelled by user');
+    } else {
+      // Authentication failed - show error with retry option
+      showActionToast(
+        t('settings.biometric.authFailed'),
+        result.error || t('settings.biometric.authFailed'),
+        () => {
+          hideActionToast();
+          handleBiometricAuth();
+        },
+        () => {
+          hideActionToast();
+        },
+        'error'
+      );
+    }
+  };
+
+  // Helper functions for custom toasts
+  const showActionToast = (title, message, onConfirm, onCancel, type = 'info') => {
+    setActionToastData({
+      title,
+      message,
+      onConfirm,
+      onCancel,
+      type,
+    });
+    setActionToastVisible(true);
+  };
+
+  const hideActionToast = () => {
+    setActionToastVisible(false);
+  };
+
+  const showToast = (message, type = 'success') => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastVisible(true);
+  };
+
+  const hideToast = () => {
+    setToastVisible(false);
+  };
 
   const toggleLanguage = () => {
     i18n.changeLanguage(isArabic ? 'en' : 'ar');
@@ -170,116 +319,148 @@ export default function LoginScreen({ navigation }) {
       height: 24,
       color: theme.colors.primary,
     },
+    loadingOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black overlay
+      zIndex: 9999,
+    },
   });
 
   return (
-    <SafeAreaView style={dynamicStyles.container}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.colors.background}
-      />
+    <>
+      <SafeAreaView style={dynamicStyles.container}>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={theme.colors.background}
+        />
 
-      {/* Background Gradient */}
-      <View style={dynamicStyles.gradientOverlay} />
+        {/* Background Gradient */}
+        <View style={dynamicStyles.gradientOverlay} />
 
-      {/* Decorative Element */}
-      <View style={dynamicStyles.decorativeElement}>
-        <Sparkle24Regular style={dynamicStyles.sparkleIcon} />
-      </View>
-
-      <ScrollView
-        style={styles.scrollContainer}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={[
-              styles.langSwitcher,
-              { alignSelf: isArabic ? 'flex-end' : 'flex-start' },
-            ]}
-            onPress={toggleLanguage}>
-            <Globe24Regular style={dynamicStyles.langIcon} />
-            <Text style={dynamicStyles.langText}>
-              {isArabic ? 'English' : 'العربية'}
-            </Text>
-          </TouchableOpacity>
+        {/* Decorative Element */}
+        <View style={dynamicStyles.decorativeElement}>
+          <Sparkle24Regular style={dynamicStyles.sparkleIcon} />
         </View>
 
-        {/* Logo Section */}
-        <View style={styles.logoSection}>
-          <Image source={logo} style={styles.logo} resizeMode="contain" />
+        <ScrollView
+          style={styles.scrollContainer}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={[
+                styles.langSwitcher,
+                { alignSelf: isArabic ? 'flex-end' : 'flex-start' },
+              ]}
+              onPress={toggleLanguage}>
+              <Globe24Regular style={dynamicStyles.langIcon} />
+              <Text style={dynamicStyles.langText}>
+                {isArabic ? 'English' : 'العربية'}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-          {/* Welcome Message */}
+          {/* Logo Section */}
+          <View style={styles.logoSection}>
+            <Image source={logo} style={styles.logo} resizeMode="contain" />
+
+            {/* Welcome Message */}
+            <View
+              style={[
+                styles.welcomeContainer,
+                { alignItems: isArabic ? 'flex-end' : 'flex-start' },
+              ]}>
+              <Text style={dynamicStyles.welcomeTitle}>
+                {isArabic ? 'مرحباً بك' : 'Welcome'}
+              </Text>
+              <Text style={dynamicStyles.welcomeSubtitle}>
+                {isArabic
+                  ? 'هيئة السعودية لتنظيم الكهرباء'
+                  : 'Electricity & Cogeneration Regulatory Authority'}
+              </Text>
+            </View>
+          </View>
+
+          {/* Login Section */}
           <View
             style={[
-              styles.welcomeContainer,
+              styles.loginSection,
               { alignItems: isArabic ? 'flex-end' : 'flex-start' },
             ]}>
-            <Text style={dynamicStyles.welcomeTitle}>
-              {isArabic ? 'مرحباً بك' : 'Welcome'}
-            </Text>
-            <Text style={dynamicStyles.welcomeSubtitle}>
+            <Text style={dynamicStyles.loginTitle}>{t('login')}</Text>
+            <Text style={dynamicStyles.loginSubtitle}>
               {isArabic
-                ? 'هيئة السعودية لتنظيم الكهرباء'
-                : 'Electricity & Cogeneration Regulatory Authority'}
+                ? 'استخدم نفاذ الوطني الموحد للدخول بأمان إلى حسابك'
+                : 'Use Nafath National Single Sign-On to securely access your account'}
+            </Text>
+
+            <TouchableOpacity
+              style={dynamicStyles.loginButton}
+              onPress={handleNafathLogin}
+              activeOpacity={0.8}>
+              <Text style={dynamicStyles.loginButtonText}>
+                {t('login_button')}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Guest Login Button */}
+            <TouchableOpacity
+              style={dynamicStyles.guestButton}
+              onPress={handleGuestLogin}
+              activeOpacity={0.8}>
+              <Text style={dynamicStyles.guestButtonText}>
+                {isArabic ? 'متابعة كضيف' : 'Continue as Guest'}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Security Badge */}
+            <View style={dynamicStyles.securityBadge}>
+              <Shield24Regular style={dynamicStyles.securityIcon} />
+              <Text style={dynamicStyles.securityText}>
+                {isArabic
+                  ? 'محمي بتقنية التشفير المتقدمة'
+                  : 'Secured with advanced encryption'}
+              </Text>
+            </View>
+          </View>
+
+          {/* Footer */}
+          <View style={dynamicStyles.footer}>
+            <Text style={dynamicStyles.footerText}>
+              {isArabic
+                ? '© 2025 هيئة تنظيم الكهرباء\nالمملكة العربية السعودية'
+                : '© 2025 Electricity & Cogeneration Regulatory Authority\nKingdom of Saudi Arabia'}
             </Text>
           </View>
-        </View>
+        </ScrollView>
 
-        {/* Login Section */}
-        <View
-          style={[
-            styles.loginSection,
-            { alignItems: isArabic ? 'flex-end' : 'flex-start' },
-          ]}>
-          <Text style={dynamicStyles.loginTitle}>{t('login')}</Text>
-          <Text style={dynamicStyles.loginSubtitle}>
-            {isArabic
-              ? 'استخدم نفاذ الوطني الموحد للدخول بأمان إلى حسابك'
-              : 'Use Nafath National Single Sign-On to securely access your account'}
-          </Text>
+        {/* Loading Overlay - Blocks interaction until biometric check is complete */}
+        {isCheckingBiometric && (
+          <View style={dynamicStyles.loadingOverlay} />
+        )}
+      </SafeAreaView>
 
-          <TouchableOpacity
-            style={dynamicStyles.loginButton}
-            onPress={handleNafathLogin}
-            activeOpacity={0.8}>
-            <Text style={dynamicStyles.loginButtonText}>
-              {t('login_button')}
-            </Text>
-          </TouchableOpacity>
+      {/* Custom Action Toast */}
+      <ActionToast
+        visible={actionToastVisible}
+        title={actionToastData.title}
+        message={actionToastData.message}
+        onConfirm={actionToastData.onConfirm}
+        onCancel={actionToastData.onCancel}
+        confirmText={t('common.retry')}
+        cancelText={t('common.cancel')}
+        type={actionToastData.type}
+      />
 
-          {/* Guest Login Button */}
-          <TouchableOpacity
-            style={dynamicStyles.guestButton}
-            onPress={handleGuestLogin}
-            activeOpacity={0.8}>
-            <Text style={dynamicStyles.guestButtonText}>
-              {isArabic ? 'متابعة كضيف' : 'Continue as Guest'}
-            </Text>
-          </TouchableOpacity>
-
-          {/* Security Badge */}
-          <View style={dynamicStyles.securityBadge}>
-            <Shield24Regular style={dynamicStyles.securityIcon} />
-            <Text style={dynamicStyles.securityText}>
-              {isArabic
-                ? 'محمي بتقنية التشفير المتقدمة'
-                : 'Secured with advanced encryption'}
-            </Text>
-          </View>
-        </View>
-
-        {/* Footer */}
-        <View style={dynamicStyles.footer}>
-          <Text style={dynamicStyles.footerText}>
-            {isArabic
-              ? '© 2025 هيئة تنظيم الكهرباء\nالمملكة العربية السعودية'
-              : '© 2025 Electricity & Cogeneration Regulatory Authority\nKingdom of Saudi Arabia'}
-          </Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      {/* Custom Toast */}
+      <Toast
+        visible={toastVisible}
+        message={toastMessage}
+        type={toastType}
+        onHide={hideToast}
+      />
+    </>
   );
 }
 

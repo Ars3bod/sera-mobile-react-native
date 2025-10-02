@@ -44,7 +44,7 @@ const ImportantLinksScreen = ({ navigation }) => {
       links: [
         {
           labelKey: 'importantLinks.government.saudiGov',
-          url: 'https://www.saudi.gov.sa',
+          url: 'https://dga.gov.sa',
         },
         {
           labelKey: 'importantLinks.government.vision2030',
@@ -82,15 +82,15 @@ const ImportantLinksScreen = ({ navigation }) => {
       links: [
         {
           labelKey: 'importantLinks.resources.regulations',
-          url: 'https://www.ecra.gov.sa/regulations',
+          url: 'https://sera.gov.sa/ar/systems-and-regulations/systems-and-regulations',
         },
         {
           labelKey: 'importantLinks.resources.reports',
-          url: 'https://www.ecra.gov.sa/reports',
+          url: 'https://sera.gov.sa/ar/media-center/agency-publications',
         },
         {
           labelKey: 'importantLinks.resources.statistics',
-          url: 'https://www.ecra.gov.sa/statistics',
+          url: 'https://sera.gov.sa/ar/knowledge-center/data-and-statistics',
         },
       ],
     },

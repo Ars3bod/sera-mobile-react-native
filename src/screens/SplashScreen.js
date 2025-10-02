@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Dimensions, StatusBar, Image } from 'react-native';
 import Video from 'react-native-video';
+import { useUser } from '../context/UserContext';
+import versionService from '../services/versionService';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -15,6 +17,9 @@ const { width, height } = Dimensions.get('window');
 export default function SplashScreen({ navigation }) {
   const logoOpacity = useSharedValue(0);
   const logoScale = useSharedValue(0.8);
+  const { isAuthenticated, isLoading } = useUser();
+  const [versionCheckComplete, setVersionCheckComplete] = useState(false);
+  const [versionInfo, setVersionInfo] = useState(null);
 
   useEffect(() => {
     // Animate logo appearance
@@ -34,21 +39,103 @@ export default function SplashScreen({ navigation }) {
       }),
     );
 
-    // Navigate to Login screen after 3 seconds
-    const timer = setTimeout(() => {
-      // Fade out animation before navigation
-      logoOpacity.value = withTiming(0, {
-        duration: 300,
-        easing: Easing.in(Easing.cubic),
-      });
+    // Check version first, then authentication
+    const checkVersionAndNavigate = async () => {
+      try {
+        // Step 1: Check version
+        const currentVersion = versionService.getCurrentVersion();
+        const versionCheck = await versionService.checkVersion(currentVersion);
 
-      setTimeout(() => {
-        navigation.replace('Login');
-      }, 300);
-    }, 2500);
+        console.log('Version check result:', versionCheck);
 
-    return () => clearTimeout(timer);
+        // Step 2: Update state
+        if (versionCheck.needsUpdate) {
+          console.log('✅ Setting versionInfo state:', versionCheck);
+          setVersionInfo(versionCheck);
+        }
+
+        console.log('✅ Setting versionCheckComplete to true');
+        setVersionCheckComplete(true);
+
+        // Step 3: Wait for splash animation (2 seconds)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Step 4: Fade out animation
+        logoOpacity.value = withTiming(0, {
+          duration: 200,
+          easing: Easing.in(Easing.cubic),
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // Step 5: Navigate based on version check
+        if (versionCheck.needsUpdate && !versionCheck.isOptional) {
+          console.log('🚫 Force update required! Navigating to ForceUpdate screen...');
+          navigation.replace('ForceUpdate', { versionInfo: versionCheck });
+          return;
+        }
+
+        // Step 6: Continue with normal navigation
+        await handleNavigation();
+
+      } catch (error) {
+        console.error('Version check error:', error);
+        // Continue anyway if version check fails
+        setVersionCheckComplete(true);
+
+        // Wait for animation then navigate normally
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        logoOpacity.value = withTiming(0, { duration: 200, easing: Easing.in(Easing.cubic) });
+        await new Promise(resolve => setTimeout(resolve, 200));
+        await handleNavigation();
+      }
+    };
+
+    // Start the flow
+    checkVersionAndNavigate();
   }, [navigation]);
+
+  const handleNavigation = async (retryCount = 0) => {
+    try {
+      console.log('handleNavigation called - retry:', retryCount);
+      console.log('versionCheckComplete:', versionCheckComplete);
+      console.log('versionInfo:', versionInfo);
+
+      // Wait for version check to complete
+      if (!versionCheckComplete && retryCount < 30) {
+        console.log('Waiting for version check to complete...');
+        setTimeout(() => handleNavigation(retryCount + 1), 100);
+        return;
+      }
+
+      // If version check failed and update is required, navigate to ForceUpdate
+      if (versionInfo && versionInfo.needsUpdate && !versionInfo.isOptional) {
+        console.log('🚫 Force update required! Navigating to ForceUpdate screen...');
+        navigation.replace('ForceUpdate', { versionInfo });
+        return;
+      }
+
+      // Wait for user context to finish loading (max 2 seconds)
+      if (isLoading && retryCount < 20) {
+        setTimeout(() => handleNavigation(retryCount + 1), 100);
+        return;
+      }
+
+      // Check if user is already authenticated
+      if (isAuthenticated) {
+        console.log('✅ User authenticated, navigating to Home');
+        navigation.replace('Home');
+      } else {
+        console.log('🔐 User not authenticated, navigating to Login');
+        // Navigate to login screen (biometric will be handled there)
+        navigation.replace('Login');
+      }
+    } catch (error) {
+      console.log('Error in navigation:', error);
+      // Default to login screen on error
+      navigation.replace('Login');
+    }
+  };
 
   const logoAnimatedStyle = useAnimatedStyle(() => {
     return {

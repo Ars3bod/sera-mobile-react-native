@@ -7,7 +7,7 @@ import {
     StyleSheet,
     SafeAreaView,
     StatusBar,
-    ActivityIndicator,
+    
     Alert,
     RefreshControl,
     Platform,
@@ -35,6 +35,7 @@ import complaintsService from '../services/complaintsService';
 import AppConfig from '../config/appConfig';
 import RNFS from 'react-native-fs';
 import ActionToast from '../components/ActionToast';
+import { LoadingIndicator } from '../components';
 
 // Using built-in React Native Share API for cross-platform compatibility
 
@@ -860,7 +861,7 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
                 statusBarBackgroundColor={theme.colors.background}
             >
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color={theme.colors.primary} />
+                    <LoadingIndicator size="large" color={theme.colors.primary} />
                     <Text style={[styles.loadingText, { color: theme.colors.text }]}>
                         {t('complaints.details.loading')}
                     </Text>

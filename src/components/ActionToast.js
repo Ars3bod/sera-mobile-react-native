@@ -146,37 +146,76 @@ const ActionToast = ({
                         styles.actions,
                         { flexDirection: isRTL ? 'row-reverse' : 'row' }
                     ]}>
-                        <TouchableOpacity
-                            style={[
-                                styles.button,
-                                styles.cancelButton,
-                                {
-                                    borderColor: theme.colors.border,
-                                    marginRight: isRTL ? 0 : 12,
-                                    marginLeft: isRTL ? 12 : 0,
-                                }
-                            ]}
-                            onPress={handleCancel}
-                            activeOpacity={0.7}
-                        >
-                            <Text style={[styles.cancelButtonText, { color: theme.colors.textSecondary }]}>
-                                {cancelText || t('common.cancel')}
-                            </Text>
-                        </TouchableOpacity>
+                        {/* In RTL, render confirm button first so it appears on the right */}
+                        {isRTL ? (
+                            <>
+                                <TouchableOpacity
+                                    style={[
+                                        styles.button,
+                                        styles.confirmButton,
+                                        {
+                                            backgroundColor: theme.colors.primary,
+                                            marginLeft: 12,
+                                        }
+                                    ]}
+                                    onPress={handleConfirm}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={styles.confirmButtonText}>
+                                        {confirmText || t('common.ok')}
+                                    </Text>
+                                </TouchableOpacity>
 
-                        <TouchableOpacity
-                            style={[
-                                styles.button,
-                                styles.confirmButton,
-                                { backgroundColor: theme.colors.primary }
-                            ]}
-                            onPress={handleConfirm}
-                            activeOpacity={0.7}
-                        >
-                            <Text style={styles.confirmButtonText}>
-                                {confirmText || t('common.ok')}
-                            </Text>
-                        </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[
+                                        styles.button,
+                                        styles.cancelButton,
+                                        {
+                                            borderColor: theme.colors.border,
+                                        }
+                                    ]}
+                                    onPress={handleCancel}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={[styles.cancelButtonText, { color: theme.colors.textSecondary }]}>
+                                        {cancelText || t('common.cancel')}
+                                    </Text>
+                                </TouchableOpacity>
+                            </>
+                        ) : (
+                            <>
+                                <TouchableOpacity
+                                    style={[
+                                        styles.button,
+                                        styles.cancelButton,
+                                        {
+                                            borderColor: theme.colors.border,
+                                            marginRight: 12,
+                                        }
+                                    ]}
+                                    onPress={handleCancel}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={[styles.cancelButtonText, { color: theme.colors.textSecondary }]}>
+                                        {cancelText || t('common.cancel')}
+                                    </Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    style={[
+                                        styles.button,
+                                        styles.confirmButton,
+                                        { backgroundColor: theme.colors.primary }
+                                    ]}
+                                    onPress={handleConfirm}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={styles.confirmButtonText}>
+                                        {confirmText || t('common.ok')}
+                                    </Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
                     </View>
                 </Animated.View>
             </SafeAreaView>

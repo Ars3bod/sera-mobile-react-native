@@ -12,6 +12,7 @@ import {
     MoreHorizontal24Regular,
 } from '@fluentui/react-native-icons';
 import LoginRequiredModal from './LoginRequiredModal';
+import ChatOptionsModal from './ChatOptionsModal';
 
 const NavigationBar = ({
     navigation,
@@ -24,6 +25,7 @@ const NavigationBar = ({
     const { isAuthenticated, isGuestMode } = useUser();
     const isRTL = i18n.language === 'ar';
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showChatOptionsModal, setShowChatOptionsModal] = useState(false);
 
     // Default coming soon handler
     const handleComingSoon = onComingSoon || (() => {
@@ -43,6 +45,25 @@ const NavigationBar = ({
 
     const showLoginPrompt = () => {
         setShowLoginModal(true);
+    };
+
+    // Chat options modal handlers
+    const handleChatPress = () => {
+        setShowChatOptionsModal(true);
+    };
+
+    const closeChatOptionsModal = () => {
+        setShowChatOptionsModal(false);
+    };
+
+    const handleSelectChatbot = () => {
+        closeChatOptionsModal();
+        navigation.navigate('Chatbot');
+    };
+
+    const handleSelectLiveChat = () => {
+        closeChatOptionsModal();
+        navigation.navigate('LiveChat');
     };
 
     // Handle complaints navigation with authentication check
@@ -93,7 +114,7 @@ const NavigationBar = ({
                 id: 'chat',
                 label: t('home.tabs.chat'),
                 icon: Chat24Regular,
-                action: handleComingSoon,
+                action: handleChatPress,
                 isActive: activeTab === 'chat',
             },
             {
@@ -190,6 +211,14 @@ const NavigationBar = ({
                 visible={showLoginModal}
                 onClose={closeLoginModal}
                 onLogin={handleLoginPress}
+            />
+
+            {/* Chat Options Modal */}
+            <ChatOptionsModal
+                visible={showChatOptionsModal}
+                onClose={closeChatOptionsModal}
+                onSelectChatbot={handleSelectChatbot}
+                onSelectLiveChat={handleSelectLiveChat}
             />
         </>
     );

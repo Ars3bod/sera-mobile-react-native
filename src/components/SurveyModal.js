@@ -6,8 +6,7 @@ import {
     TouchableOpacity,
     ScrollView,
     StyleSheet,
-    Alert,
-    ActivityIndicator,
+
     TextInput,
     Dimensions,
     SafeAreaView,
@@ -16,6 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import surveyService from '../services/surveyService';
 import AppConfig from '../config/appConfig';
+import ActionToast from './ActionToast';
+import LoadingIndicator from './LoadingIndicator';
 
 // FluentUI Icons with static import (comment in English)
 import {
@@ -55,6 +56,10 @@ const SurveyModal = ({
     const [currentPage, setCurrentPage] = useState(0);
     const [error, setError] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+
+    // Toast state (comment in English)
+    const [actionToastVisible, setActionToastVisible] = useState(false);
+    const [actionToastData, setActionToastData] = useState({});
 
     // Load survey data when modal opens (comment in English)
     useEffect(() => {
@@ -219,18 +224,17 @@ const SurveyModal = ({
                     ? `${t('survey.completion.message')} ${response.fallbackUsed ? '(تم الحفظ محلياً)' : '(بيانات تجريبية)'}`
                     : t('survey.completion.message');
 
-                Alert.alert(
+                // Show success toast (comment in English)
+                showActionToast(
                     t('survey.completion.title'),
                     successMessage,
-                    [
-                        {
-                            text: t('common.ok'),
-                            onPress: () => {
-                                onSurveyComplete?.(responses);
-                                handleClose();
-                            }
-                        }
-                    ]
+                    () => {
+                        hideActionToast();
+                        onSurveyComplete?.(responses);
+                        handleClose();
+                    },
+                    null,
+                    'success'
                 );
             } else {
                 throw new Error(response.message || t('survey.errors.submitFailed'));
@@ -238,13 +242,37 @@ const SurveyModal = ({
 
         } catch (error) {
             console.error('Survey submit error:', error);
-            Alert.alert(
+            // Show error toast (comment in English)
+            showActionToast(
                 t('survey.errors.title'),
-                error.message || t('survey.errors.submitFailed')
+                error.message || t('survey.errors.submitFailed'),
+                () => {
+                    hideActionToast();
+                },
+                null,
+                'error'
             );
         } finally {
             setSubmitting(false);
         }
+    };
+
+    /**
+     * Helper functions for custom toasts
+     */
+    const showActionToast = (title, message, onConfirm, onCancel, type = 'info') => {
+        setActionToastData({
+            title,
+            message,
+            onConfirm,
+            onCancel,
+            type,
+        });
+        setActionToastVisible(true);
+    };
+
+    const hideActionToast = () => {
+        setActionToastVisible(false);
     };
 
     /**
@@ -556,7 +584,7 @@ const SurveyModal = ({
                     <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                         {loading ? (
                             <View style={styles.loadingContainer}>
-                                <ActivityIndicator size="large" color={theme.colors.primary} />
+                                <LoadingIndicator size="large" color={theme.colors.primary} />
                                 <Text style={[styles.loadingText, { color: theme.colors.textSecondary }]}>
                                     {t('survey.loading')}
                                 </Text>
@@ -688,7 +716,7 @@ const SurveyModal = ({
                                         activeOpacity={0.7}
                                     >
                                         {submitting ? (
-                                            <ActivityIndicator size="small" color="#FFFFFF" />
+                                            <LoadingIndicator size="small" color="#FFFFFF" />
                                         ) : (
                                             <Text style={styles.primaryButtonText}>
                                                 {currentPage < (surveyData?.questions?.length || 1) - 1
@@ -703,6 +731,18 @@ const SurveyModal = ({
                     )}
                 </View>
             </View>
+
+            {/* Custom Action Toast (comment in English) */}
+            <ActionToast
+                visible={actionToastVisible}
+                title={actionToastData.title}
+                message={actionToastData.message}
+                onConfirm={actionToastData.onConfirm}
+                onCancel={actionToastData.onCancel}
+                confirmText={t('common.ok')}
+                cancelText={t('common.cancel')}
+                type={actionToastData.type}
+            />
         </Modal>
     );
 };

@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     StyleSheet,
     Alert,
-    ActivityIndicator,
+    
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
@@ -14,6 +14,7 @@ import { useSession } from '../context/SessionManager';
 import SafeContainer from '../components/SafeContainer';
 import SessionWrapper from '../components/SessionWrapper';
 import surveyService from '../services/surveyService';
+import { LoadingIndicator } from '../components';
 
 // FluentUI Icons with static import (comment in English)
 import {
@@ -468,7 +469,7 @@ const SurveyScreen = ({ navigation, route }) => {
                 <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                     {loading ? (
                         <View style={styles.loadingContainer}>
-                            <ActivityIndicator size="large" color={theme.colors.primary} />
+                            <LoadingIndicator size="large" color={theme.colors.primary} />
                             <Text style={[styles.loadingText, { color: theme.colors.textSecondary }]}>
                                 {t('survey.loading')}
                             </Text>
@@ -556,7 +557,7 @@ const SurveyScreen = ({ navigation, route }) => {
                                 activeOpacity={0.7}
                             >
                                 {submitting ? (
-                                    <ActivityIndicator size="small" color="#FFFFFF" />
+                                    <LoadingIndicator size="small" color="#FFFFFF" />
                                 ) : (
                                     <Text style={styles.primaryButtonText}>
                                         {currentPage < (surveyData?.questions?.length || 1) - 1

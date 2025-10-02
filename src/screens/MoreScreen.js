@@ -5,11 +5,10 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
-  StatusBar,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
+import SafeContainer from '../components/SafeContainer';
 import {
   ArrowLeft24Regular,
   Settings24Regular,
@@ -259,11 +258,12 @@ const MoreScreen = ({ navigation }) => {
   });
 
   return (
-    <SafeAreaView style={dynamicStyles.container}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.colors.surface}
-      />
+    <SafeContainer
+      style={dynamicStyles.container}
+      backgroundColor={theme.colors.background}
+      statusBarStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      statusBarBackgroundColor={theme.colors.surface}
+    >
 
       {/* Header */}
       <View
@@ -302,7 +302,7 @@ const MoreScreen = ({ navigation }) => {
           </React.Fragment>
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </SafeContainer>
   );
 };
 

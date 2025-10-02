@@ -8,13 +8,14 @@ import {
     StyleSheet,
     ScrollView,
     Platform,
-    ActivityIndicator,
+    
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import commentService from '../services/commentService';
 import { pick, types } from '@react-native-documents/picker';
 import AppConfig from '../config/appConfig';
+import { LoadingIndicator } from '../components';
 
 // Safe imports for FluentUI icons
 let AttachIcon, SendIcon, CloseIcon;
@@ -442,7 +443,7 @@ const CommentForm = ({ caseNumber, beneficiary, onCommentAdded, onClose }) => {
                     ]}
                 >
                     {loading ? (
-                        <ActivityIndicator color={theme.colors.onPrimary} />
+                        <LoadingIndicator color={theme.colors.onPrimary} />
                     ) : (
                         <>
                             <SendIcon color={theme.colors.onPrimary} />
