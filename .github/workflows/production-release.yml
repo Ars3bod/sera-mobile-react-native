@@ -492,7 +492,8 @@ jobs:
           echo "${{ github.event.inputs.release_notes }}" >> $GITHUB_STEP_SUMMARY
       
       - name: 💬 Send Slack Notification (if configured)
-        if: always() && secrets.SLACK_WEBHOOK
+        if: always()
+        continue-on-error: true
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
