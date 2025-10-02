@@ -149,33 +149,26 @@ jobs:
       - name: 📦 Install NPM Dependencies
         run: npm ci --legacy-peer-deps
       
-      - name: 🔑 Decode Android Keystore
+      - name: 🔑 Decode Android Upload Keystore
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
-          echo "✅ Keystore decoded successfully"
-      
-      - name: 📝 Create key.properties File
-        run: |
-          cat > android/key.properties << EOF
-          storeFile=release.keystore
-          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
-          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
-          EOF
-          echo "✅ key.properties created"
+          echo "${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}" | base64 -d > android/app/upload.keystore
+          echo "✅ Upload keystore decoded successfully"
       
       - name: 🔧 Make Gradlew Executable
         run: chmod +x android/gradlew
       
-      - name: 🏗️ Build Android Release AAB
+      - name: 🏗️ Build Android Release AAB (Signed with Upload Key)
         working-directory: android
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          ./gradlew bundleRelease --no-daemon --stacktrace
-          echo "✅ AAB build completed!"
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=../app/upload.keystore \
+            -Pandroid.injected.signing.store.password="${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}" \
+            -Pandroid.injected.signing.key.alias="${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}" \
+            -Pandroid.injected.signing.key.password="${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}" \
+            --no-daemon \
+            --stacktrace
+          
+          echo "✅ AAB signed with upload key and ready for Google Play!"
       
       - name: 📦 Verify AAB File
         run: |
