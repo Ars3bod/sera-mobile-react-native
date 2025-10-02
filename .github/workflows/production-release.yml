@@ -1,0 +1,522 @@
+name: 🚀 Production Release - Google Play & App Store
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '📱 Version number (e.g., 1.3.0)'
+        required: true
+        type: string
+      release_notes:
+        description: '📝 Release notes (what changed in this version)'
+        required: true
+        type: string
+      deploy_android:
+        description: '🤖 Deploy to Google Play (Internal Testing)'
+        required: true
+        default: true
+        type: boolean
+      deploy_ios:
+        description: '🍎 Deploy to TestFlight'
+        required: true
+        default: true
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+  JAVA_VERSION: '17'
+  RUBY_VERSION: '3.2'
+
+jobs:
+  # ============================================
+  # Job 1: Version Bump
+  # ============================================
+  version-bump:
+    name: 📝 Update Version Numbers
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.bump.outputs.version }}
+      android_version_code: ${{ steps.bump.outputs.android_version_code }}
+      ios_build_number: ${{ steps.bump.outputs.ios_build_number }}
+      commit_sha: ${{ steps.bump.outputs.commit_sha }}
+    
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
+      - name: 🔧 Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name: ✅ Make Version Script Executable
+        run: chmod +x scripts/update-app-version.sh
+      
+      - name: 🔢 Run Version Bump Script
+        id: bump
+        run: |
+          # Generate iOS build number (timestamp)
+          IOS_BUILD=$(date +%s)
+          
+          # Run version update script
+          ./scripts/update-app-version.sh "${{ github.event.inputs.version }}" "$IOS_BUILD"
+          
+          # Extract updated Android version code
+          ANDROID_CODE=$(grep 'versionCode' android/app/build.gradle | grep -oE '[0-9]+' | head -1)
+          
+          # Set outputs
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          echo "android_version_code=$ANDROID_CODE" >> $GITHUB_OUTPUT
+          echo "ios_build_number=$IOS_BUILD" >> $GITHUB_OUTPUT
+          
+          echo "✅ Version bumped successfully!"
+          echo "📱 Version: ${{ github.event.inputs.version }}"
+          echo "🤖 Android Version Code: $ANDROID_CODE"
+          echo "🍎 iOS Build Number: $IOS_BUILD"
+      
+      - name: 📊 Display Changes
+        run: |
+          echo "📱 Files Updated:"
+          git diff --stat package.json app.json android/app/build.gradle ios/seraApp.xcodeproj/project.pbxproj
+      
+      - name: 💾 Commit & Push Version Changes
+        run: |
+          git add package.json app.json android/app/build.gradle ios/seraApp.xcodeproj/project.pbxproj
+          git commit -m "chore: release version ${{ github.event.inputs.version }}
+
+          📱 Version: ${{ github.event.inputs.version }}
+          🤖 Android Version Code: ${{ steps.bump.outputs.android_version_code }}
+          🍎 iOS Build Number: ${{ steps.bump.outputs.ios_build_number }}
+          
+          Release Notes:
+          ${{ github.event.inputs.release_notes }}"
+          
+          git push origin main
+          
+          # Save commit SHA for later use
+          echo "commit_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+      
+      - name: 🏷️ Create Git Tag
+        run: |
+          git tag -a "v${{ github.event.inputs.version }}" -m "Release v${{ github.event.inputs.version }}
+
+          ${{ github.event.inputs.release_notes }}"
+          
+          git push origin "v${{ github.event.inputs.version }}"
+
+  # ============================================
+  # Job 2: Build Android AAB for Play Store
+  # ============================================
+  build-android:
+    name: 🤖 Build Android Release AAB
+    needs: version-bump
+    runs-on: ubuntu-latest
+    if: github.event.inputs.deploy_android == 'true'
+    
+    steps:
+      - name: 📥 Checkout Code (versioned)
+        uses: actions/checkout@v4
+        with:
+          ref: v${{ needs.version-bump.outputs.version }}
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: ☕ Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+      
+      - name: 🔄 Cache Gradle Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      
+      - name: 📦 Install NPM Dependencies
+        run: npm ci --legacy-peer-deps
+      
+      - name: 🔑 Decode Android Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
+          echo "✅ Keystore decoded successfully"
+      
+      - name: 📝 Create key.properties File
+        run: |
+          cat > android/key.properties << EOF
+          storeFile=release.keystore
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          EOF
+          echo "✅ key.properties created"
+      
+      - name: 🔧 Make Gradlew Executable
+        run: chmod +x android/gradlew
+      
+      - name: 🏗️ Build Android Release AAB
+        working-directory: android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          ./gradlew bundleRelease --no-daemon --stacktrace
+          echo "✅ AAB build completed!"
+      
+      - name: 📦 Verify AAB File
+        run: |
+          if [ -f "android/app/build/outputs/bundle/release/app-release.aab" ]; then
+            echo "✅ AAB file found!"
+            ls -lh android/app/build/outputs/bundle/release/app-release.aab
+          else
+            echo "❌ AAB file not found!"
+            exit 1
+          fi
+      
+      - name: ⬆️ Upload AAB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-android-aab-v${{ needs.version-bump.outputs.version }}
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 90
+      
+      - name: ⬆️ Upload Mapping File (for crash reports)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-android-mapping-v${{ needs.version-bump.outputs.version }}
+          path: android/app/build/outputs/mapping/release/mapping.txt
+          retention-days: 365
+          if-no-files-found: ignore
+
+  # ============================================
+  # Job 3: Deploy to Google Play Internal Testing
+  # ============================================
+  deploy-android:
+    name: 🚀 Deploy to Google Play (Internal Testing)
+    needs: [version-bump, build-android]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Download AAB Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sera-android-aab-v${{ needs.version-bump.outputs.version }}
+          path: ./artifacts
+      
+      - name: 📋 Verify Downloaded AAB
+        run: |
+          echo "📦 Downloaded AAB:"
+          ls -lh ./artifacts/
+      
+      - name: 🚀 Deploy to Google Play Console (Internal Testing)
+        uses: r0adkll/upload-google-play@v1.1.3
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.sera.seraapp
+          releaseFiles: ./artifacts/app-release.aab
+          track: internal
+          status: completed
+          inAppUpdatePriority: 2
+          whatsNewDirectory: android/release-notes/
+          mappingFile: android/app/build/outputs/mapping/release/mapping.txt
+          releaseName: v${{ needs.version-bump.outputs.version }}
+      
+      - name: ✅ Android Deployment Complete
+        run: |
+          echo "✅ Successfully deployed to Google Play Internal Testing!"
+          echo "📱 Version: ${{ needs.version-bump.outputs.version }}"
+          echo "🔢 Version Code: ${{ needs.version-bump.outputs.android_version_code }}"
+          echo "🔗 Check: https://play.google.com/console"
+
+  # ============================================
+  # Job 4: Build iOS IPA for TestFlight
+  # ============================================
+  build-ios:
+    name: 🍎 Build iOS Release IPA
+    needs: version-bump
+    runs-on: macos-14
+    if: github.event.inputs.deploy_ios == 'true'
+    
+    steps:
+      - name: 📥 Checkout Code (versioned)
+        uses: actions/checkout@v4
+        with:
+          ref: v${{ needs.version-bump.outputs.version }}
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: 💎 Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+          working-directory: ios
+      
+      - name: 🔄 Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+      
+      - name: 📦 Install NPM Dependencies
+        run: npm ci --legacy-peer-deps
+      
+      - name: 🍎 Install CocoaPods Dependencies
+        run: |
+          cd ios
+          pod install --repo-update
+          echo "✅ CocoaPods installed successfully"
+      
+      - name: 🔐 Import iOS Code Signing Certificates
+        uses: apple-actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+          p12-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+      
+      - name: 📄 Install iOS Provisioning Profile
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/sera.mobileprovision
+          echo "✅ Provisioning profile installed"
+      
+      - name: 🏗️ Build iOS Archive
+        run: |
+          xcodebuild archive \
+            -workspace ios/seraApp.xcworkspace \
+            -scheme seraApp \
+            -configuration Release \
+            -archivePath ios/build/seraApp.xcarchive \
+            -destination 'generic/platform=iOS' \
+            -allowProvisioningUpdates \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM=${{ secrets.IOS_TEAM_ID }} \
+            PROVISIONING_PROFILE_SPECIFIER="sera" \
+            CODE_SIGN_IDENTITY="Apple Distribution"
+          
+          echo "✅ iOS archive created successfully!"
+      
+      - name: 📦 Export IPA
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath ios/build/seraApp.xcarchive \
+            -exportPath ios/build \
+            -exportOptionsPlist ios/ExportOptions-Release.plist \
+            -allowProvisioningUpdates
+          
+          echo "✅ IPA exported successfully!"
+      
+      - name: 📋 Verify IPA File
+        run: |
+          if [ -f "ios/build/seraApp.ipa" ]; then
+            echo "✅ IPA file found!"
+            ls -lh ios/build/seraApp.ipa
+          else
+            echo "❌ IPA file not found!"
+            exit 1
+          fi
+      
+      - name: ⬆️ Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-ios-ipa-v${{ needs.version-bump.outputs.version }}
+          path: ios/build/seraApp.ipa
+          retention-days: 90
+      
+      - name: ⬆️ Upload dSYM Files (for crash reports)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-ios-dsym-v${{ needs.version-bump.outputs.version }}
+          path: ios/build/seraApp.xcarchive/dSYMs/
+          retention-days: 365
+          if-no-files-found: ignore
+
+  # ============================================
+  # Job 5: Deploy to TestFlight
+  # ============================================
+  deploy-ios:
+    name: 🚀 Deploy to TestFlight
+    needs: [version-bump, build-ios]
+    runs-on: macos-14
+    
+    steps:
+      - name: 📥 Download IPA Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sera-ios-ipa-v${{ needs.version-bump.outputs.version }}
+          path: ./artifacts
+      
+      - name: 📋 Verify Downloaded IPA
+        run: |
+          echo "📦 Downloaded IPA:"
+          ls -lh ./artifacts/
+      
+      - name: 🚀 Upload to TestFlight
+        uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: ./artifacts/seraApp.ipa
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+      
+      - name: ✅ iOS Deployment Complete
+        run: |
+          echo "✅ Successfully uploaded to TestFlight!"
+          echo "📱 Version: ${{ needs.version-bump.outputs.version }}"
+          echo "🔢 Build Number: ${{ needs.version-bump.outputs.ios_build_number }}"
+          echo "🔗 Check: https://appstoreconnect.apple.com"
+
+  # ============================================
+  # Job 6: Create GitHub Release
+  # ============================================
+  create-release:
+    name: 📦 Create GitHub Release
+    needs: [version-bump, build-android, build-ios]
+    runs-on: ubuntu-latest
+    if: always() && (needs.build-android.result == 'success' || needs.build-ios.result == 'success')
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: v${{ needs.version-bump.outputs.version }}
+      
+      - name: 📥 Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./release-artifacts
+      
+      - name: 📋 List All Artifacts
+        run: |
+          echo "📦 Release Artifacts:"
+          find ./release-artifacts -type f -exec ls -lh {} \;
+      
+      - name: 📦 Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.version-bump.outputs.version }}
+          name: 🚀 SERA Mobile v${{ needs.version-bump.outputs.version }}
+          body: |
+            ## 📱 SERA Mobile App - Version ${{ needs.version-bump.outputs.version }}
+            
+            ### ✨ What's New
+            ${{ github.event.inputs.release_notes }}
+            
+            ---
+            
+            ### 📊 Build Information
+            | Platform | Status | Details |
+            |----------|--------|---------|
+            | 🤖 Android | ${{ needs.build-android.result == 'success' && '✅ Success' || '❌ Failed' }} | Version Code: `${{ needs.version-bump.outputs.android_version_code }}` |
+            | 🍎 iOS | ${{ needs.build-ios.result == 'success' && '✅ Success' || '❌ Failed' }} | Build Number: `${{ needs.version-bump.outputs.ios_build_number }}` |
+            
+            ### 📦 Downloads
+            - **Android AAB**: `sera-android-aab-v${{ needs.version-bump.outputs.version }}.zip`
+            - **iOS IPA**: `sera-ios-ipa-v${{ needs.version-bump.outputs.version }}.zip`
+            - **Android Mapping**: Crash reports deobfuscation file
+            - **iOS dSYM**: Crash reports symbolication files
+            
+            ### 🚀 Deployment Status
+            - 🤖 **Google Play (Internal Testing)**: ${{ needs.deploy-android.result == 'success' && '✅ Deployed' || github.event.inputs.deploy_android == 'true' && '⏳ In Progress' || '⏭️ Skipped' }}
+            - 🍎 **TestFlight**: ${{ needs.deploy-ios.result == 'success' && '✅ Deployed' || github.event.inputs.deploy_ios == 'true' && '⏳ In Progress' || '⏭️ Skipped' }}
+            
+            ### 📅 Release Details
+            - **Release Date**: ${{ github.event.head_commit.timestamp }}
+            - **Commit SHA**: `${{ needs.version-bump.outputs.commit_sha }}`
+            - **Workflow Run**: [View Build](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+            ### 🔗 Store Links
+            - [Google Play Console](https://play.google.com/console)
+            - [App Store Connect](https://appstoreconnect.apple.com)
+            
+            ---
+            
+            ### 📝 Notes
+            - Internal testers will receive automatic notifications
+            - Review times: ~1-2 days for Google Play, ~1-2 days for TestFlight
+            - Crash reports will be automatically symbolicated with uploaded mapping/dSYM files
+          files: |
+            ./release-artifacts/**/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+
+  # ============================================
+  # Job 7: Post-Deployment Notifications
+  # ============================================
+  notify:
+    name: 📢 Send Deployment Notifications
+    needs: [version-bump, build-android, build-ios, deploy-android, deploy-ios]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: 📊 Generate Deployment Summary
+        run: |
+          echo "## 🚀 SERA Mobile Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📱 Version Information" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ needs.version-bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Android Version Code**: ${{ needs.version-bump.outputs.android_version_code }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **iOS Build Number**: ${{ needs.version-bump.outputs.ios_build_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 Build Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Version Bump | ${{ needs.version-bump.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Android | ${{ needs.build-android.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build iOS | ${{ needs.build-ios.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deploy Android | ${{ needs.deploy-android.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deploy iOS | ${{ needs.deploy-ios.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📝 Release Notes" >> $GITHUB_STEP_SUMMARY
+          echo "${{ github.event.inputs.release_notes }}" >> $GITHUB_STEP_SUMMARY
+      
+      - name: 💬 Send Slack Notification (if configured)
+        if: always() && secrets.SLACK_WEBHOOK
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            🚀 *SERA Mobile Release v${{ needs.version-bump.outputs.version }}*
+            
+            *Build Status:*
+            • Android AAB: ${{ needs.build-android.result == 'success' && '✅' || '❌' }}
+            • iOS IPA: ${{ needs.build-ios.result == 'success' && '✅' || '❌' }}
+            
+            *Deployment Status:*
+            • Google Play: ${{ needs.deploy-android.result == 'success' && '✅ Deployed' || '❌ Failed' }}
+            • TestFlight: ${{ needs.deploy-ios.result == 'success' && '✅ Deployed' || '❌ Failed' }}
+            
+            *What's New:*
+            ${{ github.event.inputs.release_notes }}
+            
+            Triggered by: @${{ github.actor }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+# Required permissions
+permissions:
+  contents: write      # Create releases and tags
+  actions: write       # Trigger workflows
+  packages: read       # Read packages
