@@ -204,6 +204,15 @@ const ServicesScreen = ({ navigation }) => {
       isAvailable: true,
     },
     {
+      id: 5,
+      titleKey: 'services.freedomOfInformation.title',
+      descriptionKey: 'services.freedomOfInformation.description',
+      detailedDescriptionKey: 'services.freedomOfInformation.detailedDescription',
+      icon: FolderOpen24Regular,
+      color: theme.colors.primary,
+      isAvailable: true,
+    },
+    {
       id: 1,
       titleKey: 'services.permitRequest.title',
       descriptionKey: 'services.permitRequest.description',
@@ -218,15 +227,6 @@ const ServicesScreen = ({ navigation }) => {
       descriptionKey: 'services.licenseIssuance.description',
       detailedDescriptionKey: 'services.licenseIssuance.detailedDescription',
       icon: Certificate24Regular,
-      color: theme.colors.primary,
-      isAvailable: false, // Coming soon
-    },
-    {
-      id: 5,
-      titleKey: 'services.freedomOfInformation.title',
-      descriptionKey: 'services.freedomOfInformation.description',
-      detailedDescriptionKey: 'services.freedomOfInformation.detailedDescription',
-      icon: FolderOpen24Regular,
       color: theme.colors.primary,
       isAvailable: false, // Coming soon
     },
@@ -262,6 +262,13 @@ const ServicesScreen = ({ navigation }) => {
     if (service.id === 4) {
       // Data Sharing service - navigate to DataShare screen
       navigation.navigate('DataShare');
+      return;
+    }
+
+    // Handle freedom of information service specifically
+    if (service.id === 5) {
+      // Freedom of Information service - navigate to FOI screen
+      navigation.navigate('FOI');
       return;
     }
 
@@ -487,6 +494,83 @@ const ServicesScreen = ({ navigation }) => {
                         ar: 'البوابة الإلكترونية'
                       },
                       submitUrl: 'https://eservices.sera.gov.sa/DataSharing'
+                    }
+                  });
+                }}
+                activeOpacity={0.7}>
+                <Text style={[styles.serviceDescriptionLinkText, {
+                  color: theme.colors.primary,
+                  textAlign: isRTL ? 'right' : 'left'
+                }]}>
+                  {isRTL ? 'وصف الخدمة ←' : 'Service Description →'}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {service.id === 5 && service.isAvailable && ( // Only show for FOI service when available
+              <TouchableOpacity
+                style={[styles.serviceDescriptionLink, { alignSelf: isRTL ? 'flex-end' : 'flex-start' }]}
+                onPress={() => {
+                  navigation.navigate('ServiceDescription', {
+                    serviceData: {
+                      id: 'freedomOfInformation',
+                      title: {
+                        en: 'Freedom of Information',
+                        ar: 'حرية المعلومات'
+                      },
+                      description: {
+                        en: 'Believing in the principle of transparency and freedom of data and information circulation, SERA provides public data to all portal visitors and beneficiaries in accordance with the Freedom of Information policy issued by the National Data Management Office and in compliance with all other relevant regulatory controls.',
+                        ar: 'إيمانا بمبدأ الشفافية وحرية تداول البيانات والمعلومات توفر الهيئة السعودية لتنظيم الكهرباء البيانات العامة لجميع زوّار البوابة والمستفيدين وذلك حسب سياسة حرية المعلومات الصادرة عن مكتب إدارة البيانات الوطنية والتزماً بجميع الضوابط التنظيمية الأخرى ذات العلاقة.'
+                      },
+                      steps: {
+                        en: [
+                          'Choose "Freedom of Information"',
+                          'Fill the request form',
+                          'Submit the request',
+                          'Track your request'
+                        ],
+                        ar: [
+                          'اختر "حرية المعلومات"',
+                          'املأ نموذج الطلب',
+                          'أرسل الطلب',
+                          'تابع طلبك'
+                        ]
+                      },
+                      requirements: {
+                        en: [
+                          'Name, address and national identity',
+                          'Description of public information required',
+                          'Purpose of requesting access to public information',
+                          'Method of delivering notification'
+                        ],
+                        ar: [
+                          'الاسم والعنوان والهوية الوطنية',
+                          'وصف للمعلومات العامة المطلوبة من مقدم الطلب',
+                          'الغرض من طلب الوصول إلى المعلومات العامة',
+                          'طريقة توصيل الإشعار إلى مقدم الطلب'
+                        ]
+                      },
+                      targetedAudience: {
+                        en: 'Consumer - Service Provider - Investor',
+                        ar: 'المستهلك - مقدم الخدمة - المستثمر'
+                      },
+                      completionPeriod: {
+                        en: '30 days',
+                        ar: '30 يوم'
+                      },
+                      fees: {
+                        en: 'Free',
+                        ar: 'مجاني'
+                      },
+                      supportedLanguages: {
+                        en: 'Arabic-English',
+                        ar: 'العربية - الإنجليزية'
+                      },
+                      contactNumber: '19944',
+                      deliveryChannels: {
+                        en: 'E-portal',
+                        ar: 'البوابة الإلكترونية'
+                      },
+                      submitUrl: 'https://eservices.sera.gov.sa/FOI'
                     }
                   });
                 }}

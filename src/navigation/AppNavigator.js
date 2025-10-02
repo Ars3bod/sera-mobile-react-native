@@ -38,6 +38,10 @@ import DataShareScreen from '../screens/DataShareScreen';
 import ViewDataShareScreen from '../screens/ViewDataShareScreen';
 import DataShareDetailsScreen from '../screens/DataShareDetailsScreen';
 import CreateDataShareScreen from '../screens/CreateDataShareScreen';
+import FOIScreen from '../screens/FOIScreen';
+import ViewFOIScreen from '../screens/ViewFOIScreen';
+import FOIDetailsScreen from '../screens/FOIDetailsScreen';
+import CreateFOIScreen from '../screens/CreateFOIScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -348,6 +352,38 @@ export default function AppNavigator() {
       <Stack.Screen
         name="CreateDataShare"
         component={CreateDataShareScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="FOI"
+        component={FOIScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ViewFOI"
+        component={ViewFOIScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="FOIDetails"
+        component={FOIDetailsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="CreateFOI"
+        component={CreateFOIScreen}
         options={{
           animation: 'slide_from_right',
           animationDuration: 300,
