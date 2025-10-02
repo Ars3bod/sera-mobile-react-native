@@ -40,42 +40,59 @@ export default function SplashScreen({ navigation }) {
     );
 
     // Check version first, then authentication
-    const checkVersion = async () => {
+    const checkVersionAndNavigate = async () => {
       try {
+        // Step 1: Check version
         const currentVersion = versionService.getCurrentVersion();
         const versionCheck = await versionService.checkVersion(currentVersion);
 
         console.log('Version check result:', versionCheck);
 
+        // Step 2: Update state
         if (versionCheck.needsUpdate) {
+          console.log('✅ Setting versionInfo state:', versionCheck);
           setVersionInfo(versionCheck);
         }
 
+        console.log('✅ Setting versionCheckComplete to true');
         setVersionCheckComplete(true);
+
+        // Step 3: Wait for splash animation (2 seconds)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Step 4: Fade out animation
+        logoOpacity.value = withTiming(0, {
+          duration: 200,
+          easing: Easing.in(Easing.cubic),
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // Step 5: Navigate based on version check
+        if (versionCheck.needsUpdate && !versionCheck.isOptional) {
+          console.log('🚫 Force update required! Navigating to ForceUpdate screen...');
+          navigation.replace('ForceUpdate', { versionInfo: versionCheck });
+          return;
+        }
+
+        // Step 6: Continue with normal navigation
+        await handleNavigation();
+
       } catch (error) {
         console.error('Version check error:', error);
         // Continue anyway if version check fails
         setVersionCheckComplete(true);
+
+        // Wait for animation then navigate normally
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        logoOpacity.value = withTiming(0, { duration: 200, easing: Easing.in(Easing.cubic) });
+        await new Promise(resolve => setTimeout(resolve, 200));
+        await handleNavigation();
       }
     };
 
-    // Start version check
-    checkVersion();
-
-    // Check authentication and biometric status after splash animation
-    const timer = setTimeout(async () => {
-      // Fade out animation before navigation
-      logoOpacity.value = withTiming(0, {
-        duration: 200,
-        easing: Easing.in(Easing.cubic),
-      });
-
-      setTimeout(async () => {
-        await handleNavigation();
-      }, 200);
-    }, 2000);
-
-    return () => clearTimeout(timer);
+    // Start the flow
+    checkVersionAndNavigate();
   }, [navigation]);
 
   const handleNavigation = async (retryCount = 0) => {
@@ -83,7 +100,7 @@ export default function SplashScreen({ navigation }) {
       console.log('handleNavigation called - retry:', retryCount);
       console.log('versionCheckComplete:', versionCheckComplete);
       console.log('versionInfo:', versionInfo);
-      
+
       // Wait for version check to complete
       if (!versionCheckComplete && retryCount < 30) {
         console.log('Waiting for version check to complete...');

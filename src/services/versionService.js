@@ -89,8 +89,8 @@ class VersionService {
                     ar: 'يرجى التحديث إلى أحدث إصدار للاستمرار في استخدام التطبيق.'
                 },
                 updateUrl: {
-                    ios: 'https://apps.apple.com/app/sera/id1234567890', // Replace with actual App Store URL
-                    android: 'https://play.google.com/store/apps/details?id=sa.gov.sera.mobile' // Replace with actual Play Store URL
+                    ios: 'https://apps.apple.com/sa/app/sera-%D8%B3%D9%8A%D8%B1%D8%A7/id6747636946', // 
+                    android: 'https://play.google.com/store/apps/details?id=com.sera.seraapp' // 
                 }
             });
         }
