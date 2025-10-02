@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Dimensions, StatusBar, Image } from 'react-native';
 import Video from 'react-native-video';
 import { useUser } from '../context/UserContext';
+import versionService from '../services/versionService';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -17,6 +18,8 @@ export default function SplashScreen({ navigation }) {
   const logoOpacity = useSharedValue(0);
   const logoScale = useSharedValue(0.8);
   const { isAuthenticated, isLoading } = useUser();
+  const [versionCheckComplete, setVersionCheckComplete] = useState(false);
+  const [versionInfo, setVersionInfo] = useState(null);
 
   useEffect(() => {
     // Animate logo appearance
@@ -36,6 +39,29 @@ export default function SplashScreen({ navigation }) {
       }),
     );
 
+    // Check version first, then authentication
+    const checkVersion = async () => {
+      try {
+        const currentVersion = versionService.getCurrentVersion();
+        const versionCheck = await versionService.checkVersion(currentVersion);
+
+        console.log('Version check result:', versionCheck);
+
+        if (versionCheck.needsUpdate) {
+          setVersionInfo(versionCheck);
+        }
+
+        setVersionCheckComplete(true);
+      } catch (error) {
+        console.error('Version check error:', error);
+        // Continue anyway if version check fails
+        setVersionCheckComplete(true);
+      }
+    };
+
+    // Start version check
+    checkVersion();
+
     // Check authentication and biometric status after splash animation
     const timer = setTimeout(async () => {
       // Fade out animation before navigation
@@ -54,6 +80,24 @@ export default function SplashScreen({ navigation }) {
 
   const handleNavigation = async (retryCount = 0) => {
     try {
+      console.log('handleNavigation called - retry:', retryCount);
+      console.log('versionCheckComplete:', versionCheckComplete);
+      console.log('versionInfo:', versionInfo);
+      
+      // Wait for version check to complete
+      if (!versionCheckComplete && retryCount < 30) {
+        console.log('Waiting for version check to complete...');
+        setTimeout(() => handleNavigation(retryCount + 1), 100);
+        return;
+      }
+
+      // If version check failed and update is required, navigate to ForceUpdate
+      if (versionInfo && versionInfo.needsUpdate && !versionInfo.isOptional) {
+        console.log('🚫 Force update required! Navigating to ForceUpdate screen...');
+        navigation.replace('ForceUpdate', { versionInfo });
+        return;
+      }
+
       // Wait for user context to finish loading (max 2 seconds)
       if (isLoading && retryCount < 20) {
         setTimeout(() => handleNavigation(retryCount + 1), 100);
@@ -62,8 +106,10 @@ export default function SplashScreen({ navigation }) {
 
       // Check if user is already authenticated
       if (isAuthenticated) {
+        console.log('✅ User authenticated, navigating to Home');
         navigation.replace('Home');
       } else {
+        console.log('🔐 User not authenticated, navigating to Login');
         // Navigate to login screen (biometric will be handled there)
         navigation.replace('Login');
       }

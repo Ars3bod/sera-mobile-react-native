@@ -95,6 +95,27 @@ const resources = {
         validationFailed:
           'Information verification failed, but you can continue',
       },
+      chat: {
+        options: {
+          title: 'How can we help you?',
+          chatbot: {
+            title: 'AI Chatbot',
+            description: 'Get instant answers to your questions 24/7',
+          },
+          liveChat: {
+            title: 'Live Chat',
+            description: 'Talk to a support agent in real-time',
+          },
+        },
+        webview: {
+          error: 'Unable to load chat service. Please check your connection and try again.',
+        },
+        placeholder: {
+          title: 'Configuration Required',
+          chatbot: 'Please update the CHATBOT_URL in ChatbotScreen.js with your actual chatbot service URL.',
+          liveChat: 'Please update the LIVE_CHAT_URL in LiveChatScreen.js with your actual live chat service URL.',
+        },
+      },
       home: {
         header: 'Saudi Electricity Regulatory Authority',
         subHeader:
@@ -1695,6 +1716,27 @@ const resources = {
         validating: 'التحقق من معلوماتك...',
         validationSuccess: 'تم التحقق من المعلومات بنجاح',
         validationFailed: 'فشل التحقق من المعلومات، ولكن يمكنك المتابعة',
+      },
+      chat: {
+        options: {
+          title: 'كيف يمكننا مساعدتك؟',
+          chatbot: {
+            title: 'المساعد الافتراضي',
+            description: 'احصل على إجابات فورية لأسئلتك على مدار الساعة',
+          },
+          liveChat: {
+            title: 'محادثة الفورية',
+            description: 'تحدث مع أحد موظفي الدعم في الوقت الفعلي',
+          },
+        },
+        webview: {
+          error: 'تعذر تحميل خدمة الدردشة. يرجى التحقق من الاتصال والمحاولة مرة أخرى.',
+        },
+        placeholder: {
+          title: 'التكوين مطلوب',
+          chatbot: 'يرجى تحديث CHATBOT_URL في ChatbotScreen.js برابط خدمة الروبوت الفعلي.',
+          liveChat: 'يرجى تحديث LIVE_CHAT_URL في LiveChatScreen.js برابط خدمة المحادثة المباشرة الفعلي.',
+        },
       },
       home: {
         header: 'الهيئة السعودية لتنظيم الكهرباء',

@@ -42,6 +42,9 @@ import FOIScreen from '../screens/FOIScreen';
 import ViewFOIScreen from '../screens/ViewFOIScreen';
 import FOIDetailsScreen from '../screens/FOIDetailsScreen';
 import CreateFOIScreen from '../screens/CreateFOIScreen';
+import ChatbotScreen from '../screens/ChatbotScreen';
+import LiveChatScreen from '../screens/LiveChatScreen';
+import ForceUpdateScreen from '../screens/ForceUpdateScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -387,6 +390,31 @@ export default function AppNavigator() {
         options={{
           animation: 'slide_from_right',
           animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="Chatbot"
+        component={ChatbotScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="LiveChat"
+        component={LiveChatScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ForceUpdate"
+        component={ForceUpdateScreen}
+        options={{
+          animation: 'fade',
+          animationDuration: 300,
+          gestureEnabled: false,
         }}
       />
     </Stack.Navigator>

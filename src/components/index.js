@@ -1,4 +1,5 @@
 export { default as ActionToast } from './ActionToast';
+export { default as ChatOptionsModal } from './ChatOptionsModal';
 export { default as CommentForm } from './CommentForm';
 export { default as CommentView } from './CommentView';
 export { default as HomeScreenSelector } from './HomeScreenSelector';
