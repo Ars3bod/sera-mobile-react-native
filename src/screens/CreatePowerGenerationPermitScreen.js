@@ -10,10 +10,11 @@ import {
   TextInput,
   Alert,
   Modal,
-  ActivityIndicator,
+  
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '../context/ThemeContext';
+import { LoadingIndicator } from '../components';
 import {
   ArrowLeft24Regular,
   Save24Regular,
@@ -551,7 +552,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
           activeOpacity={0.7}
           disabled={loading}>
           {loading ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
+            <LoadingIndicator size="small" color="#FFFFFF" />
           ) : (
             <>
               <Save24Regular style={dynamicStyles.saveIcon} />
@@ -770,7 +771,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
           activeOpacity={0.7}
           disabled={loading}>
           {loading ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
+            <LoadingIndicator size="small" color="#FFFFFF" />
           ) : (
             <Text style={styles.submitButtonText}>
               {t('permits.powerGeneration.submit')}

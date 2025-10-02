@@ -8,7 +8,7 @@ import {
     TextInput,
     Modal,
     Switch,
-    ActivityIndicator,
+
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
@@ -22,6 +22,7 @@ import {
 import SafeContainer from '../components/SafeContainer';
 import ActionToast from '../components/ActionToast';
 import Toast from '../components/Toast';
+import { LoadingIndicator } from '../components';
 import axios from 'axios';
 
 const FOIDetailsScreen = ({ navigation, route }) => {
@@ -547,7 +548,7 @@ const FOIDetailsScreen = ({ navigation, route }) => {
                                 disabled={isSubmitting}
                                 activeOpacity={0.8}>
                                 {isSubmitting ? (
-                                    <ActivityIndicator size="small" color="#FFFFFF" />
+                                    <LoadingIndicator size="small" color="#FFFFFF" />
                                 ) : (
                                     <Text style={styles.submitButtonText}>
                                         {t('foi.details.grievance.submit')}

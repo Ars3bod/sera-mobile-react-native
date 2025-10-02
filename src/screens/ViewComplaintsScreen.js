@@ -10,7 +10,7 @@ import {
   Alert,
   Modal,
   FlatList,
-  ActivityIndicator,
+
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -28,6 +28,7 @@ import {
   ChevronLeft24Regular,
 } from '@fluentui/react-native-icons';
 import NavigationBar from '../components/NavigationBar';
+import { LoadingIndicator } from '../components';
 import complaintsService, {
   MOCK_COMPLAINTS_DATA,
 } from '../services/complaintsService';
@@ -761,7 +762,7 @@ const ViewComplaintsScreen = ({ navigation, route }) => {
       {/* Content */}
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator
+          <LoadingIndicator
             size="large"
             color={theme.colors.primary}
           />

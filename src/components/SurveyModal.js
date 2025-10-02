@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     ScrollView,
     StyleSheet,
-    ActivityIndicator,
+
     TextInput,
     Dimensions,
     SafeAreaView,
@@ -16,6 +16,7 @@ import { useTheme } from '../context/ThemeContext';
 import surveyService from '../services/surveyService';
 import AppConfig from '../config/appConfig';
 import ActionToast from './ActionToast';
+import LoadingIndicator from './LoadingIndicator';
 
 // FluentUI Icons with static import (comment in English)
 import {
@@ -583,7 +584,7 @@ const SurveyModal = ({
                     <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                         {loading ? (
                             <View style={styles.loadingContainer}>
-                                <ActivityIndicator size="large" color={theme.colors.primary} />
+                                <LoadingIndicator size="large" color={theme.colors.primary} />
                                 <Text style={[styles.loadingText, { color: theme.colors.textSecondary }]}>
                                     {t('survey.loading')}
                                 </Text>
@@ -715,7 +716,7 @@ const SurveyModal = ({
                                         activeOpacity={0.7}
                                     >
                                         {submitting ? (
-                                            <ActivityIndicator size="small" color="#FFFFFF" />
+                                            <LoadingIndicator size="small" color="#FFFFFF" />
                                         ) : (
                                             <Text style={styles.primaryButtonText}>
                                                 {currentPage < (surveyData?.questions?.length || 1) - 1

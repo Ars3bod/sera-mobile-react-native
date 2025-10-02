@@ -3,6 +3,7 @@ export { default as ChatOptionsModal } from './ChatOptionsModal';
 export { default as CommentForm } from './CommentForm';
 export { default as CommentView } from './CommentView';
 export { default as HomeScreenSelector } from './HomeScreenSelector';
+export { default as LoadingIndicator } from './LoadingIndicator';
 export { default as LoginRequiredModal } from './LoginRequiredModal';
 export { default as NavigationBar } from './NavigationBar';
 export { default as SafeContainer } from './SafeContainer';

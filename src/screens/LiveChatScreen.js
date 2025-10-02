@@ -4,13 +4,13 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
-    ActivityIndicator,
+    
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useUser } from '../context/UserContext';
-import { SafeContainer } from '../components';
+import { SafeContainer , LoadingIndicator } from '../components';
 import { ChevronLeft24Regular, ChevronRight24Regular } from '@fluentui/react-native-icons';
 
 const LiveChatScreen = ({ navigation }) => {
@@ -326,7 +326,7 @@ const LiveChatScreen = ({ navigation }) => {
                         />
                         {loading && (
                             <View style={dynamicStyles.loadingContainer}>
-                                <ActivityIndicator
+                                <LoadingIndicator
                                     size="large"
                                     color={theme.colors.primary}
                                 />
