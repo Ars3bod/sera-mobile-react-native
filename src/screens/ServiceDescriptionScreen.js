@@ -429,29 +429,31 @@ const ServiceDescriptionScreen = ({ navigation, route }) => {
                         </Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                        style={[styles.actionButton, {
-                            backgroundColor: 'transparent',
-                            borderWidth: 1,
-                            borderColor: safeTheme.colors.primary,
-                            flexDirection: isRTL ? 'row-reverse' : 'row'
-                        }]}
-                        onPress={() => handleLinkPress(serviceData.guideUrl)}
-                        activeOpacity={0.8}>
-                        {React.createElement(ArrowDownload24Regular || FallbackDownload, {
-                            style: [styles.actionButtonIcon, {
+                    {serviceData.guideUrl && ( // Only show download guide button if guideUrl exists
+                        <TouchableOpacity
+                            style={[styles.actionButton, {
+                                backgroundColor: 'transparent',
+                                borderWidth: 1,
+                                borderColor: safeTheme.colors.primary,
+                                flexDirection: isRTL ? 'row-reverse' : 'row'
+                            }]}
+                            onPress={() => handleLinkPress(serviceData.guideUrl)}
+                            activeOpacity={0.8}>
+                            {React.createElement(ArrowDownload24Regular || FallbackDownload, {
+                                style: [styles.actionButtonIcon, {
+                                    color: safeTheme.colors.primary,
+                                    marginRight: isRTL ? 0 : 8,
+                                    marginLeft: isRTL ? 8 : 0
+                                }]
+                            })}
+                            <Text style={[styles.actionButtonText, {
                                 color: safeTheme.colors.primary,
-                                marginRight: isRTL ? 0 : 8,
-                                marginLeft: isRTL ? 8 : 0
-                            }]
-                        })}
-                        <Text style={[styles.actionButtonText, {
-                            color: safeTheme.colors.primary,
-                            writingDirection: isRTL ? 'rtl' : 'ltr'
-                        }]}>
-                            {isRTL ? 'تحميل الدليل' : 'Download The Guide'}
-                        </Text>
-                    </TouchableOpacity>
+                                writingDirection: isRTL ? 'rtl' : 'ltr'
+                            }]}>
+                                {isRTL ? 'تحميل الدليل' : 'Download The Guide'}
+                            </Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
             </ScrollView>
 

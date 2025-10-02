@@ -735,11 +735,11 @@ const CompensationStandardsScreen = ({ navigation }) => {
                 {/* Additional Info Section */}
                 <View style={[styles.infoSection, { backgroundColor: theme.colors.card }]}>
                     <Text style={[styles.infoTitle, { color: theme.colors.text, textAlign: isRTL ? 'right' : 'left' }]}>
-                        {isRTL ? 'معلومات إضافية' : 'Additional Information'}
+                        {isRTL ? 'كيف يصرف التعويض؟ ومتى؟' : 'Additional Information'}
                     </Text>
                     <Text style={[styles.infoText, { color: theme.colors.textSecondary, textAlign: isRTL ? 'right' : 'left' }]}>
                         {isRTL
-                            ? 'هذه المعايير محددة وفقاً للوائح الهيئة السعودية لتنظيم الكهرباء. للمزيد من التفاصيل، يرجى زيارة الموقع الرسمي للهيئة أو التواصل مع خدمة العملاء.'
+                            ? 'يصل التعويض للمستهلك دون حاجة لتقديم شكوى أو مطالبة، يضاف كرصيد في الفاتورة خلال 10 أيام عمل من انتهاء الحالة، ويمكن طلب تحويل الرصيد إلى الحساب البنكي'
                             : 'These standards are set according to the Saudi Electricity Regulatory Authority regulations. For more details, please visit the official SERA website or contact customer service.'
                         }
                     </Text>

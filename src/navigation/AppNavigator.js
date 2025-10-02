@@ -34,6 +34,10 @@ import ServiceDescriptionScreen from '../screens/ServiceDescriptionScreen';
 import ComplaintDetailsScreen from '../screens/ComplaintDetailsScreen';
 import ComplaintCommentScreen from '../screens/ComplaintCommentScreen';
 import SurveyScreen from '../screens/SurveyScreen';
+import DataShareScreen from '../screens/DataShareScreen';
+import ViewDataShareScreen from '../screens/ViewDataShareScreen';
+import DataShareDetailsScreen from '../screens/DataShareDetailsScreen';
+import CreateDataShareScreen from '../screens/CreateDataShareScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -312,6 +316,38 @@ export default function AppNavigator() {
       <Stack.Screen
         name="Survey"
         component={SurveyScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="DataShare"
+        component={DataShareScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="ViewDataShare"
+        component={ViewDataShareScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="DataShareDetails"
+        component={DataShareDetailsScreen}
+        options={{
+          animation: 'slide_from_right',
+          animationDuration: 300,
+        }}
+      />
+      <Stack.Screen
+        name="CreateDataShare"
+        component={CreateDataShareScreen}
         options={{
           animation: 'slide_from_right',
           animationDuration: 300,

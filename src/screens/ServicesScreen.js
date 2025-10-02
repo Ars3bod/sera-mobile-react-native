@@ -195,6 +195,15 @@ const ServicesScreen = ({ navigation }) => {
       isAvailable: true,
     },
     {
+      id: 4,
+      titleKey: 'services.dataSharing.title',
+      descriptionKey: 'services.dataSharing.description',
+      detailedDescriptionKey: 'services.dataSharing.detailedDescription',
+      icon: Share24Regular,
+      color: theme.colors.primary,
+      isAvailable: true,
+    },
+    {
       id: 1,
       titleKey: 'services.permitRequest.title',
       descriptionKey: 'services.permitRequest.description',
@@ -209,15 +218,6 @@ const ServicesScreen = ({ navigation }) => {
       descriptionKey: 'services.licenseIssuance.description',
       detailedDescriptionKey: 'services.licenseIssuance.detailedDescription',
       icon: Certificate24Regular,
-      color: theme.colors.primary,
-      isAvailable: false, // Coming soon
-    },
-    {
-      id: 4,
-      titleKey: 'services.dataSharing.title',
-      descriptionKey: 'services.dataSharing.description',
-      detailedDescriptionKey: 'services.dataSharing.detailedDescription',
-      icon: Share24Regular,
       color: theme.colors.primary,
       isAvailable: false, // Coming soon
     },
@@ -255,6 +255,13 @@ const ServicesScreen = ({ navigation }) => {
     if (service.id === 2) {
       // Complaints service
       navigation.navigate('Complaints');
+      return;
+    }
+
+    // Handle data sharing service specifically
+    if (service.id === 4) {
+      // Data Sharing service - navigate to DataShare screen
+      navigation.navigate('DataShare');
       return;
     }
 
@@ -407,6 +414,79 @@ const ServicesScreen = ({ navigation }) => {
                       },
                       submitUrl: 'https://eservices.sera.gov.sa/Complaint-menu',
                       guideUrl: 'https://sera.gov.sa/-/media/wera/pdfs/e-service/electricity-services-complaint-en.pdf'
+                    }
+                  });
+                }}
+                activeOpacity={0.7}>
+                <Text style={[styles.serviceDescriptionLinkText, {
+                  color: theme.colors.primary,
+                  textAlign: isRTL ? 'right' : 'left'
+                }]}>
+                  {isRTL ? 'وصف الخدمة ←' : 'Service Description →'}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {service.id === 4 && service.isAvailable && ( // Only show for data sharing service when available
+              <TouchableOpacity
+                style={[styles.serviceDescriptionLink, { alignSelf: isRTL ? 'flex-end' : 'flex-start' }]}
+                onPress={() => {
+                  navigation.navigate('ServiceDescription', {
+                    serviceData: {
+                      id: 'dataSharing',
+                      title: {
+                        en: 'Data Sharing',
+                        ar: 'مشاركة البيانات'
+                      },
+                      description: {
+                        en: 'The service enables you to share your electricity consumption data with third parties of your choice. This allows you to grant access to your consumption information for various purposes such as financial services, energy management, or other authorized services.',
+                        ar: 'تتيح لك الخدمة مشاركة بيانات استهلاك الكهرباء الخاصة بك مع الجهات الخارجية التي تختارها. يمكنك منح حق الوصول إلى معلومات الاستهلاك الخاصة بك لأغراض متعددة مثل الخدمات المالية، إدارة الطاقة، أو الخدمات المعتمدة الأخرى.'
+                      },
+                      steps: {
+                        en: [
+                          'Choose "Data Sharing"',
+                          'Fill the request form',
+                          'Review the request',
+                          'Confirm'
+                        ],
+                        ar: [
+                          'اختر "مشاركة البيانات"',
+                          'املأ نموذج الطلب',
+                          'راجع الطلب',
+                          'ارسال الطلب'
+                        ]
+                      },
+                      requirements: {
+                        en: [
+                          'Required data details',
+                          'Legal reference'
+                        ],
+                        ar: [
+                          'تفاصيل البيانات المطلوبة',
+                          'المرجعية القانونية'
+                        ]
+                      },
+                      targetedAudience: {
+                        en: 'Consumer - Service Provider - Investor',
+                        ar: 'المستهلك - مقدم الخدمة - المستثمر'
+                      },
+                      completionPeriod: {
+                        en: 'Immediate',
+                        ar: 'فوري'
+                      },
+                      fees: {
+                        en: 'Free',
+                        ar: 'مجاني'
+                      },
+                      supportedLanguages: {
+                        en: 'Arabic-English',
+                        ar: 'العربية - الإنجليزية'
+                      },
+                      contactNumber: '19944',
+                      deliveryChannels: {
+                        en: 'E-portal',
+                        ar: 'البوابة الإلكترونية'
+                      },
+                      submitUrl: 'https://eservices.sera.gov.sa/DataSharing'
                     }
                   });
                 }}
@@ -829,6 +909,77 @@ const ServicesScreen = ({ navigation }) => {
                           },
                           submitUrl: 'https://eservices.sera.gov.sa/Complaint-menu',
                           guideUrl: 'https://sera.gov.sa/-/media/wera/pdfs/e-service/electricity-services-complaint-en.pdf'
+                        }
+                      });
+                    }}
+                    activeOpacity={0.8}>
+                    <Text style={dynamicStyles.descriptionModalButtonText}>
+                      {isRTL ? 'وصف الخدمة' : 'Service Description'}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {selectedService?.id === 4 && ( // Only show for data sharing service
+                  <TouchableOpacity
+                    style={dynamicStyles.descriptionModalButton}
+                    onPress={() => {
+                      closeDescriptionModal();
+                      navigation.navigate('ServiceDescription', {
+                        serviceData: {
+                          id: 'dataSharing',
+                          title: {
+                            en: 'Data Sharing',
+                            ar: 'مشاركة البيانات'
+                          },
+                          description: {
+                            en: 'The service enables you to share your electricity consumption data with third parties of your choice. This allows you to grant access to your consumption information for various purposes such as financial services, energy management, or other authorized services.',
+                            ar: 'تتيح لك الخدمة مشاركة بيانات استهلاك الكهرباء الخاصة بك مع الجهات الخارجية التي تختارها. يمكنك منح حق الوصول إلى معلومات الاستهلاك الخاصة بك لأغراض متعددة مثل الخدمات المالية، إدارة الطاقة، أو الخدمات المعتمدة الأخرى.'
+                          },
+                          steps: {
+                            en: [
+                              'Choose "Data Sharing"',
+                              'Fill the request form',
+                              'Review the request',
+                              'Confirm'
+                            ],
+                            ar: [
+                              'اختر "مشاركة البيانات"',
+                              'املأ نموذج الطلب',
+                              'راجع الطلب',
+                              'ارسال الطلب'
+                            ]
+                          },
+                          requirements: {
+                            en: [
+                              'Required data details',
+                              'Legal reference'
+                            ],
+                            ar: [
+                              'تفاصيل البيانات المطلوبة',
+                              'المرجعية القانونية'
+                            ]
+                          },
+                          targetedAudience: {
+                            en: 'Consumer - Service Provider - Investor',
+                            ar: 'المستهلك - مقدم الخدمة - المستثمر'
+                          },
+                          completionPeriod: {
+                            en: 'Immediate',
+                            ar: 'فوري'
+                          },
+                          fees: {
+                            en: 'Free',
+                            ar: 'مجاني'
+                          },
+                          supportedLanguages: {
+                            en: 'Arabic-English',
+                            ar: 'العربية - الإنجليزية'
+                          },
+                          contactNumber: '19944',
+                          deliveryChannels: {
+                            en: 'E-portal',
+                            ar: 'البوابة الإلكترونية'
+                          },
+                          submitUrl: 'https://eservices.sera.gov.sa/DataSharing'
                         }
                       });
                     }}
