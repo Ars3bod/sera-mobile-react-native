@@ -104,7 +104,7 @@ android {
             if (keystoreProperties['storeFile'] || System.getenv('KEYSTORE_PASSWORD')) {
                 keyAlias keystoreProperties['keyAlias'] ?: System.getenv('KEY_ALIAS')
                 keyPassword keystoreProperties['keyPassword'] ?: System.getenv('KEY_PASSWORD')
-                storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+                storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : file('upload.keystore')
                 storePassword keystoreProperties['storePassword'] ?: System.getenv('KEYSTORE_PASSWORD')
             } else {
                 // Fallback to debug keystore for unsigned release builds

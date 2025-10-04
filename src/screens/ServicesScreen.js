@@ -519,7 +519,7 @@ const ServicesScreen = ({ navigation }) => {
                       },
                       description: {
                         en: 'Believing in the principle of transparency and freedom of data and information circulation, SERA provides public data to all portal visitors and beneficiaries in accordance with the Freedom of Information policy issued by the National Data Management Office and in compliance with all other relevant regulatory controls.',
-                        ar: 'إيمانا بمبدأ الشفافية وحرية تداول البيانات والمعلومات توفر الهيئة السعودية لتنظيم الكهرباء البيانات العامة لجميع زوّار البوابة والمستفيدين وذلك حسب سياسة حرية المعلومات الصادرة عن مكتب إدارة البيانات الوطنية والتزماً بجميع الضوابط التنظيمية الأخرى ذات العلاقة.'
+                        ar: 'إيمانا بمبدأ فية وحرية تداول البيانات والمعلومات توفر الهيئة السعودية لتنظيم الكهرباء البيانات العامة لجميع زوّار البوابة والمستفيدين وذلك حسب سياسة حرية المعلومات الصادرة عن مكتب إدارة البيانات الوطنية والتزماً بجميع الضوابط التنظيمية الأخرى ذات العلاقة.'
                       },
                       steps: {
                         en: [
@@ -705,10 +705,20 @@ const ServicesScreen = ({ navigation }) => {
       backgroundColor: theme.colors.surface,
       borderWidth: 1,
       borderColor: theme.colors.border,
+      borderRadius: 12,
+      paddingVertical: 16,
+      paddingHorizontal: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
       flex: 1,
+      minHeight: 48,
+      marginHorizontal: 4,
     },
     cancelButtonText: {
       color: theme.colors.text,
+      fontSize: 16,
+      fontWeight: '600',
+      textAlign: 'center',
     },
     // Description Modal styles
     descriptionModalContainer: {
@@ -761,15 +771,19 @@ const ServicesScreen = ({ navigation }) => {
     descriptionModalButton: {
       backgroundColor: theme.colors.primary,
       borderRadius: 12,
-      paddingVertical: 14,
-      paddingHorizontal: 24,
+      paddingVertical: 16,
+      paddingHorizontal: 20,
       alignItems: 'center',
+      justifyContent: 'center',
       flex: 1,
+      minHeight: 48,
+      marginHorizontal: 4,
     },
     descriptionModalButtonText: {
       color: '#FFFFFF',
       fontSize: 16,
       fontWeight: '600',
+      textAlign: 'center',
     },
   });
 
@@ -1064,6 +1078,81 @@ const ServicesScreen = ({ navigation }) => {
                             ar: 'البوابة الإلكترونية'
                           },
                           submitUrl: 'https://eservices.sera.gov.sa/DataSharing'
+                        }
+                      });
+                    }}
+                    activeOpacity={0.8}>
+                    <Text style={dynamicStyles.descriptionModalButtonText}>
+                      {isRTL ? 'وصف الخدمة' : 'Service Description'}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {selectedService?.id === 5 && ( // Only show for FOI service
+                  <TouchableOpacity
+                    style={dynamicStyles.descriptionModalButton}
+                    onPress={() => {
+                      closeDescriptionModal();
+                      navigation.navigate('ServiceDescription', {
+                        serviceData: {
+                          id: 'freedomOfInformation',
+                          title: {
+                            en: 'Freedom of Information',
+                            ar: 'حرية المعلومات'
+                          },
+                          description: {
+                            en: 'Believing in the principle of transparency and freedom of data and information circulation, SERA provides public data to all portal visitors and beneficiaries in accordance with the Freedom of Information policy issued by the National Data Management Office and in compliance with all other relevant regulatory controls.',
+                            ar: 'إيمانا بمبدأ الشفافية وحرية تداول البيانات والمعلومات توفر الهيئة السعودية لتنظيم الكهرباء البيانات العامة لجميع زوّار البوابة والمستفيدين وذلك حسب سياسة حرية المعلومات الصادرة عن مكتب إدارة البيانات الوطنية والتزماً بجميع الضوابط التنظيمية الأخرى ذات العلاقة.'
+                          },
+                          steps: {
+                            en: [
+                              'Choose "Freedom of Information"',
+                              'Fill the request form',
+                              'Submit the request',
+                              'Track your request'
+                            ],
+                            ar: [
+                              'اختر "حرية المعلومات"',
+                              'املأ نموذج الطلب',
+                              'أرسل الطلب',
+                              'تابع طلبك'
+                            ]
+                          },
+                          requirements: {
+                            en: [
+                              'Name, address and national identity',
+                              'Description of public information required',
+                              'Purpose of requesting access to public information',
+                              'Method of delivering notification'
+                            ],
+                            ar: [
+                              'الاسم والعنوان والهوية الوطنية',
+                              'وصف للمعلومات العامة المطلوبة من مقدم الطلب',
+                              'الغرض من طلب الوصول إلى المعلومات العامة',
+                              'طريقة توصيل الإشعار إلى مقدم الطلب'
+                            ]
+                          },
+                          targetedAudience: {
+                            en: 'Consumer - Service Provider - Investor',
+                            ar: 'المستهلك - مقدم الخدمة - المستثمر'
+                          },
+                          completionPeriod: {
+                            en: '30 days',
+                            ar: '30 يوم'
+                          },
+                          fees: {
+                            en: 'Free',
+                            ar: 'مجاني'
+                          },
+                          supportedLanguages: {
+                            en: 'Arabic-English',
+                            ar: 'العربية - الإنجليزية'
+                          },
+                          contactNumber: '19944',
+                          deliveryChannels: {
+                            en: 'E-portal',
+                            ar: 'البوابة الإلكترونية'
+                          },
+                          submitUrl: 'https://eservices.sera.gov.sa/FOI'
                         }
                       });
                     }}

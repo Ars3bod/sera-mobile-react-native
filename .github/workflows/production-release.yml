@@ -157,16 +157,35 @@ jobs:
       - name: 🔧 Make Gradlew Executable
         run: chmod +x android/gradlew
       
+      - name: 📋 Check Android Environment
+        run: |
+          echo "🔍 Android Environment Check:"
+          echo "• Keystore file exists: $(ls -la android/app/upload.keystore 2>/dev/null && echo 'YES' || echo 'NO')"
+          echo "• Gradle wrapper exists: $(ls -la android/gradlew 2>/dev/null && echo 'YES' || echo 'NO')"
+          echo "• Environment variables:"
+          echo "  - KEYSTORE_PASSWORD: ${KEYSTORE_PASSWORD:+SET}"
+          echo "  - KEY_ALIAS: ${KEY_ALIAS:+SET}"
+          echo "  - KEY_PASSWORD: ${KEY_PASSWORD:+SET}"
+      
       - name: 🏗️ Build Android Release AAB (Signed with Upload Key)
         working-directory: android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
         run: |
+          # Set Gradle JVM options for better memory management
+          export GRADLE_OPTS="-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError"
+          
+          # Clean before build
+          ./gradlew clean
+          
+          # Build with detailed logging
           ./gradlew bundleRelease \
-            -Pandroid.injected.signing.store.file=../app/upload.keystore \
-            -Pandroid.injected.signing.store.password="${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}" \
-            -Pandroid.injected.signing.key.alias="${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}" \
-            -Pandroid.injected.signing.key.password="${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}" \
             --no-daemon \
-            --stacktrace
+            --stacktrace \
+            --info \
+            --max-workers=2
           
           echo "✅ AAB signed with upload key and ready for Google Play!"
       
@@ -289,7 +308,7 @@ jobs:
       - name: 📄 Install iOS Provisioning Profile
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/sera.mobileprovision
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
           echo "✅ Provisioning profile installed"
       
       - name: 🏗️ Build iOS Archive
@@ -303,7 +322,7 @@ jobs:
             -allowProvisioningUpdates \
             CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM=${{ secrets.IOS_TEAM_ID }} \
-            PROVISIONING_PROFILE_SPECIFIER="sera" \
+            PROVISIONING_PROFILE_SPECIFIER="${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}" \
             CODE_SIGN_IDENTITY="Apple Distribution"
           
           echo "✅ iOS archive created successfully!"
