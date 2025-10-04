@@ -114,6 +114,7 @@ jobs:
     name: 🤖 Build Android Release AAB
     needs: version-bump
     runs-on: ubuntu-latest
+    environment: PROD
     if: github.event.inputs.deploy_android == 'true'
     
     steps:
@@ -221,6 +222,7 @@ jobs:
     name: 🚀 Deploy to Google Play (Internal Testing)
     needs: [version-bump, build-android]
     runs-on: ubuntu-latest
+    environment: PROD
     
     steps:
       - name: 📥 Download AAB Artifact
@@ -261,6 +263,7 @@ jobs:
     name: 🍎 Build iOS Release IPA
     needs: version-bump
     runs-on: macos-14
+    environment: PROD
     if: github.event.inputs.deploy_ios == 'true'
     
     steps:
@@ -369,6 +372,7 @@ jobs:
     name: 🚀 Deploy to TestFlight
     needs: [version-bump, build-ios]
     runs-on: macos-14
+    environment: PROD
     
     steps:
       - name: 📥 Download IPA Artifact
