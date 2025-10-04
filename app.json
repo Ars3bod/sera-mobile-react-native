@@ -7,7 +7,7 @@
   ],
   "ios": {
     "bundleIdentifier": "sa.gov.sera.mobile",
-    "buildNumber": "1759419295",
+    "buildNumber": "1759602735",
     "deploymentTarget": "13.0",
     "supportsTablet": false,
     "requireFullScreen": true,
