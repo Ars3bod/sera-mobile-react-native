@@ -1,13 +1,13 @@
 {
   "name": "seraApp",
   "displayName": "SERA | سيرا",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "plugins": [
     "expo-localization"
   ],
   "ios": {
     "bundleIdentifier": "sa.gov.sera.mobile",
-    "buildNumber": "1759603766",
+    "buildNumber": "1759603801",
     "deploymentTarget": "13.0",
     "supportsTablet": false,
     "requireFullScreen": true,
