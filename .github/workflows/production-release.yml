@@ -285,13 +285,10 @@ jobs:
           bundler-cache: true
           working-directory: ios
       
-      - name: 🔄 Cache CocoaPods
-        uses: actions/cache@v4
-        with:
-          path: ios/Pods
-          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pods-
+      - name: 🔄 Cache CocoaPods (Disabled for Clean Build)
+        run: |
+          echo "⚠️ Skipping CocoaPods cache to ensure clean build"
+          echo "This prevents hermes-engine version conflicts"
       
       - name: 📦 Install NPM Dependencies
         run: npm ci --legacy-peer-deps
@@ -299,7 +296,20 @@ jobs:
       - name: 🍎 Install CocoaPods Dependencies
         run: |
           cd ios
+          
+          # Clean existing pods to avoid conflicts
+          rm -rf Pods Podfile.lock
+          
+          # Install pods with specific hermes-engine update
           pod install --repo-update
+          
+          # If hermes-engine conflict persists, force update it
+          pod update hermes-engine --no-repo-update || true
+          
+          # Verify hermes-engine installation
+          echo "🔍 Verifying hermes-engine installation..."
+          pod list | grep hermes-engine || echo "⚠️ hermes-engine not found in pod list"
+          
           echo "✅ CocoaPods installed successfully"
       
       - name: 🔐 Import iOS Code Signing Certificates
