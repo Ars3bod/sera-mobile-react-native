@@ -240,9 +240,11 @@ jobs:
           # Create release notes directory if it doesn't exist
           mkdir -p android/release-notes/
           echo "Release v${{ needs.version-bump.outputs.version }}" > android/release-notes/whatsnew-en-US.txt
-          echo "إصدار v${{ needs.version-bump.outputs.version }}" > android/release-notes/whatsnew-ar.txt
+          # Note: Using only English release notes to avoid language code issues
           
           echo "✅ Release notes created"
+          echo "📋 Release notes files:"
+          ls -la android/release-notes/
       
       - name: 🚀 Deploy to Google Play Console (Internal Testing)
         uses: r0adkll/upload-google-play@v1.1.3
@@ -355,15 +357,40 @@ jobs:
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           
+          # Debug: Check if secret exists and its length
+          echo "🔍 Debug: Checking provisioning profile secret..."
+          if [ -z "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" ]; then
+            echo "❌ IOS_PROVISIONING_PROFILE_BASE64 secret is empty or not set"
+            exit 1
+          fi
+          
+          # Get the secret length
+          SECRET_LENGTH=$(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | wc -c)
+          echo "📏 Secret length: $SECRET_LENGTH characters"
+          
           # Clean and decode base64 provisioning profile
-          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | tr -d '\n\r' | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
+          echo "🔧 Decoding provisioning profile..."
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | tr -d '\n\r\t ' | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
           
           # Verify the file was created and has content
           if [ -f ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision ]; then
+            FILE_SIZE=$(ls -la ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision | awk '{print $5}')
             echo "✅ Provisioning profile installed successfully"
+            echo "📁 File size: $FILE_SIZE bytes"
             ls -la ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
+            
+            # Verify it's a valid provisioning profile
+            if file ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision | grep -q "XML"; then
+              echo "✅ Valid provisioning profile detected"
+            else
+              echo "⚠️ Warning: File doesn't appear to be a valid provisioning profile"
+            fi
           else
             echo "❌ Failed to install provisioning profile"
+            echo "🔍 Troubleshooting:"
+            echo "  1. Check that IOS_PROVISIONING_PROFILE_BASE64 secret is properly base64 encoded"
+            echo "  2. Ensure the secret doesn't contain newlines or extra characters"
+            echo "  3. Verify IOS_PROVISIONING_PROFILE_NAME matches your profile name"
             exit 1
           fi
       
