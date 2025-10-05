@@ -371,7 +371,8 @@ jobs:
           echo "📏 Cleaned length: $(echo "$CLEAN_BASE64" | wc -c)"
           
           # Test base64 decoding
-          if ! echo "$CLEAN_BASE64" | base64 -D > /dev/null 2>&1; then
+          echo "$CLEAN_BASE64" > /tmp/test_base64.txt
+          if ! base64 -D /tmp/test_base64.txt > /dev/null 2>&1; then
             echo "❌ Secret is not valid base64 after cleaning"
             echo "🔍 First 100 characters: $(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | head -c 100)"
             echo "🔍 Cleaned first 100: $(echo "$CLEAN_BASE64" | head -c 100)"
@@ -384,6 +385,9 @@ jobs:
           fi
           echo "✅ Base64 format is valid"
           
+          # Clean up test file
+          rm -f /tmp/test_base64.txt
+          
           # Clean and decode base64 provisioning profile
           echo "🔧 Decoding provisioning profile..."
           
@@ -391,7 +395,7 @@ jobs:
           echo "$CLEAN_BASE64" > /tmp/clean_base64.txt
           
           # Decode using file input to avoid shell interpretation issues
-          if base64 -D -i /tmp/clean_base64.txt -o ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision; then
+          if base64 -D /tmp/clean_base64.txt > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision; then
             echo "✅ Base64 decode successful"
             echo "📁 Profile installed: ~/Library/MobileDevice/Provisioning Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision"
           else
