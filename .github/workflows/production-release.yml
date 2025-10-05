@@ -324,24 +324,25 @@ jobs:
           export COCOAPODS_DISABLE_STATS=true
           export COCOAPODS_SKIP_CACHE=false
           
-          # Install pods with specific hermes-engine update
+          # Install pods with specific version constraints
           pod install --repo-update --verbose --no-ansi
           
-          # If hermes-engine conflict persists, force update it
+          # Force update specific problematic pods
           pod update hermes-engine --no-repo-update || true
-          
-          # Update react-native-reanimated to fix C++ compilation issues
           pod update react-native-reanimated --no-repo-update || true
           
-          # Update React Native core pods to ensure C++20 compatibility
-          pod update React-Core React-CoreModules React-RCTText React-RCTNetwork React-RCTSettings React-RCTAnimation React-RCTBlob React-RCTImage React-RCTLinking React-RCTWebSocket React-RCTActionSheet React-RCTPushNotification React-RCTSettings React-RCTText React-RCTGeolocation React-RCTNetwork React-RCTAnimation React-RCTBlob React-RCTImage React-RCTLinking React-RCTWebSocket React-RCTActionSheet React-RCTPushNotification --no-repo-update || true
-          
-          # Verify hermes-engine installation (simplified check)
-          echo "🔍 Verifying hermes-engine installation..."
+          # Verify critical pods installation
+          echo "🔍 Verifying critical pods installation..."
           if [ -d "Pods/hermes-engine" ]; then
             echo "✅ hermes-engine directory found"
           else
             echo "⚠️ hermes-engine directory not found, but continuing..."
+          fi
+          
+          if [ -d "Pods/RNReanimated" ]; then
+            echo "✅ RNReanimated directory found"
+          else
+            echo "⚠️ RNReanimated directory not found, but continuing..."
           fi
           
           echo "✅ CocoaPods installed successfully"
@@ -395,9 +396,9 @@ jobs:
       
       - name: 🏗️ Build iOS Archive
         run: |
-          # Set C++ standard to fix React Native compilation issues
-          export CPPFLAGS="-std=c++20"
-          export CXXFLAGS="-std=c++20"
+          # Set C++ standard to C++17 with compatibility flags
+          export CPPFLAGS="-std=c++17 -stdlib=libc++"
+          export CXXFLAGS="-std=c++17 -stdlib=libc++"
           
           xcodebuild archive \
             -workspace ios/seraApp.xcworkspace \
@@ -410,11 +411,13 @@ jobs:
             DEVELOPMENT_TEAM=${{ secrets.IOS_TEAM_ID }} \
             PROVISIONING_PROFILE_SPECIFIER="${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}" \
             CODE_SIGN_IDENTITY="Apple Distribution" \
-            CLANG_CXX_LANGUAGE_STANDARD=c++20 \
+            CLANG_CXX_LANGUAGE_STANDARD=c++17 \
             CLANG_CXX_LIBRARY=libc++ \
             GCC_C_LANGUAGE_STANDARD=gnu11 \
             CLANG_ENABLE_MODULES=YES \
-            CLANG_ENABLE_OBJC_ARC=YES
+            CLANG_ENABLE_OBJC_ARC=YES \
+            CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER=NO \
+            GCC_WARN_INHIBIT_ALL_WARNINGS=YES
           
           echo "✅ iOS archive created successfully!"
       
