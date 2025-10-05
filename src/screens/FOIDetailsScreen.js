@@ -162,7 +162,7 @@ const FOIDetailsScreen = ({ navigation, route }) => {
 
     if (!request) {
         return (
-            <SafeContainer>
+            <SafeContainer backgroundColor={theme.colors.background}>
                 <View style={dynamicStyles.header}>
                     <TouchableOpacity
                         style={dynamicStyles.backButton}
@@ -288,7 +288,7 @@ const FOIDetailsScreen = ({ navigation, route }) => {
     });
 
     return (
-        <SafeContainer>
+        <SafeContainer backgroundColor={theme.colors.background}>
             {/* Header */}
             <View style={dynamicStyles.header}>
                 <TouchableOpacity

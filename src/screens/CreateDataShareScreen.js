@@ -1138,7 +1138,7 @@ const CreateDataShareScreen = ({ navigation }) => {
     });
 
     return (
-        <SafeContainer>
+        <SafeContainer backgroundColor={theme.colors.background}>
             {/* Header */}
             <View style={dynamicStyles.header}>
                 <TouchableOpacity

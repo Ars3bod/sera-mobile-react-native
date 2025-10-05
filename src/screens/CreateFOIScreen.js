@@ -471,7 +471,7 @@ const CreateFOIScreen = ({ navigation }) => {
 
     return (
         <SessionWrapper>
-            <SafeContainer>
+            <SafeContainer backgroundColor={theme.colors.background}>
                 {/* Header */}
                 <View style={dynamicStyles.header}>
                     <TouchableOpacity
