@@ -11,15 +11,16 @@ on:
         description: '📝 Release notes (what changed in this version)'
         required: true
         type: string
-      platform_choice:
-        description: '🎯 Platform Selection'
-        required: true
-        default: 'both'
-        type: choice
-        options:
-          - 'both'
-          - 'android-only'
-          - 'ios-only'
+      deploy_android:
+        description: '🤖 Deploy to Android (Google Play)'
+        required: false
+        type: boolean
+        default: true
+      deploy_ios:
+        description: '🍎 Deploy to iOS (TestFlight)'
+        required: false
+        type: boolean
+        default: true
 
 env:
   NODE_VERSION: '20'
@@ -40,33 +41,6 @@ jobs:
       commit_sha: ${{ steps.bump.outputs.commit_sha }}
     
     steps:
-      - name: 🎯 Display Platform Selection
-        run: |
-          echo "## 🚀 SERA Mobile Release Workflow" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 🎯 Platform Selection" >> $GITHUB_STEP_SUMMARY
-          echo "- **Selected Platform**: ${{ github.event.inputs.platform_choice }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Version**: ${{ github.event.inputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📋 Workflow Plan" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ github.event.inputs.platform_choice }}" = "both" ]; then
-            echo "- ✅ Build Android AAB" >> $GITHUB_STEP_SUMMARY
-            echo "- ✅ Deploy to Google Play (Internal Testing)" >> $GITHUB_STEP_SUMMARY
-            echo "- ✅ Build iOS IPA" >> $GITHUB_STEP_SUMMARY
-            echo "- ✅ Deploy to TestFlight" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ github.event.inputs.platform_choice }}" = "android-only" ]; then
-            echo "- ✅ Build Android AAB" >> $GITHUB_STEP_SUMMARY
-            echo "- ✅ Deploy to Google Play (Internal Testing)" >> $GITHUB_STEP_SUMMARY
-            echo "- ⏭️ Skip iOS build and deployment" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ github.event.inputs.platform_choice }}" = "ios-only" ]; then
-            echo "- ⏭️ Skip Android build and deployment" >> $GITHUB_STEP_SUMMARY
-            echo "- ✅ Build iOS IPA" >> $GITHUB_STEP_SUMMARY
-            echo "- ✅ Deploy to TestFlight" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📝 Release Notes" >> $GITHUB_STEP_SUMMARY
-          echo "${{ github.event.inputs.release_notes }}" >> $GITHUB_STEP_SUMMARY
-      
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -141,7 +115,7 @@ jobs:
     needs: version-bump
     runs-on: ubuntu-latest
     environment: PROD
-    if: github.event.inputs.platform_choice == 'both' || github.event.inputs.platform_choice == 'android-only'
+    if: github.event.inputs.deploy_android == 'true'
     timeout-minutes: 45
     
     steps:
@@ -250,7 +224,7 @@ jobs:
     needs: [version-bump, build-android]
     runs-on: ubuntu-latest
     environment: PROD
-    if: github.event.inputs.platform_choice == 'both' || github.event.inputs.platform_choice == 'android-only'
+    if: github.event.inputs.deploy_android == 'true'
     
     steps:
       - name: 📥 Download AAB Artifact
@@ -309,7 +283,7 @@ jobs:
     needs: version-bump
     runs-on: macos-14
     environment: PROD
-    if: github.event.inputs.platform_choice == 'both' || github.event.inputs.platform_choice == 'ios-only'
+    if: github.event.inputs.deploy_ios == 'true'
     timeout-minutes: 60
     
     steps:
@@ -500,7 +474,7 @@ jobs:
     needs: [version-bump, build-ios]
     runs-on: macos-14
     environment: PROD
-    if: github.event.inputs.platform_choice == 'both' || github.event.inputs.platform_choice == 'ios-only'
+    if: github.event.inputs.deploy_ios == 'true'
     
     steps:
       - name: 📥 Download IPA Artifact
@@ -619,7 +593,8 @@ jobs:
           echo "## 🚀 SERA Mobile Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🎯 Platform Selection" >> $GITHUB_STEP_SUMMARY
-          echo "- **Selected Platform**: ${{ github.event.inputs.platform_choice }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Android Deployment**: ${{ github.event.inputs.deploy_android }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **iOS Deployment**: ${{ github.event.inputs.deploy_ios }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📱 Version Information" >> $GITHUB_STEP_SUMMARY
           echo "- **Version**: ${{ needs.version-bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY
@@ -647,7 +622,9 @@ jobs:
           text: |
             🚀 *SERA Mobile Release v${{ needs.version-bump.outputs.version }}*
             
-            *Platform Selection:* ${{ github.event.inputs.platform_choice }}
+            *Platform Selection:*
+            • Android: ${{ github.event.inputs.deploy_android == 'true' && '✅' || '⏭️' }}
+            • iOS: ${{ github.event.inputs.deploy_ios == 'true' && '✅' || '⏭️' }}
             
             *Build Status:*
             • Android AAB: ${{ needs.build-android.result == 'success' && '✅' || '❌' }}
