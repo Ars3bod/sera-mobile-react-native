@@ -330,6 +330,7 @@ jobs:
           # Force update specific problematic pods
           pod update hermes-engine --no-repo-update || true
           pod update react-native-reanimated --no-repo-update || true
+          pod update RNWorklets --no-repo-update || true
           
           # Apply React Native C++20 compatibility patch
           echo "🔧 Applying React Native C++20 compatibility patch..."
@@ -340,6 +341,17 @@ jobs:
             echo "#define _LIBCPP_ENABLE_CXX20_REMOVED_UNARY_BINARY_FUNCTION" >> "$RN_PERFORMANCE_FILE"
             echo "#endif" >> "$RN_PERFORMANCE_FILE"
             echo "✅ Applied C++20 compatibility patch to React Native performance timeline"
+          fi
+          
+          # Fix react-native-worklets version string issue
+          echo "🔧 Fixing react-native-worklets version string..."
+          WORKLETS_VERSION_FILE="Pods/Target Support Files/RNWorklets/RNWorklets-prefix.pch"
+          if [ -f "$WORKLETS_VERSION_FILE" ]; then
+            echo "// Fix for WORKLETS_VERSION_STRING undefined error" >> "$WORKLETS_VERSION_FILE"
+            echo "#ifndef WORKLETS_VERSION_STRING" >> "$WORKLETS_VERSION_FILE"
+            echo "#define WORKLETS_VERSION_STRING \"0.5.0\"" >> "$WORKLETS_VERSION_FILE"
+            echo "#endif" >> "$WORKLETS_VERSION_FILE"
+            echo "✅ Applied worklets version string fix"
           fi
           
           # Verify critical pods installation
@@ -354,6 +366,12 @@ jobs:
             echo "✅ RNReanimated directory found"
           else
             echo "⚠️ RNReanimated directory not found, but continuing..."
+          fi
+          
+          if [ -d "Pods/RNWorklets" ]; then
+            echo "✅ RNWorklets directory found"
+          else
+            echo "⚠️ RNWorklets directory not found, but continuing..."
           fi
           
           echo "✅ CocoaPods installed successfully"
