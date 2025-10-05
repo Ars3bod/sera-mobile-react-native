@@ -363,11 +363,18 @@ jobs:
           
           # Validate base64 format before decoding
           echo "🔍 Validating base64 format..."
-          if ! echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | grep -qE '^[A-Za-z0-9+/]*={0,2}$'; then
-            echo "❌ Secret contains invalid base64 characters"
+          # Remove all whitespace and check if it's valid base64
+          CLEAN_BASE64=$(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | tr -d '[:space:]')
+          if ! echo "$CLEAN_BASE64" | base64 -d > /dev/null 2>&1; then
+            echo "❌ Secret is not valid base64"
             echo "🔍 First 100 characters: $(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | head -c 100)"
+            echo ""
+            echo "❌ Base64 validation failed. Please check your IOS_PROVISIONING_PROFILE_BASE64 secret."
+            echo "💡 The secret should be a valid base64 encoded provisioning profile (.mobileprovision file)."
+            echo "💡 You can encode it using: base64 -i your-profile.mobileprovision"
             exit 1
           fi
+          echo "✅ Base64 format is valid"
           
           # Clean and decode base64 provisioning profile
           echo "🔧 Decoding provisioning profile..."
