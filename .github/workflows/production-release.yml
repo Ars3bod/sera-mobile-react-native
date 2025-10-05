@@ -264,14 +264,7 @@ jobs:
           echo "📦 Downloaded AAB:"
           ls -lh ./artifacts/
           
-          # Create release notes directory if it doesn't exist
-          mkdir -p android/release-notes/
-          echo "Release v${{ needs.version-bump.outputs.version }}" > android/release-notes/whatsnew-en-US.txt
-          # Note: Using only English release notes to avoid language code issues
-          
-          echo "✅ Release notes created"
-          echo "📋 Release notes files:"
-          ls -la android/release-notes/
+          echo "✅ AAB file ready for deployment"
       
       - name: 🚀 Deploy to Google Play Console (Internal Testing)
         uses: r0adkll/upload-google-play@v1.1.3
@@ -282,7 +275,6 @@ jobs:
           track: internal
           status: completed
           inAppUpdatePriority: 2
-          whatsNewDirectory: android/release-notes/
           releaseName: v${{ needs.version-bump.outputs.version }}
         continue-on-error: true
       
