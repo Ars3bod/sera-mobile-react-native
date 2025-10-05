@@ -27,32 +27,93 @@ env:
   JAVA_VERSION: '17'
   RUBY_VERSION: '3.2'
 
+permissions:
+  contents: write
+  actions: write
+  packages: read
+
 jobs:
-  # ... all other jobs (version-bump, build-android, etc.) unchanged ...
+  # ============================================
+  # Job 1: Version Bump (no dependencies)
+  # ============================================
+  version-bump:
+    name: 📝 Update Version Numbers
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.bump.outputs.version }}
+      ios_build_number: ${{ steps.bump.outputs.ios_build_number }}
+      commit_sha: ${{ steps.bump.outputs.commit_sha }}
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: 🔧 Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: ✅ Make Version Script Executable
+        run: chmod +x scripts/update-app-version.sh
+
+      - name: 🔢 Run Version Bump Script
+        id: bump
+        run: |
+          IOS_BUILD=$(date +%s)
+          ./scripts/update-app-version.sh "${{ github.event.inputs.version }}" "$IOS_BUILD"
+
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          echo "ios_build_number=$IOS_BUILD" >> $GITHUB_OUTPUT
+          echo "commit_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+          echo "✅ Version bumped successfully!"
+          echo "📱 Version: ${{ github.event.inputs.version }}"
+          echo "🍎 iOS Build Number: $IOS_BUILD"
+
+      - name: 💾 Commit & Push Version Changes
+        run: |
+          git add package.json app.json ios/seraApp.xcodeproj/project.pbxproj
+          git commit -m "chore: release version ${{ github.event.inputs.version }}
+
+          📱 Version: ${{ github.event.inputs.version }}
+          🍎 iOS Build Number: ${{ steps.bump.outputs.ios_build_number }}
+
+          Release Notes:
+          ${{ github.event.inputs.release_notes }}"
+          git push origin main
+
+      - name: 🏷️ Create Git Tag
+        run: |
+          git tag -a "v${{ github.event.inputs.version }}" -m "Release v${{ github.event.inputs.version }}
+
+          ${{ github.event.inputs.release_notes }}"
+          git push origin "v${{ github.event.inputs.version }}"
 
   # ============================================
-  # Job 4: Build iOS IPA (fixed for C++20)
+  # Job 2: Build iOS IPA (C++20 enforced at Pod level)
   # ============================================
   build-ios:
     name: 🍎 Build iOS Release IPA
     needs: version-bump
-    runs-on: macos-14     # keep macos-14 (Xcode 15.4), now compatible due to Podfile fix
+    runs-on: macos-14  # fine with the Podfile fix; you can switch to macos-15 if desired
     environment: PROD
     if: github.event.inputs.deploy_ios == 'true'
     timeout-minutes: 60
-    
+
     steps:
       - name: 📥 Checkout Code (versioned)
         uses: actions/checkout@v4
         with:
           ref: v${{ needs.version-bump.outputs.version }}
-      
+
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-      
+
       - name: 💎 Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -62,23 +123,24 @@ jobs:
 
       - name: 📦 Install NPM Dependencies
         run: npm ci --legacy-peer-deps
-      
-      - name: 🍎 Install CocoaPods Dependencies (with enforced C++20)
+
+      - name: 🍎 Install CocoaPods Dependencies (with enforced C++20 in Podfile)
         run: |
           cd ios
+          # ensure a clean resolve so the new post_install hook applies everywhere
           rm -rf Pods Podfile.lock
           pod install --repo-update --verbose --no-ansi
-          
-          # Reconfirm C++ settings applied
+
           echo "✅ Verifying Podfile C++20 enforcement..."
-          grep -R "CLANG_CXX_LANGUAGE_STANDARD" Pods/Target\ Support\ Files/* | head -5 || true
+          xcodebuild -workspace seraApp.xcworkspace -scheme Pods -showBuildSettings | \
+            grep -E "CLANG_CXX_LANGUAGE_STANDARD|OTHER_CPLUSPLUSFLAGS" | head -40 || true
 
       - name: 🔐 Import iOS Code Signing Certificates
         uses: apple-actions/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
           p12-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-      
+
       - name: 📄 Install iOS Provisioning Profile
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
@@ -100,7 +162,7 @@ jobs:
             PROVISIONING_PROFILE_SPECIFIER="${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}" \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             OTHER_CPLUSPLUSFLAGS='$(inherited) -D_LIBCPP_ENABLE_CXX20_REMOVED_UNARY_BINARY_FUNCTION'
-          
+
           echo "✅ iOS archive created successfully!"
 
       - name: 📦 Export IPA
@@ -110,9 +172,9 @@ jobs:
             -exportPath ios/build \
             -exportOptionsPlist ios/ExportOptions-Release.plist \
             -allowProvisioningUpdates
-          
+
           echo "✅ IPA exported successfully!"
-      
+
       - name: 📋 Verify IPA File
         run: |
           if [ -f "ios/build/seraApp.ipa" ]; then
@@ -122,9 +184,10 @@ jobs:
             echo "❌ IPA file not found!"
             exit 1
           fi
-      
+
       - name: ⬆️ Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: sera-ios-ipa-v${{ needs.version-bump.outputs.version }}
-          path: ios/build/
+          path: ios/build/seraApp.ipa
+          retention-days: 90
