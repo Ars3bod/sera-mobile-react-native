@@ -363,29 +363,31 @@ jobs:
           
           # Validate base64 format before decoding
           echo "🔍 Validating base64 format..."
-          # Remove all whitespace and check if it's valid base64
-          CLEAN_BASE64=$(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | tr -d '[:space:]')
+          
+          # Clean the base64 string more aggressively
+          CLEAN_BASE64=$(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | tr -d '\n\r\t ' | sed 's/[^A-Za-z0-9+/=]//g')
+          
+          echo "📏 Original length: $(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | wc -c)"
+          echo "📏 Cleaned length: $(echo "$CLEAN_BASE64" | wc -c)"
+          
+          # Test base64 decoding
           if ! echo "$CLEAN_BASE64" | base64 -d > /dev/null 2>&1; then
-            echo "❌ Secret is not valid base64"
+            echo "❌ Secret is not valid base64 after cleaning"
             echo "🔍 First 100 characters: $(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | head -c 100)"
+            echo "🔍 Cleaned first 100: $(echo "$CLEAN_BASE64" | head -c 100)"
             echo ""
             echo "❌ Base64 validation failed. Please check your IOS_PROVISIONING_PROFILE_BASE64 secret."
             echo "💡 The secret should be a valid base64 encoded provisioning profile (.mobileprovision file)."
             echo "💡 You can encode it using: base64 -i your-profile.mobileprovision"
+            echo "💡 Make sure to copy the entire base64 string without any line breaks or extra characters."
             exit 1
           fi
           echo "✅ Base64 format is valid"
           
           # Clean and decode base64 provisioning profile
           echo "🔧 Decoding provisioning profile..."
-          # Use a more robust approach with temporary file
-          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" > /tmp/profile_base64.txt
-          
-          # Clean the base64 string
-          sed -i 's/[[:space:]]//g' /tmp/profile_base64.txt
-          
-          # Decode using file input
-          if base64 -d /tmp/profile_base64.txt > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision; then
+          # Use the cleaned base64 string we already validated
+          if echo "$CLEAN_BASE64" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision; then
             echo "✅ Base64 decode successful"
           else
             echo "❌ Base64 decode failed"
