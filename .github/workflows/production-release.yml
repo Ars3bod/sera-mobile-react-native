@@ -351,7 +351,9 @@ jobs:
           PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "$PROVISIONING_PROFILE_BASE64" | base64 -D > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
+          # Clean the base64 string and decode
+          CLEAN_BASE64=$(echo "$PROVISIONING_PROFILE_BASE64" | tr -d '\n\r\t ')
+          echo "$CLEAN_BASE64" | base64 -D > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
       
       - name: 🏗️ Build iOS Archive
         run: |
