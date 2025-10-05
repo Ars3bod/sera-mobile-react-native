@@ -340,13 +340,52 @@ jobs:
           
           echo "✅ CocoaPods installed successfully"
       
-      - name: 📄 Install iOS Provisioning Profile
+      - name: 🔐 Import iOS Code Signing Certificates
         uses: apple-actions/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
           p12-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-          provisioning-profile-base64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
-          provisioning-profile-name: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
+      
+      - name: 📄 Install iOS Provisioning Profile
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          # Use Python for more robust base64 handling
+          python3 -c "
+          import base64
+          import sys
+          import os
+          
+          # Get the base64 string from environment
+          secret = os.environ.get('PROVISIONING_PROFILE_BASE64', '')
+          if not secret:
+              print('❌ No provisioning profile secret found')
+              sys.exit(1)
+          
+          try:
+              # Clean the secret (remove whitespace)
+              clean_secret = ''.join(secret.split())
+              
+              # Decode base64
+              decoded = base64.b64decode(clean_secret)
+              
+              # Write to file
+              profile_name = os.environ.get('PROVISIONING_PROFILE_NAME', 'profile')
+              profile_path = f'~/Library/MobileDevice/Provisioning Profiles/{profile_name}.mobileprovision'
+              profile_path = os.path.expanduser(profile_path)
+              
+              with open(profile_path, 'wb') as f:
+                  f.write(decoded)
+              
+              print(f'✅ Provisioning profile installed: {profile_path}')
+              print(f'📁 File size: {len(decoded)} bytes')
+              
+          except Exception as e:
+              print(f'❌ Error installing provisioning profile: {e}')
+              sys.exit(1)
+          "
+        env:
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          PROVISIONING_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
       
       - name: 🏗️ Build iOS Archive
         run: |
