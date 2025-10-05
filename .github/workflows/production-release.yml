@@ -331,6 +331,17 @@ jobs:
           pod update hermes-engine --no-repo-update || true
           pod update react-native-reanimated --no-repo-update || true
           
+          # Apply React Native C++20 compatibility patch
+          echo "🔧 Applying React Native C++20 compatibility patch..."
+          RN_PERFORMANCE_FILE="Pods/Target Support Files/React-performancetimeline/React-performancetimeline-prefix.pch"
+          if [ -f "$RN_PERFORMANCE_FILE" ]; then
+            echo "// C++20 compatibility patch for std::unordered_set::contains" >> "$RN_PERFORMANCE_FILE"
+            echo "#if __cplusplus >= 202002L && defined(__APPLE__)" >> "$RN_PERFORMANCE_FILE"
+            echo "#define _LIBCPP_ENABLE_CXX20_REMOVED_UNARY_BINARY_FUNCTION" >> "$RN_PERFORMANCE_FILE"
+            echo "#endif" >> "$RN_PERFORMANCE_FILE"
+            echo "✅ Applied C++20 compatibility patch to React Native performance timeline"
+          fi
+          
           # Verify critical pods installation
           echo "🔍 Verifying critical pods installation..."
           if [ -d "Pods/hermes-engine" ]; then
@@ -396,9 +407,9 @@ jobs:
       
       - name: 🏗️ Build iOS Archive
         run: |
-          # Set C++ standard to C++17 with compatibility flags
-          export CPPFLAGS="-std=c++17 -stdlib=libc++"
-          export CXXFLAGS="-std=c++17 -stdlib=libc++"
+          # Set C++ standard to C++20 with compatibility flags for React Native 0.79.4
+          export CPPFLAGS="-std=c++20 -stdlib=libc++ -D_LIBCPP_ENABLE_CXX20_REMOVED_UNARY_BINARY_FUNCTION"
+          export CXXFLAGS="-std=c++20 -stdlib=libc++ -D_LIBCPP_ENABLE_CXX20_REMOVED_UNARY_BINARY_FUNCTION"
           
           xcodebuild archive \
             -workspace ios/seraApp.xcworkspace \
@@ -411,13 +422,14 @@ jobs:
             DEVELOPMENT_TEAM=${{ secrets.IOS_TEAM_ID }} \
             PROVISIONING_PROFILE_SPECIFIER="${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}" \
             CODE_SIGN_IDENTITY="Apple Distribution" \
-            CLANG_CXX_LANGUAGE_STANDARD=c++17 \
+            CLANG_CXX_LANGUAGE_STANDARD=c++20 \
             CLANG_CXX_LIBRARY=libc++ \
             GCC_C_LANGUAGE_STANDARD=gnu11 \
             CLANG_ENABLE_MODULES=YES \
             CLANG_ENABLE_OBJC_ARC=YES \
             CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER=NO \
-            GCC_WARN_INHIBIT_ALL_WARNINGS=YES
+            GCC_WARN_INHIBIT_ALL_WARNINGS=YES \
+            OTHER_CPLUSPLUSFLAGS="-D_LIBCPP_ENABLE_CXX20_REMOVED_UNARY_BINARY_FUNCTION"
           
           echo "✅ iOS archive created successfully!"
       
