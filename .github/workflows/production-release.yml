@@ -255,13 +255,30 @@ jobs:
           inAppUpdatePriority: 2
           whatsNewDirectory: android/release-notes/
           releaseName: v${{ needs.version-bump.outputs.version }}
+        continue-on-error: true
       
-      - name: ✅ Android Deployment Complete
+      - name: 📋 Check Google Play Deployment Status
         run: |
-          echo "✅ Successfully deployed to Google Play Internal Testing!"
-          echo "📱 Version: ${{ needs.version-bump.outputs.version }}"
-          echo "🔢 Version Code: ${{ needs.version-bump.outputs.android_version_code }}"
-          echo "🔗 Check: https://play.google.com/console"
+          if [ $? -eq 0 ]; then
+            echo "✅ Successfully deployed to Google Play Internal Testing!"
+            echo "📱 Version: ${{ needs.version-bump.outputs.version }}"
+            echo "🔢 Version Code: ${{ needs.version-bump.outputs.android_version_code }}"
+            echo "🔗 Check: https://play.google.com/console"
+          else
+            echo "❌ Google Play deployment failed"
+            echo "🔍 Common issues:"
+            echo "  1. Service account permissions not set correctly"
+            echo "  2. Package name mismatch (expected: com.sera.seraapp)"
+            echo "  3. Service account not added to Google Play Console"
+            echo "  4. Wrong service account JSON format"
+            echo ""
+            echo "📋 Troubleshooting steps:"
+            echo "  1. Go to Google Play Console > Setup > API access"
+            echo "  2. Verify service account has 'Release manager' role"
+            echo "  3. Check that package name matches exactly"
+            echo "  4. Regenerate service account JSON if needed"
+            exit 1
+          fi
 
   # ============================================
   # Job 4: Build iOS IPA for TestFlight
@@ -337,8 +354,18 @@ jobs:
       - name: 📄 Install iOS Provisioning Profile
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
-          echo "✅ Provisioning profile installed"
+          
+          # Clean and decode base64 provisioning profile
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | tr -d '\n\r' | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
+          
+          # Verify the file was created and has content
+          if [ -f ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision ]; then
+            echo "✅ Provisioning profile installed successfully"
+            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
+          else
+            echo "❌ Failed to install provisioning profile"
+            exit 1
+          fi
       
       - name: 🏗️ Build iOS Archive
         run: |
