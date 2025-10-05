@@ -11,16 +11,15 @@ on:
         description: '📝 Release notes (what changed in this version)'
         required: true
         type: string
-      deploy_android:
-        description: '🤖 Deploy to Google Play (Internal Testing)'
+      platform_choice:
+        description: '🎯 Platform Selection'
         required: true
-        default: true
-        type: boolean
-      deploy_ios:
-        description: '🍎 Deploy to TestFlight'
-        required: true
-        default: true
-        type: boolean
+        default: 'both'
+        type: choice
+        options:
+          - 'both'
+          - 'android-only'
+          - 'ios-only'
 
 env:
   NODE_VERSION: '20'
@@ -41,6 +40,33 @@ jobs:
       commit_sha: ${{ steps.bump.outputs.commit_sha }}
     
     steps:
+      - name: 🎯 Display Platform Selection
+        run: |
+          echo "## 🚀 SERA Mobile Release Workflow" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Platform Selection" >> $GITHUB_STEP_SUMMARY
+          echo "- **Selected Platform**: ${{ github.event.inputs.platform_choice }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ github.event.inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Workflow Plan" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ github.event.inputs.platform_choice }}" = "both" ]; then
+            echo "- ✅ Build Android AAB" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Deploy to Google Play (Internal Testing)" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Build iOS IPA" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Deploy to TestFlight" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ github.event.inputs.platform_choice }}" = "android-only" ]; then
+            echo "- ✅ Build Android AAB" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Deploy to Google Play (Internal Testing)" >> $GITHUB_STEP_SUMMARY
+            echo "- ⏭️ Skip iOS build and deployment" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ github.event.inputs.platform_choice }}" = "ios-only" ]; then
+            echo "- ⏭️ Skip Android build and deployment" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Build iOS IPA" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Deploy to TestFlight" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📝 Release Notes" >> $GITHUB_STEP_SUMMARY
+          echo "${{ github.event.inputs.release_notes }}" >> $GITHUB_STEP_SUMMARY
+      
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -115,7 +141,7 @@ jobs:
     needs: version-bump
     runs-on: ubuntu-latest
     environment: PROD
-    if: github.event.inputs.deploy_android == 'true'
+    if: github.event.inputs.platform_choice == 'both' || github.event.inputs.platform_choice == 'android-only'
     timeout-minutes: 45
     
     steps:
@@ -224,6 +250,7 @@ jobs:
     needs: [version-bump, build-android]
     runs-on: ubuntu-latest
     environment: PROD
+    if: github.event.inputs.platform_choice == 'both' || github.event.inputs.platform_choice == 'android-only'
     
     steps:
       - name: 📥 Download AAB Artifact
@@ -290,7 +317,7 @@ jobs:
     needs: version-bump
     runs-on: macos-14
     environment: PROD
-    if: github.event.inputs.deploy_ios == 'true'
+    if: github.event.inputs.platform_choice == 'both' || github.event.inputs.platform_choice == 'ios-only'
     timeout-minutes: 60
     
     steps:
@@ -368,9 +395,37 @@ jobs:
           SECRET_LENGTH=$(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | wc -c)
           echo "📏 Secret length: $SECRET_LENGTH characters"
           
+          # Validate base64 format before decoding
+          echo "🔍 Validating base64 format..."
+          if ! echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | grep -qE '^[A-Za-z0-9+/]*={0,2}$'; then
+            echo "❌ Secret contains invalid base64 characters"
+            echo "🔍 First 100 characters: $(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | head -c 100)"
+            exit 1
+          fi
+          
           # Clean and decode base64 provisioning profile
           echo "🔧 Decoding provisioning profile..."
-          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | tr -d '\n\r\t ' | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
+          # Use a more robust approach with temporary file
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" > /tmp/profile_base64.txt
+          
+          # Clean the base64 string
+          sed -i 's/[[:space:]]//g' /tmp/profile_base64.txt
+          
+          # Decode using file input
+          if base64 -d /tmp/profile_base64.txt > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision; then
+            echo "✅ Base64 decode successful"
+          else
+            echo "❌ Base64 decode failed"
+            echo "🔍 Troubleshooting:"
+            echo "  1. Check that IOS_PROVISIONING_PROFILE_BASE64 secret is properly base64 encoded"
+            echo "  2. Ensure the secret doesn't contain newlines or extra characters"
+            echo "  3. Verify the base64 string is complete and valid"
+            echo "  4. Try re-encoding the provisioning profile file"
+            exit 1
+          fi
+          
+          # Clean up temporary file
+          rm -f /tmp/profile_base64.txt
           
           # Verify the file was created and has content
           if [ -f ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision ]; then
@@ -453,6 +508,7 @@ jobs:
     needs: [version-bump, build-ios]
     runs-on: macos-14
     environment: PROD
+    if: github.event.inputs.platform_choice == 'both' || github.event.inputs.platform_choice == 'ios-only'
     
     steps:
       - name: 📥 Download IPA Artifact
@@ -570,6 +626,9 @@ jobs:
         run: |
           echo "## 🚀 SERA Mobile Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Platform Selection" >> $GITHUB_STEP_SUMMARY
+          echo "- **Selected Platform**: ${{ github.event.inputs.platform_choice }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📱 Version Information" >> $GITHUB_STEP_SUMMARY
           echo "- **Version**: ${{ needs.version-bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Android Version Code**: ${{ needs.version-bump.outputs.android_version_code }}" >> $GITHUB_STEP_SUMMARY
@@ -595,6 +654,8 @@ jobs:
           status: ${{ job.status }}
           text: |
             🚀 *SERA Mobile Release v${{ needs.version-bump.outputs.version }}*
+            
+            *Platform Selection:* ${{ github.event.inputs.platform_choice }}
             
             *Build Status:*
             • Android AAB: ${{ needs.build-android.result == 'success' && '✅' || '❌' }}
