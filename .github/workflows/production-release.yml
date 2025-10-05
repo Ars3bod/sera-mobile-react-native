@@ -340,15 +340,11 @@ jobs:
           
           echo "✅ CocoaPods installed successfully"
       
-      - name: 🔐 Import iOS Code Signing Certificates
+      - name: 📄 Install iOS Provisioning Profile
         uses: apple-actions/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
           p12-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-      
-      - name: 📄 Install iOS Provisioning Profile (Alternative Method)
-        uses: apple-actions/import-provisioning-profile@v1
-        with:
           provisioning-profile-base64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
           provisioning-profile-name: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
       
