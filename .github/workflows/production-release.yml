@@ -330,6 +330,9 @@ jobs:
           # If hermes-engine conflict persists, force update it
           pod update hermes-engine --no-repo-update || true
           
+          # Update react-native-reanimated to fix C++ compilation issues
+          pod update react-native-reanimated --no-repo-update || true
+          
           # Verify hermes-engine installation (simplified check)
           echo "🔍 Verifying hermes-engine installation..."
           if [ -d "Pods/hermes-engine" ]; then
@@ -389,6 +392,9 @@ jobs:
       
       - name: 🏗️ Build iOS Archive
         run: |
+          # Set C++ standard to fix Reanimated compilation issues
+          export CPPFLAGS="-std=c++17"
+          
           xcodebuild archive \
             -workspace ios/seraApp.xcworkspace \
             -scheme seraApp \
@@ -399,7 +405,9 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM=${{ secrets.IOS_TEAM_ID }} \
             PROVISIONING_PROFILE_SPECIFIER="${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}" \
-            CODE_SIGN_IDENTITY="Apple Distribution"
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            CLANG_CXX_LANGUAGE_STANDARD=c++17 \
+            CLANG_CXX_LIBRARY=libc++
           
           echo "✅ iOS archive created successfully!"
       
