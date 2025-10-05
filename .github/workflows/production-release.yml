@@ -492,7 +492,7 @@ jobs:
   deploy-ios:
     name: 🚀 Deploy to TestFlight
     needs: [version-bump, build-ios]
-    runs-on: macos-14
+    runs-on: macos-15
     environment: PROD
     if: github.event.inputs.deploy_ios == 'true'
     
