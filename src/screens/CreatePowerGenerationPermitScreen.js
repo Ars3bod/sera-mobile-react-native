@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,10 @@ import {
   TextInput,
   Alert,
   Modal,
-  
+
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
 import { LoadingIndicator } from '../components';
 import {
   ArrowLeft24Regular,
@@ -28,16 +28,16 @@ import {
 // Mock data for dropdowns
 const MOCK_DATA = {
   userAccounts: [
-    {id: '1', nameKey: 'permits.powerGeneration.mockData.accounts.company1'},
-    {id: '2', nameKey: 'permits.powerGeneration.mockData.accounts.company2'},
-    {id: '3', nameKey: 'permits.powerGeneration.mockData.accounts.company3'},
+    { id: '1', nameKey: 'permits.powerGeneration.mockData.accounts.company1' },
+    { id: '2', nameKey: 'permits.powerGeneration.mockData.accounts.company2' },
+    { id: '3', nameKey: 'permits.powerGeneration.mockData.accounts.company3' },
   ],
   stationNatures: [
-    {id: 'solar', nameKey: 'permits.powerGeneration.mockData.natures.solar'},
-    {id: 'wind', nameKey: 'permits.powerGeneration.mockData.natures.wind'},
-    {id: 'gas', nameKey: 'permits.powerGeneration.mockData.natures.gas'},
-    {id: 'diesel', nameKey: 'permits.powerGeneration.mockData.natures.diesel'},
-    {id: 'hybrid', nameKey: 'permits.powerGeneration.mockData.natures.hybrid'},
+    { id: 'solar', nameKey: 'permits.powerGeneration.mockData.natures.solar' },
+    { id: 'wind', nameKey: 'permits.powerGeneration.mockData.natures.wind' },
+    { id: 'gas', nameKey: 'permits.powerGeneration.mockData.natures.gas' },
+    { id: 'diesel', nameKey: 'permits.powerGeneration.mockData.natures.diesel' },
+    { id: 'hybrid', nameKey: 'permits.powerGeneration.mockData.natures.hybrid' },
   ],
   stationTypes: [
     {
@@ -52,17 +52,17 @@ const MOCK_DATA = {
       id: 'residential',
       nameKey: 'permits.powerGeneration.mockData.types.residential',
     },
-    {id: 'utility', nameKey: 'permits.powerGeneration.mockData.types.utility'},
+    { id: 'utility', nameKey: 'permits.powerGeneration.mockData.types.utility' },
   ],
   fuelTypes: [
     {
       id: 'natural_gas',
       nameKey: 'permits.powerGeneration.mockData.fuels.naturalGas',
     },
-    {id: 'diesel', nameKey: 'permits.powerGeneration.mockData.fuels.diesel'},
-    {id: 'solar', nameKey: 'permits.powerGeneration.mockData.fuels.solar'},
-    {id: 'wind', nameKey: 'permits.powerGeneration.mockData.fuels.wind'},
-    {id: 'biomass', nameKey: 'permits.powerGeneration.mockData.fuels.biomass'},
+    { id: 'diesel', nameKey: 'permits.powerGeneration.mockData.fuels.diesel' },
+    { id: 'solar', nameKey: 'permits.powerGeneration.mockData.fuels.solar' },
+    { id: 'wind', nameKey: 'permits.powerGeneration.mockData.fuels.wind' },
+    { id: 'biomass', nameKey: 'permits.powerGeneration.mockData.fuels.biomass' },
   ],
   stationUses: [
     {
@@ -79,8 +79,8 @@ const MOCK_DATA = {
     },
   ],
   gridConnections: [
-    {id: 'yes', nameKey: 'permits.powerGeneration.mockData.gridConnection.yes'},
-    {id: 'no', nameKey: 'permits.powerGeneration.mockData.gridConnection.no'},
+    { id: 'yes', nameKey: 'permits.powerGeneration.mockData.gridConnection.yes' },
+    { id: 'no', nameKey: 'permits.powerGeneration.mockData.gridConnection.no' },
     {
       id: 'planned',
       nameKey: 'permits.powerGeneration.mockData.gridConnection.planned',
@@ -88,9 +88,9 @@ const MOCK_DATA = {
   ],
 };
 
-const CreatePowerGenerationPermitScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+const CreatePowerGenerationPermitScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const isRTL = i18n.language === 'ar';
 
   // Form state
@@ -302,7 +302,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
             {selectedItem ? t(selectedItem.nameKey) : placeholder}
           </Text>
           <ChevronDown24Regular
-            style={[styles.dropdownIcon, {color: theme.colors.textSecondary}]}
+            style={[styles.dropdownIcon, { color: theme.colors.textSecondary }]}
           />
         </TouchableOpacity>
       </View>
@@ -340,7 +340,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
             },
           ]}
           value={value}
-          onChangeText={text => setFormData(prev => ({...prev, [field]: text}))}
+          onChangeText={text => setFormData(prev => ({ ...prev, [field]: text }))}
           placeholder={placeholder}
           placeholderTextColor={theme.colors.textSecondary}
           keyboardType={keyboardType}
@@ -376,7 +376,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
             ]}>
             <View style={styles.fileInfo}>
               <DocumentAdd24Regular
-                style={[styles.fileIcon, {color: theme.colors.primary}]}
+                style={[styles.fileIcon, { color: theme.colors.primary }]}
               />
               <View style={styles.fileDetails}>
                 <Text
@@ -406,7 +406,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
               style={styles.removeFileButton}
               activeOpacity={0.7}>
               <Delete24Regular
-                style={[styles.removeFileIcon, {color: '#F44336'}]}
+                style={[styles.removeFileIcon, { color: '#F44336' }]}
               />
             </TouchableOpacity>
           </View>
@@ -422,7 +422,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
             onPress={() => handleFileAttachment(field)}
             activeOpacity={0.7}>
             <Attach24Regular
-              style={[styles.attachmentIcon, {color: theme.colors.primary}]}
+              style={[styles.attachmentIcon, { color: theme.colors.primary }]}
             />
             <Text
               style={[
@@ -528,7 +528,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -537,7 +537,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -766,7 +766,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
 
         {/* Submit Button */}
         <TouchableOpacity
-          style={[styles.submitButton, {backgroundColor: theme.colors.primary}]}
+          style={[styles.submitButton, { backgroundColor: theme.colors.primary }]}
           onPress={handleSubmit}
           activeOpacity={0.7}
           disabled={loading}>
@@ -790,7 +790,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
           <View
             style={[
               styles.modalContent,
-              {backgroundColor: theme.colors.surface},
+              { backgroundColor: theme.colors.surface },
             ]}>
             <Text
               style={[
@@ -809,7 +809,7 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
                   key={item.id}
                   style={[
                     styles.modalOption,
-                    {borderBottomColor: theme.colors.border},
+                    { borderBottomColor: theme.colors.border },
                   ]}
                   onPress={() => selectDropdownValue(item.id)}
                   activeOpacity={0.7}>
@@ -830,11 +830,11 @@ const CreatePowerGenerationPermitScreen = ({navigation}) => {
             <TouchableOpacity
               style={[
                 styles.modalCloseButton,
-                {backgroundColor: theme.colors.border},
+                { backgroundColor: theme.colors.border },
               ]}
               onPress={() => setModalVisible(false)}
               activeOpacity={0.7}>
-              <Text style={[styles.modalCloseText, {color: theme.colors.text}]}>
+              <Text style={[styles.modalCloseText, { color: theme.colors.text }]}>
                 {t('common.cancel')}
               </Text>
             </TouchableOpacity>

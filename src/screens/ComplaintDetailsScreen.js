@@ -7,7 +7,7 @@ import {
     StyleSheet,
     SafeAreaView,
     StatusBar,
-    
+
     Alert,
     RefreshControl,
     Platform,
@@ -624,7 +624,7 @@ const ComplaintDetailsScreen = ({ navigation, route }) => {
             case '1':
                 return t('complaints.status.open');
             case '266990010':
-                return t('complaints.status.closedAsInquiry');
+                return t('complaints.status.checking');
             case '266990011':
                 return t('complaints.status.closed');
             case '266990005':

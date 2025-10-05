@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,9 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {useFocusEffect} from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   ArrowLeft24Regular,
   DocumentAdd24Regular,
@@ -29,9 +29,9 @@ const MOCK_PERMITS_STATS = {
   returned: 1,
 };
 
-const PermitsScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+const PermitsScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const isRTL = i18n.language === 'ar';
 
   const [stats, setStats] = useState(MOCK_PERMITS_STATS);
@@ -59,7 +59,7 @@ const PermitsScreen = ({navigation}) => {
 
   const handleOverviewPress = filterKey => {
     // Navigate to ViewPermits screen with the selected filter
-    navigation.navigate('ViewPermits', {filter: filterKey});
+    navigation.navigate('ViewPermits', { filter: filterKey });
   };
 
   // Load permits stats when screen focuses
@@ -163,7 +163,7 @@ const PermitsScreen = ({navigation}) => {
             },
           ]}>
           <IconComponent
-            style={[styles.actionIcon, {color: permitType.color}]}
+            style={[styles.actionIcon, { color: permitType.color }]}
           />
         </View>
         <View style={styles.actionContent}>
@@ -208,9 +208,9 @@ const PermitsScreen = ({navigation}) => {
       <View
         style={[
           styles.overviewIconContainer,
-          {backgroundColor: item.color + '20'},
+          { backgroundColor: item.color + '20' },
         ]}>
-        <Text style={[styles.overviewCount, {color: item.color}]}>
+        <Text style={[styles.overviewCount, { color: item.color }]}>
           {item.count}
         </Text>
       </View>
@@ -268,7 +268,7 @@ const PermitsScreen = ({navigation}) => {
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -277,7 +277,7 @@ const PermitsScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -370,7 +370,7 @@ const PermitsScreen = ({navigation}) => {
               },
             ]}>
             <Eye24Regular
-              style={[styles.viewAllIcon, {color: theme.colors.primary}]}
+              style={[styles.viewAllIcon, { color: theme.colors.primary }]}
             />
           </View>
           <View style={styles.viewAllContent}>

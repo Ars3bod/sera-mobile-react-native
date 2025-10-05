@@ -116,6 +116,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: PROD
     if: github.event.inputs.deploy_android == 'true'
+    timeout-minutes: 45
     
     steps:
       - name: 📥 Checkout Code (versioned)
@@ -271,6 +272,7 @@ jobs:
     runs-on: macos-14
     environment: PROD
     if: github.event.inputs.deploy_ios == 'true'
+    timeout-minutes: 60
     
     steps:
       - name: 📥 Checkout Code (versioned)
@@ -306,15 +308,23 @@ jobs:
           # Clean existing pods to avoid conflicts
           rm -rf Pods Podfile.lock
           
+          # Set CocoaPods environment variables for better performance
+          export COCOAPODS_DISABLE_STATS=true
+          export COCOAPODS_SKIP_CACHE=false
+          
           # Install pods with specific hermes-engine update
-          pod install --repo-update
+          pod install --repo-update --verbose --no-ansi
           
           # If hermes-engine conflict persists, force update it
           pod update hermes-engine --no-repo-update || true
           
-          # Verify hermes-engine installation
+          # Verify hermes-engine installation (simplified check)
           echo "🔍 Verifying hermes-engine installation..."
-          pod list | grep hermes-engine || echo "⚠️ hermes-engine not found in pod list"
+          if [ -d "Pods/hermes-engine" ]; then
+            echo "✅ hermes-engine directory found"
+          else
+            echo "⚠️ hermes-engine directory not found, but continuing..."
+          fi
           
           echo "✅ CocoaPods installed successfully"
       

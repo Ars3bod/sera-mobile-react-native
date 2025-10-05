@@ -22,7 +22,7 @@ const useStatusBar = (options = {}) => {
 
     const {
         style = 'auto', // 'auto' uses theme-based detection
-        backgroundColor = theme.colors.surface,
+        backgroundColor = theme.colors.background, // Use background instead of surface for status bar
         translucent = false,
         hidden = false,
         animated = true,

@@ -36,7 +36,7 @@ const SafeContainer = ({
     // Use status bar hook for automatic management
     const statusBarConfig = useStatusBar({
         style: statusBarStyle,
-        backgroundColor: statusBarBackgroundColor,
+        backgroundColor: statusBarBackgroundColor || backgroundColor,
         translucent: false,
     });
 

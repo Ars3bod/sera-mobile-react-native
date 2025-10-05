@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,10 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {useUser} from '../context/UserContext';
-import {useFocusEffect} from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   ArrowLeft24Regular,
   DocumentText24Regular,
@@ -23,7 +23,7 @@ import {
   Settings24Regular,
   EyeOff24Regular,
 } from '@fluentui/react-native-icons';
-import {LoadingSpinner} from '../animations';
+import { LoadingSpinner } from '../animations';
 import AppConfig from '../config/appConfig';
 
 // Mock data for permits
@@ -86,12 +86,12 @@ const MOCK_PERMITS_DATA = {
   ],
 };
 
-const ViewPermitsScreen = ({navigation, route}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
-  const {user} = useUser();
+const ViewPermitsScreen = ({ navigation, route }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
+  const { user } = useUser();
   const isRTL = i18n.language === 'ar';
-  const {filter = 'all'} = route.params || {};
+  const { filter = 'all' } = route.params || {};
 
   const [permits, setPermits] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -271,7 +271,7 @@ const ViewPermitsScreen = ({navigation, route}) => {
         <View style={styles.cardHeader}>
           <View style={styles.cardHeaderLeft}>
             <DocumentText24Regular
-              style={[styles.cardIcon, {color: theme.colors.primary}]}
+              style={[styles.cardIcon, { color: theme.colors.primary }]}
             />
             <Text
               style={[
@@ -285,9 +285,9 @@ const ViewPermitsScreen = ({navigation, route}) => {
             </Text>
           </View>
           <View
-            style={[styles.statusBadge, {backgroundColor: statusColor + '20'}]}>
-            <StatusIcon style={[styles.statusIcon, {color: statusColor}]} />
-            <Text style={[styles.statusText, {color: statusColor}]}>
+            style={[styles.statusBadge, { backgroundColor: statusColor + '20' }]}>
+            <StatusIcon style={[styles.statusIcon, { color: statusColor }]} />
+            <Text style={[styles.statusText, { color: statusColor }]}>
               {t(`permits.status.${permit.requestStatus}`)}
             </Text>
           </View>
@@ -405,7 +405,7 @@ const ViewPermitsScreen = ({navigation, route}) => {
         <View
           style={[
             dynamicStyles.header,
-            {flexDirection: isRTL ? 'row-reverse' : 'row'},
+            { flexDirection: isRTL ? 'row-reverse' : 'row' },
           ]}>
           <TouchableOpacity
             style={styles.backButton}
@@ -414,7 +414,7 @@ const ViewPermitsScreen = ({navigation, route}) => {
             <ArrowLeft24Regular
               style={[
                 dynamicStyles.backIcon,
-                {transform: [{scaleX: isRTL ? -1 : 1}]},
+                { transform: [{ scaleX: isRTL ? -1 : 1 }] },
               ]}
             />
           </TouchableOpacity>
@@ -431,7 +431,7 @@ const ViewPermitsScreen = ({navigation, route}) => {
             color={theme.colors.primary}
             duration={1000}
           />
-          <Text style={[styles.loadingText, {color: theme.colors.text}]}>
+          <Text style={[styles.loadingText, { color: theme.colors.text }]}>
             {t('permits.view.loading')}
           </Text>
         </View>
@@ -450,7 +450,7 @@ const ViewPermitsScreen = ({navigation, route}) => {
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -459,7 +459,7 @@ const ViewPermitsScreen = ({navigation, route}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -486,7 +486,7 @@ const ViewPermitsScreen = ({navigation, route}) => {
       {permits.length === 0 ? (
         <View style={styles.emptyContainer}>
           <DocumentText24Regular
-            style={[styles.emptyIcon, {color: theme.colors.textSecondary}]}
+            style={[styles.emptyIcon, { color: theme.colors.textSecondary }]}
           />
           <Text
             style={[

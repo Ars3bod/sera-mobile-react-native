@@ -8,13 +8,13 @@ import {
   StatusBar,
   TouchableOpacity,
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
-import {ArrowLeft24Regular} from '@fluentui/react-native-icons';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
+import { ArrowLeft24Regular } from '@fluentui/react-native-icons';
 
-const UsagePolicyScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+const UsagePolicyScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const isRTL = i18n.language === 'ar';
 
   const handleGoBack = () => {
@@ -68,7 +68,7 @@ const UsagePolicyScreen = ({navigation}) => {
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -77,7 +77,7 @@ const UsagePolicyScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -93,7 +93,7 @@ const UsagePolicyScreen = ({navigation}) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}>
         {/* Introduction */}
-        <View style={[styles.section, {backgroundColor: theme.colors.card}]}>
+        <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
           <Text
             style={[
               styles.sectionTitle,
@@ -117,7 +117,7 @@ const UsagePolicyScreen = ({navigation}) => {
         </View>
 
         {/* Prohibited Activities */}
-        <View style={[styles.section, {backgroundColor: theme.colors.card}]}>
+        <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
           <Text
             style={[
               styles.sectionTitle,
@@ -147,7 +147,7 @@ const UsagePolicyScreen = ({navigation}) => {
               key={index}
               style={[
                 styles.listItem,
-                {flexDirection: isRTL ? 'row-reverse' : 'row'},
+                { flexDirection: isRTL ? 'row-reverse' : 'row' },
               ]}>
               <Text
                 style={[
@@ -176,7 +176,7 @@ const UsagePolicyScreen = ({navigation}) => {
         </View>
 
         {/* Termination */}
-        <View style={[styles.section, {backgroundColor: theme.colors.card}]}>
+        <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
           <Text
             style={[
               styles.sectionTitle,
@@ -200,7 +200,7 @@ const UsagePolicyScreen = ({navigation}) => {
         </View>
 
         {/* Links */}
-        <View style={[styles.section, {backgroundColor: theme.colors.card}]}>
+        <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
           <Text
             style={[
               styles.sectionTitle,
@@ -224,7 +224,7 @@ const UsagePolicyScreen = ({navigation}) => {
         </View>
 
         {/* Intellectual Property */}
-        <View style={[styles.section, {backgroundColor: theme.colors.card}]}>
+        <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
           <Text
             style={[
               styles.sectionTitle,
@@ -248,7 +248,7 @@ const UsagePolicyScreen = ({navigation}) => {
         </View>
 
         {/* Personal Information Protection */}
-        <View style={[styles.section, {backgroundColor: theme.colors.card}]}>
+        <View style={[styles.section, { backgroundColor: theme.colors.card }]}>
           <Text
             style={[
               styles.sectionTitle,
@@ -275,7 +275,7 @@ const UsagePolicyScreen = ({navigation}) => {
         <View
           style={[
             styles.footer,
-            {backgroundColor: theme.colors.primary + '10'},
+            { backgroundColor: theme.colors.primary + '10' },
           ]}>
           <Text
             style={[

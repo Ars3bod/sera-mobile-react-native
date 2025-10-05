@@ -1173,6 +1173,7 @@ const resources = {
           open: 'Open',
           closed: 'Closed',
           closedAsInquiry: 'Closed as Inquiry',
+          checking: 'Checking',
           unknown: 'Unknown Status',
         },
         stage: {
@@ -2783,6 +2784,7 @@ const resources = {
           open: 'مفتوحة',
           closed: 'مغلقة',
           closedAsInquiry: 'مغلقة كاستفسار',
+          checking: 'التحقق من الشكوى',
           unknown: 'حالة غير معروفة',
         },
         stage: {

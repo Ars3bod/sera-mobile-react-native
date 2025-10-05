@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,10 @@ import {
   TextInput,
   Alert,
   Modal,
-  
+
 } from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {useTheme} from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../context/ThemeContext';
 import { LoadingIndicator } from '../components';
 import {
   ArrowLeft24Regular,
@@ -28,9 +28,9 @@ import {
 // Mock data for dropdowns
 const MOCK_DATA = {
   userAccounts: [
-    {id: '1', nameKey: 'permits.districtCooling.mockData.accounts.company1'},
-    {id: '2', nameKey: 'permits.districtCooling.mockData.accounts.company2'},
-    {id: '3', nameKey: 'permits.districtCooling.mockData.accounts.company3'},
+    { id: '1', nameKey: 'permits.districtCooling.mockData.accounts.company1' },
+    { id: '2', nameKey: 'permits.districtCooling.mockData.accounts.company2' },
+    { id: '3', nameKey: 'permits.districtCooling.mockData.accounts.company3' },
   ],
   coolingPurposes: [
     {
@@ -45,15 +45,15 @@ const MOCK_DATA = {
       id: 'industrial',
       nameKey: 'permits.districtCooling.mockData.purposes.industrial',
     },
-    {id: 'mixed', nameKey: 'permits.districtCooling.mockData.purposes.mixed'},
+    { id: 'mixed', nameKey: 'permits.districtCooling.mockData.purposes.mixed' },
   ],
   powerSources: [
-    {id: 'grid', nameKey: 'permits.districtCooling.mockData.powerSources.grid'},
+    { id: 'grid', nameKey: 'permits.districtCooling.mockData.powerSources.grid' },
     {
       id: 'solar',
       nameKey: 'permits.districtCooling.mockData.powerSources.solar',
     },
-    {id: 'gas', nameKey: 'permits.districtCooling.mockData.powerSources.gas'},
+    { id: 'gas', nameKey: 'permits.districtCooling.mockData.powerSources.gas' },
     {
       id: 'hybrid',
       nameKey: 'permits.districtCooling.mockData.powerSources.hybrid',
@@ -82,8 +82,8 @@ const MOCK_DATA = {
     },
   ],
   gridConnections: [
-    {id: 'yes', nameKey: 'permits.districtCooling.mockData.gridConnection.yes'},
-    {id: 'no', nameKey: 'permits.districtCooling.mockData.gridConnection.no'},
+    { id: 'yes', nameKey: 'permits.districtCooling.mockData.gridConnection.yes' },
+    { id: 'no', nameKey: 'permits.districtCooling.mockData.gridConnection.no' },
   ],
   networkTypes: [
     {
@@ -97,9 +97,9 @@ const MOCK_DATA = {
   ],
 };
 
-const CreateDistrictCoolingPermitScreen = ({navigation}) => {
-  const {t, i18n} = useTranslation();
-  const {theme, isDarkMode} = useTheme();
+const CreateDistrictCoolingPermitScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+  const { theme, isDarkMode } = useTheme();
   const isRTL = i18n.language === 'ar';
 
   // Form state
@@ -307,7 +307,7 @@ const CreateDistrictCoolingPermitScreen = ({navigation}) => {
             {selectedItem ? t(selectedItem.nameKey) : placeholder}
           </Text>
           <ChevronDown24Regular
-            style={[styles.dropdownIcon, {color: theme.colors.textSecondary}]}
+            style={[styles.dropdownIcon, { color: theme.colors.textSecondary }]}
           />
         </TouchableOpacity>
       </View>
@@ -345,7 +345,7 @@ const CreateDistrictCoolingPermitScreen = ({navigation}) => {
             },
           ]}
           value={value}
-          onChangeText={text => setFormData(prev => ({...prev, [field]: text}))}
+          onChangeText={text => setFormData(prev => ({ ...prev, [field]: text }))}
           placeholder={placeholder}
           placeholderTextColor={theme.colors.textSecondary}
           keyboardType={keyboardType}
@@ -381,7 +381,7 @@ const CreateDistrictCoolingPermitScreen = ({navigation}) => {
             ]}>
             <View style={styles.fileInfo}>
               <DocumentAdd24Regular
-                style={[styles.fileIcon, {color: theme.colors.primary}]}
+                style={[styles.fileIcon, { color: theme.colors.primary }]}
               />
               <View style={styles.fileDetails}>
                 <Text
@@ -411,7 +411,7 @@ const CreateDistrictCoolingPermitScreen = ({navigation}) => {
               style={styles.removeFileButton}
               activeOpacity={0.7}>
               <Delete24Regular
-                style={[styles.removeFileIcon, {color: '#F44336'}]}
+                style={[styles.removeFileIcon, { color: '#F44336' }]}
               />
             </TouchableOpacity>
           </View>
@@ -427,7 +427,7 @@ const CreateDistrictCoolingPermitScreen = ({navigation}) => {
             onPress={() => handleFileAttachment(field)}
             activeOpacity={0.7}>
             <Attach24Regular
-              style={[styles.attachmentIcon, {color: theme.colors.primary}]}
+              style={[styles.attachmentIcon, { color: theme.colors.primary }]}
             />
             <Text
               style={[
@@ -552,7 +552,7 @@ const CreateDistrictCoolingPermitScreen = ({navigation}) => {
       <View
         style={[
           dynamicStyles.header,
-          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+          { flexDirection: isRTL ? 'row-reverse' : 'row' },
         ]}>
         <TouchableOpacity
           style={styles.backButton}
@@ -561,7 +561,7 @@ const CreateDistrictCoolingPermitScreen = ({navigation}) => {
           <ArrowLeft24Regular
             style={[
               dynamicStyles.backIcon,
-              {transform: [{scaleX: isRTL ? -1 : 1}]},
+              { transform: [{ scaleX: isRTL ? -1 : 1 }] },
             ]}
           />
         </TouchableOpacity>
@@ -756,7 +756,7 @@ const CreateDistrictCoolingPermitScreen = ({navigation}) => {
 
         {/* Submit Button */}
         <TouchableOpacity
-          style={[styles.submitButton, {backgroundColor: theme.colors.primary}]}
+          style={[styles.submitButton, { backgroundColor: theme.colors.primary }]}
           onPress={handleSubmit}
           activeOpacity={0.7}
           disabled={loading}>
@@ -780,7 +780,7 @@ const CreateDistrictCoolingPermitScreen = ({navigation}) => {
           <View
             style={[
               styles.modalContent,
-              {backgroundColor: theme.colors.surface},
+              { backgroundColor: theme.colors.surface },
             ]}>
             <Text
               style={[
@@ -799,7 +799,7 @@ const CreateDistrictCoolingPermitScreen = ({navigation}) => {
                   key={item.id}
                   style={[
                     styles.modalOption,
-                    {borderBottomColor: theme.colors.border},
+                    { borderBottomColor: theme.colors.border },
                   ]}
                   onPress={() => selectDropdownValue(item.id)}
                   activeOpacity={0.7}>
@@ -820,11 +820,11 @@ const CreateDistrictCoolingPermitScreen = ({navigation}) => {
             <TouchableOpacity
               style={[
                 styles.modalCloseButton,
-                {backgroundColor: theme.colors.border},
+                { backgroundColor: theme.colors.border },
               ]}
               onPress={() => setModalVisible(false)}
               activeOpacity={0.7}>
-              <Text style={[styles.modalCloseText, {color: theme.colors.text}]}>
+              <Text style={[styles.modalCloseText, { color: theme.colors.text }]}>
                 {t('common.cancel')}
               </Text>
             </TouchableOpacity>
