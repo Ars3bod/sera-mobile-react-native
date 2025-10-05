@@ -346,97 +346,12 @@ jobs:
           p12-file-base64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
           p12-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
       
-      - name: 📄 
+      - name: 📄 Install iOS Provisioning Profile
+        env:
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          
-          # Debug: Check if secret exists and its length
-          echo "🔍 Debug: Checking provisioning profile secret..."
-          if [ -z "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" ]; then
-            echo "❌ IOS_PROVISIONING_PROFILE_BASE64 secret is empty or not set"
-            exit 1
-          fi
-          
-          # Get the secret length
-          SECRET_LENGTH=$(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | wc -c)
-          echo "📏 Secret length: $SECRET_LENGTH characters"
-          
-          # Validate base64 format before decoding
-          echo "🔍 Validating base64 format..."
-          
-          # Clean the base64 string
-          CLEAN_BASE64=$(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | tr -d '\n\r\t ')
-          
-          echo "📏 Original length: $(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | wc -c)"
-          echo "📏 Cleaned length: $(echo "$CLEAN_BASE64" | wc -c)"
-          
-          # Test base64 decoding
-          echo "$CLEAN_BASE64" > /tmp/test_base64.txt
-          if ! base64 -D /tmp/test_base64.txt > /dev/null 2>&1; then
-            echo "❌ Secret is not valid base64 after cleaning"
-            echo "🔍 First 100 characters: $(echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | head -c 100)"
-            echo "🔍 Cleaned first 100: $(echo "$CLEAN_BASE64" | head -c 100)"
-            echo ""
-            echo "❌ Base64 validation failed. Please check your IOS_PROVISIONING_PROFILE_BASE64 secret."
-            echo "💡 The secret should be a valid base64 encoded provisioning profile (.mobileprovision file)."
-            echo "💡 You can encode it using: base64 -i your-profile.mobileprovision"
-            echo "💡 Make sure to copy the entire base64 string without any line breaks or extra characters."
-            exit 1
-          fi
-          echo "✅ Base64 format is valid"
-          
-          # Clean up test file
-          rm -f /tmp/test_base64.txt
-          
-          # Clean and decode base64 provisioning profile
-          echo "🔧 Decoding provisioning profile..."
-          
-          # Use a more robust approach with temporary file
-          echo "$CLEAN_BASE64" > /tmp/clean_base64.txt
-          
-          # Decode using file input to avoid shell interpretation issues
-          if base64 -D /tmp/clean_base64.txt > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision; then
-            echo "✅ Base64 decode successful"
-            echo "📁 Profile installed: ~/Library/MobileDevice/Provisioning Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision"
-          else
-            echo "❌ Base64 decode failed"
-            echo "🔍 Debugging information:"
-            echo "   Cleaned base64 length: $(echo "$CLEAN_BASE64" | wc -c)"
-            echo "   First 50 chars: $(echo "$CLEAN_BASE64" | head -c 50)"
-            echo "   Last 50 chars: $(echo "$CLEAN_BASE64" | tail -c 50)"
-            echo ""
-            echo "🔧 Troubleshooting:"
-            echo "   1. Check that IOS_PROVISIONING_PROFILE_BASE64 secret is properly base64 encoded"
-            echo "   2. Ensure the secret doesn't contain newlines or extra characters"
-            echo "   3. Verify the base64 string is complete and valid"
-            echo "   4. Try re-encoding the provisioning profile file"
-            exit 1
-          fi
-          
-          # Clean up temporary file
-          rm -f /tmp/clean_base64.txt
-          
-          # Verify the file was created and has content
-          if [ -f ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision ]; then
-            FILE_SIZE=$(ls -la ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision | awk '{print $5}')
-            echo "✅ Provisioning profile installed successfully"
-            echo "📁 File size: $FILE_SIZE bytes"
-            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
-            
-            # Verify it's a valid provisioning profile
-            if file ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision | grep -q "XML"; then
-              echo "✅ Valid provisioning profile detected"
-            else
-              echo "⚠️ Warning: File doesn't appear to be a valid provisioning profile"
-            fi
-          else
-            echo "❌ Failed to install provisioning profile"
-            echo "🔍 Troubleshooting:"
-            echo "  1. Check that IOS_PROVISIONING_PROFILE_BASE64 secret is properly base64 encoded"
-            echo "  2. Ensure the secret doesn't contain newlines or extra characters"
-            echo "  3. Verify IOS_PROVISIONING_PROFILE_NAME matches your profile name"
-            exit 1
-          fi
+          echo "$PROVISIONING_PROFILE_BASE64" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}.mobileprovision
       
       - name: 🏗️ Build iOS Archive
         run: |
