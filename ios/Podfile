@@ -24,7 +24,7 @@ target 'seraApp' do
   )
 
   post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
+    # Keep RN’s default post-install
     react_native_post_install(
       installer,
       config[:reactNativePath],
@@ -37,6 +37,21 @@ target 'seraApp' do
       if ['lottie-ios', 'lottie-react-native', 'react-native-video'].include?(target.name)
         target.build_configurations.each do |config|
           config.build_settings['DEFINES_MODULE'] = 'NO'
+        end
+      end
+    end
+
+    # 🔧 Enforce C++20 & libc++ compatibility across ALL Pods (Hermes, Reanimated, etc.)
+    installer.pods_project.targets.each do |t|
+      t.build_configurations.each do |cfg|
+        # Use gnu++20 (some pods rely on gnu extensions)
+        cfg.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'gnu++20'
+
+        # Make sure the C++20 compatibility macro is present (idempotent)
+        existing = cfg.build_settings['OTHER_CPLUSPLUSFLAGS'] || '$(inherited)'
+        unless existing.include?('_LIBCPP_ENABLE_CXX20_REMOVED_UNARY_BINARY_FUNCTION')
+          cfg.build_settings['OTHER_CPLUSPLUSFLAGS'] =
+            "#{existing} -D_LIBCPP_ENABLE_CXX20_REMOVED_UNARY_BINARY_FUNCTION"
         end
       end
     end
