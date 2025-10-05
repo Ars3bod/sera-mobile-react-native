@@ -259,7 +259,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1759658896;
+				CURRENT_PROJECT_VERSION = 1759659164;
 				DEVELOPMENT_TEAM = 8ZR3PVHHF5;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = seraApp/Info.plist;
@@ -268,7 +268,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.7;
+				MARKETING_VERSION = 1.3.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -288,7 +288,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1759658896;
+				CURRENT_PROJECT_VERSION = 1759659164;
 				DEVELOPMENT_TEAM = 8ZR3PVHHF5;
 				INFOPLIST_FILE = seraApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -296,7 +296,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.7;
+				MARKETING_VERSION = 1.3.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
