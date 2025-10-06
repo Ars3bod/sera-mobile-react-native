@@ -1,13 +1,21 @@
 {
   "name": "seraApp",
   "displayName": "SERA | سيرا",
+<<<<<<< HEAD
   "version": "1.3.23",
+=======
+  "version": "1.3.21",
+>>>>>>> parent of 69c5d81 (chore: release version 1.3.22)
   "plugins": [
     "expo-localization"
   ],
   "ios": {
     "bundleIdentifier": "sa.gov.sera.mobile",
+<<<<<<< HEAD
     "buildNumber": "1759699217",
+=======
+    "buildNumber": "1759684161",
+>>>>>>> parent of 69c5d81 (chore: release version 1.3.22)
     "deploymentTarget": "13.0",
     "supportsTablet": false,
     "requireFullScreen": true,
