@@ -1,10 +1,6 @@
 {
   "name": "seraApp",
-<<<<<<< HEAD
   "version": "1.3.24",
-=======
-  "version": "1.3.24",
->>>>>>> parent of 69c5d81 (chore: release version 1.3.22)
   "private": true,
   "scripts": {
     "android": "react-native run-android",
