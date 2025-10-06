@@ -115,6 +115,24 @@ const resources = {
           chatbot: 'Please update the CHATBOT_URL in ChatbotScreen.js with your actual chatbot service URL.',
           liveChat: 'Please update the LIVE_CHAT_URL in LiveChatScreen.js with your actual live chat service URL.',
         },
+        connecting: 'Connecting to chat...',
+        typing: 'Agent is typing...',
+        input: {
+          placeholder: 'Type your message...',
+        },
+        messages: {
+          userJoined: 'You joined the chat',
+          agentJoined: 'Agent joined the chat',
+        },
+        error: {
+          title: 'Chat Error',
+          connectionFailed: 'Failed to connect to chat service. Please try again.',
+          sendFailed: 'Failed to send message. Please try again.',
+        },
+        exit: {
+          title: 'Exit Chat',
+          message: 'Are you sure you want to exit the chat? You will lose your conversation.',
+        },
       },
       home: {
         header: 'Saudi Electricity Regulatory Authority',
@@ -1737,6 +1755,24 @@ const resources = {
           title: 'التكوين مطلوب',
           chatbot: 'يرجى تحديث CHATBOT_URL في ChatbotScreen.js برابط خدمة الروبوت الفعلي.',
           liveChat: 'يرجى تحديث LIVE_CHAT_URL في LiveChatScreen.js برابط خدمة المحادثة المباشرة الفعلي.',
+        },
+        connecting: 'جاري الاتصال بالمحادثة...',
+        typing: 'الوكيل يكتب...',
+        input: {
+          placeholder: 'اكتب رسالتك...',
+        },
+        messages: {
+          userJoined: 'انضممت للمحادثة',
+          agentJoined: 'انضم الوكيل للمحادثة',
+        },
+        error: {
+          title: 'خطأ في المحادثة',
+          connectionFailed: 'فشل الاتصال بخدمة المحادثة. يرجى المحاولة مرة أخرى.',
+          sendFailed: 'فشل إرسال الرسالة. يرجى المحاولة مرة أخرى.',
+        },
+        exit: {
+          title: 'إنهاء المحادثة',
+          message: 'هل أنت متأكد من إنهاء المحادثة؟ ستفقد محادثتك.',
         },
       },
       home: {

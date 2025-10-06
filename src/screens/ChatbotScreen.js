@@ -1,257 +1,200 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     View,
     Text,
     TouchableOpacity,
     StyleSheet,
+    TextInput,
+    ScrollView,
+    KeyboardAvoidingView,
+    Platform,
 } from 'react-native';
-import { WebView } from 'react-native-webview';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useUser } from '../context/UserContext';
-import { SafeContainer, LoadingIndicator } from '../components';
-import { ChevronLeft24Regular, ChevronRight24Regular } from '@fluentui/react-native-icons';
+import { SafeContainer, LoadingIndicator, ActionToast } from '../components';
+import { ChevronLeft24Regular, ChevronRight24Regular, Send24Regular } from '@fluentui/react-native-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import axios from 'axios';
 
 const ChatbotScreen = ({ navigation }) => {
     const { t, i18n } = useTranslation();
     const { theme } = useTheme();
     const { user } = useUser();
     const isRTL = i18n.language === 'ar';
-    const webViewRef = useRef(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const insets = useSafeAreaInsets();
 
-    // HTML content with Masdr Digital Human chatbot
-    const htmlContent = `
-        <!DOCTYPE html>
-        <html dir="${isRTL ? 'rtl' : 'ltr'}" lang="${i18n.language}">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-            <title>SERA Chatbot</title>
-            <style>
-                * {
-                    margin: 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                }
-                html, body { 
-                    margin: 0; 
-                    padding: 0; 
-                    height: 100%;
-                    width: 100%;
-                    overflow: auto;
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                }
-                #chatbot-container { 
-                    display: block;
-                    height: 100%;
-                    width: 100%;
-                    position: relative;
-                }
-                masdr-digital-human { 
-                    display: block !important;
-                    height: 100% !important; 
-                    width: 100% !important;
-                    position: absolute !important;
-                    top: 0 !important;
-                    left: 0 !important;
-                    background: white;
-                }
-                #fallback-message {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    height: 100%;
-                    padding: 20px;
-                    color: white;
-                    text-align: center;
-                }
-                .fallback-icon {
-                    font-size: 64px;
-                    margin-bottom: 20px;
-                }
-                .fallback-title {
-                    font-size: 24px;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                }
-                .fallback-text {
-                    font-size: 16px;
-                    line-height: 1.5;
-                    opacity: 0.9;
-                }
-            </style>
-        </head>
-        <body>
-            <div id="chatbot-container">
-                <masdr-digital-human 
-                    dir="${isRTL ? 'rtl' : 'ltr'}" 
-                    charactersonly="true"
-                ></masdr-digital-human>
-                
-                <div id="fallback-message">
-                    <div class="fallback-icon">🤖</div>
-                    <div class="fallback-title">${isRTL ? 'جاري تحميل المساعد الذكي...' : 'Loading AI Assistant...'}</div>
-                    <div class="fallback-text">${isRTL ? 'يرجى الانتظار بينما نقوم بتحميل المساعد الذكي' : 'Please wait while we load the AI assistant'}</div>
-                </div>
-            </div>
-            
-            <script>
-                // Global configuration
-                window.__SERA_BASE__ = 'https://sera-chatwidget.masdr.live/v1';
-                window.isArabic = ${isRTL};
-                window.userInfo = {
-                    name: '${user?.arFullName || user?.enFullName || ''}',
-                    id: '${user?.nationalId || user?.id || ''}',
-                    language: '${i18n.language}'
+    // State management
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [messageText, setMessageText] = useState('');
+    const [isTyping, setIsTyping] = useState(false);
+    const [showErrorDialog, setShowErrorDialog] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const scrollViewRef = useRef(null);
+    const messageInputRef = useRef(null);
+
+    // Chatbot API configuration
+    const CHATBOT_API_URL = 'https://sera-api.masdr.live/api/v1/chat';
+
+    // Initialize with welcome message
+    useEffect(() => {
+        const welcomeMessage = {
+            id: Date.now(),
+            text: isRTL ? 'مرحباً! كيف يمكنني مساعدتك اليوم؟' : 'Hello! How can I assist you today?',
+            type: 'Message',
+            from: {
+                nickname: isRTL ? 'المساعد الذكي' : 'AI Assistant',
+                participantId: 1,
+                type: 'Agent'
+            },
+            utcTime: Date.now()
+        };
+        setMessages([welcomeMessage]);
+    }, [isRTL]);
+
+    const sendMessage = async () => {
+        if (!messageText.trim()) {
+            return;
+        }
+
+        const messageToSend = messageText.trim();
+        setMessageText('');
+
+        try {
+            // Add user message to UI immediately
+            const userMessage = {
+                id: Date.now(),
+                text: messageToSend,
+                type: 'Message',
+                from: {
+                    nickname: `${user?.arFullName || user?.enFullName || 'مستخدم'}`,
+                    participantId: 1,
+                    type: 'Client'
+                },
+                utcTime: Date.now()
+            };
+
+            setMessages(prevMessages => [...prevMessages, userMessage]);
+            scrollToBottom();
+
+            // Show typing indicator
+            setIsTyping(true);
+
+            // Send to chatbot API
+            console.log('🤖 SENDING TO CHATBOT API:');
+            console.log('URL:', CHATBOT_API_URL);
+            console.log('Payload:', { question: messageToSend });
+
+            const response = await axios.post(CHATBOT_API_URL, {
+                question: messageToSend
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                timeout: 10000
+            });
+
+            console.log('✅ CHATBOT API RESPONSE:');
+            console.log('Status:', response.status);
+            console.log('Data:', JSON.stringify(response.data, null, 2));
+
+            // Hide typing indicator
+            setIsTyping(false);
+
+            // Add bot response to UI
+            if (response.data && response.data.answer) {
+                const botMessage = {
+                    id: response.data.msg_id || Date.now(),
+                    text: response.data.answer.text || 'Sorry, I could not process your request.',
+                    type: 'Message',
+                    from: {
+                        nickname: isRTL ? 'المساعد الذكي' : 'AI Assistant',
+                        participantId: 1,
+                        type: 'Agent'
+                    },
+                    utcTime: Date.now(),
+                    sessionId: response.data.answer.session_id,
+                    responseCategory: response.data.answer.response_category
                 };
-                
-                // Load Masdr chatbot widget
-                function loadMasdrChatbot() {
-                    console.log('Loading Masdr chatbot scripts...');
-                    
-                    // Load CSS
-                    const css = document.createElement('link');
-                    css.rel = 'stylesheet';
-                    css.href = 'https://sera-chatwidget.masdr.live/v1/styles.css';
-                    css.onerror = () => {
-                        console.error('Failed to load Masdr CSS');
-                        sendMessageToRN('chatbot_error', { message: 'Failed to load chatbot styles' });
-                    };
-                    document.head.appendChild(css);
-                    
-                    // Load main script
-                    const script = document.createElement('script');
-                    script.src = 'https://sera-chatwidget.masdr.live/v1/main.js';
-                    script.onload = () => {
-                        console.log('Masdr chatbot script loaded successfully');
-                        
-                        // Check if widget initialized
-                        setTimeout(() => {
-                            const element = document.querySelector('masdr-digital-human');
-                            const fallback = document.getElementById('fallback-message');
-                            
-                            console.log('Checking Masdr element...');
-                            console.log('Element:', element);
-                            console.log('Has content:', element && (element.children.length > 0 || element.shadowRoot));
-                            
-                            if (element && (element.children.length > 0 || element.shadowRoot)) {
-                                // Widget loaded successfully, hide fallback
-                                if (fallback) fallback.style.display = 'none';
-                                sendMessageToRN('chatbot_loaded', { success: true, widgetInitialized: true });
-                            } else {
-                                // Widget not initialized, show error in fallback
-                                if (fallback) {
-                                    fallback.innerHTML = '<div class="fallback-icon">🤖</div>' +
-                                        '<div class="fallback-title">${isRTL ? 'المساعد الذكي' : 'AI Chatbot'}</div>' +
-                                        '<div class="fallback-text" style="max-width: 300px;">${isRTL ? 'خدمة المساعد الذكي قيد التطوير. يرجى استخدام المحادثة المباشرة للتواصل مع فريق الدعم.' : 'The AI Chatbot service is under development. Please use Live Chat to connect with our support team.'}</div>' +
-                                        '<div style="margin-top: 20px; font-size: 14px; opacity: 0.7;">${isRTL ? 'للمطورين: يرجى التأكد من تكوين خدمة Masdr بشكل صحيح' : 'For developers: Please ensure Masdr service is properly configured'}</div>';
-                                }
-                                sendMessageToRN('chatbot_error', { 
-                                    message: 'Chatbot widget not initialized',
-                                    elementFound: !!element,
-                                    hasContent: element ? (element.children.length > 0 || !!element.shadowRoot) : false
-                                });
-                            }
-                        }, 2000);
-                    };
-                    script.onerror = () => {
-                        console.error('Failed to load Masdr chatbot script');
-                        const fallback = document.getElementById('fallback-message');
-                        if (fallback) {
-                            fallback.innerHTML = '<div class="fallback-icon">❌</div>' +
-                                '<div class="fallback-title">${isRTL ? 'فشل تحميل المساعد الذكي' : 'Failed to load AI Assistant'}</div>' +
-                                '<div class="fallback-text">${isRTL ? 'يرجى التحقق من الاتصال بالإنترنت والمحاولة مرة أخرى' : 'Please check your internet connection and try again'}</div>';
-                        }
-                        sendMessageToRN('chatbot_error', { message: 'Failed to load chatbot script' });
-                    };
-                    document.head.appendChild(script);
-                }
-                
-                // Communication with React Native
-                function sendMessageToRN(type, data) {
-                    if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
-                        window.ReactNativeWebView.postMessage(JSON.stringify({
-                            type: type,
-                            data: data,
-                            timestamp: Date.now()
-                        }));
-                    }
-                }
-                
-                // Notify React Native when ready
-                document.addEventListener('DOMContentLoaded', () => {
-                    loadMasdrChatbot();
-                    sendMessageToRN('webview_ready', { 
-                        chatbot: 'masdr',
-                        language: '${i18n.language}',
-                        userInfo: window.userInfo
-                    });
-                });
-                
-                // Listen for errors
-                window.addEventListener('error', (event) => {
-                    sendMessageToRN('chatbot_error', {
-                        message: event.message,
-                        filename: event.filename,
-                        lineno: event.lineno
-                    });
-                });
-            </script>
-        </body>
-        </html>
-    `;
+
+                setMessages(prevMessages => [...prevMessages, botMessage]);
+                scrollToBottom();
+            } else {
+                throw new Error('Invalid response from chatbot API');
+            }
+
+        } catch (error) {
+            console.error('❌ CHATBOT API ERROR:', error);
+            console.error('Error details:', {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status
+            });
+
+            setIsTyping(false);
+            setErrorMessage(t('chat.error.sendFailed'));
+            setShowErrorDialog(true);
+        }
+    };
+
+    const scrollToBottom = () => {
+        if (scrollViewRef.current) {
+            scrollViewRef.current.scrollToEnd({ animated: true });
+        }
+    };
 
     const handleBackPress = () => {
         navigation.goBack();
     };
 
-    const handleWebViewMessage = (event) => {
-        try {
-            const data = JSON.parse(event.nativeEvent.data);
-            console.log('Message from chatbot webview:', data);
+    const renderMessage = (message, index) => {
+        const isUser = message.from.type === 'Client';
+        const isAgent = message.from.type === 'Agent';
 
-            switch (data.type) {
-                case 'webview_ready':
-                    console.log('Chatbot webview is ready');
-                    setLoading(false);
-                    break;
-                case 'chatbot_loaded':
-                    console.log('Chatbot loaded successfully', data.data);
-                    console.log('Iframe loaded:', data.data?.iframeLoaded);
-                    console.log('URL:', data.data?.url);
-                    setLoading(false);
-                    break;
-                case 'iframe_message':
-                    console.log('Message from iframe:', data.data);
-                    break;
-                case 'chatbot_error':
-                    console.error('Chatbot error:', data.data);
-                    setError(true);
-                    setLoading(false);
-                    break;
-                default:
-                    console.log('Unknown message type:', data.type);
-            }
-        } catch (error) {
-            console.error('Error parsing webview message:', error);
-        }
+        return (
+            <View key={message.id || index} style={[
+                dynamicStyles.messageContainer,
+                isUser ? dynamicStyles.userMessageContainer : dynamicStyles.agentMessageContainer
+            ]}>
+                <View style={[
+                    dynamicStyles.messageBubble,
+                    isUser ? dynamicStyles.userMessageBubble : dynamicStyles.agentMessageBubble
+                ]}>
+                    <Text style={[
+                        dynamicStyles.messageText,
+                        isUser ? dynamicStyles.userMessageText : dynamicStyles.agentMessageText
+                    ]}>
+                        {message.text}
+                    </Text>
+                </View>
+                <Text style={[
+                    dynamicStyles.messageTime,
+                    isUser ? dynamicStyles.userMessageTime : dynamicStyles.agentMessageTime
+                ]}>
+                    {new Date(message.utcTime).toLocaleTimeString(i18n.language, {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })}
+                </Text>
+            </View>
+        );
     };
 
-    const handleWebViewError = () => {
-        setError(true);
-        setLoading(false);
-    };
+    const renderTypingIndicator = () => {
+        if (!isTyping) return null;
 
-    const handleRetry = () => {
-        setError(false);
-        setLoading(true);
-        if (webViewRef.current) {
-            webViewRef.current.reload();
-        }
+        return (
+            <View style={dynamicStyles.typingContainer}>
+                <View style={dynamicStyles.typingBubble}>
+                    <Text style={dynamicStyles.typingText}>
+                        {isRTL ? 'المساعد الذكي يكتب...' : 'AI Assistant is typing...'}
+                    </Text>
+                </View>
+            </View>
+        );
     };
 
     const dynamicStyles = StyleSheet.create({
@@ -289,68 +232,112 @@ const ChatbotScreen = ({ navigation }) => {
         placeholderView: {
             width: 40,
         },
-        webViewContainer: {
+        messagesContainer: {
             flex: 1,
-            backgroundColor: theme.colors.background,
+            paddingHorizontal: 16,
         },
-        loadingContainer: {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: theme.colors.background,
+        messageContainer: {
+            marginVertical: 4,
         },
-        loadingText: {
-            marginTop: 12,
-            fontSize: 16,
-            color: theme.colors.textSecondary,
+        userMessageContainer: {
+            alignItems: 'flex-end',
         },
-        errorContainer: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 20,
-            backgroundColor: theme.colors.background,
+        agentMessageContainer: {
+            alignItems: 'flex-start',
         },
-        errorText: {
-            fontSize: 16,
-            color: theme.colors.error,
-            textAlign: 'center',
-            marginBottom: 20,
-        },
-        retryButton: {
-            backgroundColor: theme.colors.primary,
-            paddingHorizontal: 24,
+        messageBubble: {
+            maxWidth: '80%',
+            paddingHorizontal: 16,
             paddingVertical: 12,
-            borderRadius: 8,
+            borderRadius: 20,
         },
-        retryButtonText: {
-            color: '#FFFFFF',
+        userMessageBubble: {
+            backgroundColor: theme.colors.primary,
+            borderBottomRightRadius: 4,
+        },
+        agentMessageBubble: {
+            backgroundColor: theme.colors.surface,
+            borderBottomLeftRadius: 4,
+            borderWidth: 1,
+            borderColor: theme.colors.border,
+        },
+        messageText: {
             fontSize: 16,
-            fontWeight: '600',
+            lineHeight: 20,
         },
-        placeholderContainer: {
+        userMessageText: {
+            color: '#FFFFFF',
+        },
+        agentMessageText: {
+            color: theme.colors.text,
+        },
+        messageTime: {
+            fontSize: 12,
+            marginTop: 4,
+            marginHorizontal: 16,
+        },
+        userMessageTime: {
+            color: theme.colors.textSecondary,
+            textAlign: 'right',
+        },
+        agentMessageTime: {
+            color: theme.colors.textSecondary,
+            textAlign: 'left',
+        },
+        typingContainer: {
+            alignItems: 'flex-start',
+            marginVertical: 4,
+        },
+        typingBubble: {
+            backgroundColor: theme.colors.surface,
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+            borderRadius: 20,
+            borderBottomLeftRadius: 4,
+            borderWidth: 1,
+            borderColor: theme.colors.border,
+        },
+        typingText: {
+            fontSize: 14,
+            color: theme.colors.textSecondary,
+            fontStyle: 'italic',
+        },
+        inputContainer: {
+            flexDirection: isRTL ? 'row' : 'row', // Always use 'row' to keep send button on right
+            alignItems: 'center',
+            paddingHorizontal: 16,
+            paddingTop: 12,
+            paddingBottom: Math.max(insets.bottom, 12), // Use safe area bottom or minimum 12
+            backgroundColor: theme.colors.surface,
+            borderTopWidth: 1,
+            borderTopColor: theme.colors.border,
+            ...theme.shadows.small, // Add subtle shadow
+        },
+        messageInput: {
             flex: 1,
+            borderWidth: 1,
+            borderColor: theme.colors.border,
+            borderRadius: 20,
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+            fontSize: 16,
+            color: theme.colors.text,
+            backgroundColor: theme.colors.background,
+            marginRight: 8, // Only right margin since send button is always on right
+            textAlign: isRTL ? 'right' : 'left',
+        },
+        sendButton: {
+            backgroundColor: theme.colors.primary,
+            width: 44,
+            height: 44,
+            borderRadius: 22,
             justifyContent: 'center',
             alignItems: 'center',
-            padding: 20,
-            backgroundColor: theme.colors.background,
         },
-        placeholderTitle: {
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: theme.colors.text,
-            textAlign: 'center',
-            marginBottom: 12,
-        },
-        placeholderText: {
-            fontSize: 16,
-            color: theme.colors.textSecondary,
-            textAlign: 'center',
-            lineHeight: 24,
+        sendIcon: {
+            width: 20,
+            height: 20,
+            color: '#FFFFFF',
         },
     });
 
@@ -358,7 +345,11 @@ const ChatbotScreen = ({ navigation }) => {
 
     return (
         <SafeContainer>
-            <View style={dynamicStyles.container}>
+            <KeyboardAvoidingView
+                style={dynamicStyles.container}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+
                 {/* Header */}
                 <View style={dynamicStyles.header}>
                     <TouchableOpacity
@@ -373,59 +364,51 @@ const ChatbotScreen = ({ navigation }) => {
                     <View style={dynamicStyles.placeholderView} />
                 </View>
 
-                {/* WebView */}
-                {!error ? (
-                    <View style={dynamicStyles.webViewContainer}>
-                        <WebView
-                            ref={webViewRef}
-                            source={{ html: htmlContent, baseUrl: 'https://sera.gov.sa' }}
-                            style={{ flex: 1, backgroundColor: theme.colors.background }}
-                            onLoadStart={() => setLoading(true)}
-                            onLoadEnd={() => setLoading(false)}
-                            onError={handleWebViewError}
-                            onHttpError={handleWebViewError}
-                            onMessage={handleWebViewMessage}
-                            javaScriptEnabled={true}
-                            domStorageEnabled={true}
-                            startInLoadingState={true}
-                            scalesPageToFit={true}
-                            allowsInlineMediaPlayback={true}
-                            mediaPlaybackRequiresUserAction={false}
-                            allowFileAccess={true}
-                            allowFileAccessFromFileURLs={true}
-                            allowUniversalAccessFromFileURLs={true}
-                            mixedContentMode="always"
-                            originWhitelist={['*']}
-                            setSupportMultipleWindows={false}
-                        />
-                        {loading && (
-                            <View style={dynamicStyles.loadingContainer}>
-                                <LoadingIndicator
-                                    size="large"
-                                    color={theme.colors.primary}
-                                />
-                                <Text style={dynamicStyles.loadingText}>
-                                    {t('common.loading')}
-                                </Text>
-                            </View>
-                        )}
-                    </View>
-                ) : (
-                    <View style={dynamicStyles.errorContainer}>
-                        <Text style={dynamicStyles.errorText}>
-                            {t('chat.webview.error')}
-                        </Text>
-                        <TouchableOpacity
-                            style={dynamicStyles.retryButton}
-                            onPress={handleRetry}
-                            activeOpacity={0.7}>
-                            <Text style={dynamicStyles.retryButtonText}>
-                                {t('common.retry')}
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-            </View>
+                {/* Messages */}
+                <ScrollView
+                    ref={scrollViewRef}
+                    style={dynamicStyles.messagesContainer}
+                    contentContainerStyle={{ paddingVertical: 16 }}
+                    showsVerticalScrollIndicator={false}>
+                    {messages.map((message, index) => renderMessage(message, index))}
+                    {renderTypingIndicator()}
+                </ScrollView>
+
+                {/* Input */}
+                <View style={dynamicStyles.inputContainer}>
+                    <TextInput
+                        ref={messageInputRef}
+                        style={dynamicStyles.messageInput}
+                        value={messageText}
+                        onChangeText={setMessageText}
+                        placeholder={t('chat.input.placeholder')}
+                        placeholderTextColor={theme.colors.textSecondary}
+                        multiline
+                        maxLength={1000}
+                        editable={!isTyping}
+                    />
+                    <TouchableOpacity
+                        style={[
+                            dynamicStyles.sendButton,
+                            { opacity: messageText.trim() && !isTyping ? 1 : 0.5 }
+                        ]}
+                        onPress={sendMessage}
+                        disabled={!messageText.trim() || isTyping}
+                        activeOpacity={0.7}>
+                        <Send24Regular style={dynamicStyles.sendIcon} />
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAvoidingView>
+
+            {/* Error Dialog */}
+            <ActionToast
+                visible={showErrorDialog}
+                title={t('chat.error.title')}
+                message={errorMessage}
+                confirmText={t('common.ok')}
+                onConfirm={() => setShowErrorDialog(false)}
+                showCancel={false}
+            />
         </SafeContainer>
     );
 };
