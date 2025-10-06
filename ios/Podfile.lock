@@ -5,9 +5,9 @@ PODS:
   - FBLazyVector (0.79.6)
   - fmt (11.0.2)
   - glog (0.3.5)
-  - hermes-engine (0.79.6):
-    - hermes-engine/Pre-built (= 0.79.6)
-  - hermes-engine/Pre-built (0.79.6)
+  - hermes-engine (0.79.4):
+    - hermes-engine/Pre-built (= 0.79.4)
+  - hermes-engine/Pre-built (0.79.4)
   - lottie-ios (4.5.0)
   - lottie-react-native (7.3.4):
     - DoubleConversion
@@ -2505,7 +2505,7 @@ SPEC CHECKSUMS:
   FBLazyVector: 07309209b7b914451b8f822544a18e2a0a85afff
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
-  hermes-engine: 44bb6fe76a6eb400d3a992e2d0b21946ae999fa9
+  hermes-engine: 8b5a5eb386b990287d072fd7b6f6ebd9544dd251
   lottie-ios: a881093fab623c467d3bce374367755c272bdd59
   lottie-react-native: 2d23fe8ac918240e52f40b0f4a3582017160d34f
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
@@ -2587,6 +2587,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: dc7c21200195acacb62fa920c588e7c2106de45e
 
-PODFILE CHECKSUM: bd5917d9b561126387ed1970bcb86a7d81d6a2ea
+PODFILE CHECKSUM: deaa88c92e73f2825ae194a48bcf89333848ac3a
 
 COCOAPODS: 1.16.2
