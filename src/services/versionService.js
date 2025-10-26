@@ -12,7 +12,7 @@ class VersionService {
         this.versionCheckURL = 'https://sera.gov.sa/api/app/version-check';
 
         // Fallback minimum version if API fails
-        this.fallbackMinVersion = '1.3.0';
+        this.fallbackMinVersion = '1.3.30';
 
         // Cache duration: 1 hour
         this.cacheDuration = 60 * 60 * 1000;
