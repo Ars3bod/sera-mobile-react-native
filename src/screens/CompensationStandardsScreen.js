@@ -28,238 +28,66 @@ const CompensationStandardsScreen = ({ navigation }) => {
     const isRTL = i18n.language === 'ar';
 
     // Consumer Compensation Standards Data from SERA - Complete 9 Standards
-    const compensationStandards = [
-        {
-            id: 1,
-            icon: DocumentText24Regular,
-            title: isRTL
-                ? 'مدة تسجيل العداد باسم المستهلك'
-                : 'Meter Registration Period in Consumer Name',
-            description: isRTL
-                ? 'طلب تسجيل العداد باسم مالك المنشأة أو المستأجر، أو إلغاء التسجيل'
-                : 'Request to register the meter in the name of property owner or tenant, or cancel registration',
-            conditions: isRTL
-                ? 'إرفاق كافة المستندات المطلوبة'
-                : 'Attach all required documents',
-            period: isRTL ? '3 أيام عمل' : '3 working days',
-            compensation: isRTL ? '100 ريال' : 'SAR 100',
-            additionalCompensation: isRTL
-                ? '20 ريال عن كل يوم عمل إضافي أو جزء منه'
-                : 'SAR 20 per additional working day or part thereof',
-            notes: isRTL
-                ? 'يتم حساب بداية المدة من يوم العمل التالي لتقديم الطلب'
-                : 'Period starts from the working day following the request submission',
-            color: '#00623B',
-            category: 'service',
-        },
-        {
-            id: 2,
-            icon: Power24Regular,
-            title: isRTL
-                ? 'مدة إيصال الخدمة الكهربائية أو التعديل عليها بعد السداد'
-                : 'Period for Electricity Service Connection or Modification After Payment',
-            description: isRTL
-                ? 'تقديم طلب إيصال الخدمة الكهربائية، طلب التعديل على الخدمة الكهربائية القائمة بـ إضافة، تقوية، تجزئة، أو تجميع، تقديم طلب إيصال مؤقت لأغراض الإنشاءات'
-                : 'Submit request for electricity service connection, request modification to existing electrical service (addition, strengthening, division, or consolidation), submit temporary connection request for construction purposes',
-            conditions: isRTL
-                ? 'سداد مبلغ الإيصال أو التكاليف الفعلية'
-                : 'Payment of connection amount or actual costs',
-            period: isRTL
-                ? '20 يوم عمل (جهد منخفض)، 60 يوم عمل (جهد متوسط أو أعمال على الجهد المتوسط)'
-                : '20 working days (low voltage), 60 working days (medium voltage or work on medium voltage)',
-            compensation: isRTL ? '400 ريال' : 'SAR 400',
-            additionalCompensation: isRTL
-                ? '20 ريال عن كل يوم عمل إضافي أو جزء منه'
-                : 'SAR 20 per additional working day or part thereof',
-            notes: isRTL
-                ? 'يتم حساب بداية المدة من يوم العمل التالي ليوم السداد'
-                : 'Period starts from the working day following payment day',
-            color: '#00623B',
-            category: 'service',
-        },
-        {
-            id: 3,
-            icon: Clock24Regular,
-            title: isRTL
-                ? 'مدة إعادة الخدمة الكهربائية بعد السداد'
-                : 'Period for Restoring Electricity Service After Payment',
-            description: isRTL
-                ? 'إعادة الخدمة الكهربائية بعد فصلها عن المستهلك بسبب عدم سداده للفاتورة المستحقة'
-                : 'Restore electricity service after disconnection due to non-payment of due invoice',
-            conditions: isRTL
-                ? 'سداد المبلغ المطلوب'
-                : 'Payment of required amount',
-            period: isRTL ? 'ساعتان' : '2 hours',
-            compensation: isRTL ? '100 ريال' : 'SAR 100',
-            additionalCompensation: isRTL
-                ? '100 ريال عن كل ساعة إضافية أو جزء منها'
-                : 'SAR 100 per additional hour or part thereof',
-            notes: isRTL
-                ? 'يتم حساب المدة من وقت إشعار مقدم الخدمة بالسداد'
-                : 'Period is calculated from time of notifying service provider of payment',
-            color: '#00623B',
-            category: 'restoration',
-        },
-        {
-            id: 4,
-            icon: Alert24Regular,
-            title: isRTL
-                ? 'الإشعار عن الانقطاع المخطط للخدمة الكهربائية'
-                : 'Notice of Planned Electricity Service Outage',
-            description: isRTL
-                ? 'إشعار المستهلك بالانقطاع المخطط للخدمة الكهربائية'
-                : 'Notify consumer of planned electricity service outage',
-            conditions: isRTL
-                ? 'عدم وصول الإشعار المسبق'
-                : 'No prior notice received',
-            period: isRTL ? 'يومين قبل الانقطاع على الأقل' : 'At least 2 days before outage',
-            compensation: isRTL ? '100 ريال' : 'SAR 100',
-            additionalCompensation: isRTL
-                ? 'لا ينطبق'
-                : 'Not applicable',
-            notes: isRTL
-                ? 'إذا لم يلتزم مقدم الخدمة بالإشعار بالانقطاع قبل 48 ساعة، يستحق المستهلك التعويض'
-                : 'If service provider does not notify of outage 48 hours in advance, consumer is entitled to compensation',
-            color: '#00623B',
-            category: 'notification',
-        },
-        {
-            id: 5,
-            icon: Clock24Regular,
-            title: isRTL
-                ? 'مدة إعادة الخدمة الكهربائية بعد الانقطاع المخطط'
-                : 'Period for Restoring Electricity Service After Planned Outage',
-            description: isRTL
-                ? 'إعادة الخدمة الكهربائية للمستهلك بعد الانقطاع المخطط'
-                : 'Restore electricity service to consumer after planned outage',
-            period: isRTL ? 'في أسرع وقت وبما لا يتجاوز 6 ساعات' : 'As soon as possible not exceeding 6 hours',
-            compensation: isRTL ? '200 ريال' : 'SAR 200',
-            additionalCompensation: isRTL
-                ? '50 ريال عن كل ساعة إضافية أو جزء منها'
-                : 'SAR 50 per additional hour or part thereof',
-            notes: isRTL
-                ? 'تحسب المدة من بداية وقت الانقطاع الفعلي المخطط. يستحق المستهلك تعويض على المعيار الرابع والخامس إذا تأثر بهما معاً'
-                : 'Period calculated from start of actual planned outage time. Consumer entitled to compensation for both standards 4 and 5 if affected by both',
-            color: '#00623B',
-            category: 'restoration',
-        },
-        {
-            id: 6,
-            icon: Alert24Regular,
-            title: isRTL
-                ? 'مدة إعادة الخدمة الكهربائية بعد الانقطاع الطارئ (غير المخطط)'
-                : 'Period for Restoring Electricity Service After Emergency (Unplanned) Outage',
-            description: isRTL
-                ? 'انقطاع الخدمة الكهربائية عن المستهلك انقطاعاً طارئاً نتيجة عطل مثلاً'
-                : 'Emergency electricity service outage to consumer due to fault for example',
-            period: isRTL ? 'في أسرع وقت وبما لا يتجاوز 3 ساعات' : 'As soon as possible not exceeding 3 hours',
-            compensation: isRTL ? '50 ريال' : 'SAR 50',
-            additionalCompensation: isRTL
-                ? '50 ريال عن كل ساعة إضافية أو جزء منها'
-                : 'SAR 50 per additional hour or part thereof',
-            notes: isRTL
-                ? 'يتم حساب المدة من بداية وقت الانقطاع الطارئ غير المخطط'
-                : 'Period calculated from start of emergency unplanned outage',
-            color: '#00623B',
-            category: 'emergency',
-        },
-        {
-            id: 7,
-            icon: Power24Regular,
-            title: isRTL
-                ? 'مدة إعادة الخدمة الكهربائية بعد الانطفاء الشامل'
-                : 'Period for Restoring Electricity Service After Total Blackout',
-            description: isRTL
-                ? 'حدوث انطفاء شامل للنظام الكهربائي عن أي مدينة أو محافظة، دون عودة الخدمة الكهربائية خلال 6 ساعات لكامل تلك المدينة / المحافظة'
-                : 'Total blackout of electrical system in any city or province without restoration within 6 hours for entire city/province',
-            conditions: isRTL
-                ? 'انطفاء شامل للمدينة أو المحافظة لأكثر من 6 ساعات'
-                : 'Total blackout of city or province for more than 6 hours',
-            period: isRTL ? 'بما يتجاوز 6 ساعات للانطفاء الشامل' : 'Exceeding 6 hours for total blackout',
-            compensation: isRTL ? 'بما يصل إلى 1000 ريال' : 'Up to SAR 1,000',
-            additionalCompensation: isRTL
-                ? 'لا يتجاوز مجموع مبالغ التعويض 200 مليون ريال لكل مدينة/محافظة'
-                : 'Total compensation shall not exceed SAR 200 million per city/province',
-            notes: isRTL
-                ? 'تحسب المدة من بداية وقت الانطفاء الشامل. في حال كان الانطفاء الشامل على أكثر من مدينة/محافظة، فيتم التعامل مع كل مدينة أو محافظة بشكل مستقل من حيث حساب سقف التعويض. كل مستهلك مستحق لهذا التعويض، يتم تعويضه أيضاً عن المعيار السادس'
-                : 'Period calculated from start of total blackout. If blackout affects multiple cities/provinces, each is treated independently for compensation cap. Every consumer entitled to this compensation is also compensated under standard 6',
-            color: '#00623B',
-            category: 'emergency',
-        },
-        {
-            id: 8,
-            icon: Alert24Regular,
-            title: isRTL
-                ? 'فصل الخدمة الكهربائية في الأوقات والحالات المحظورة'
-                : 'Disconnection of Electricity Service at Prohibited Times and Cases',
-            description: isRTL
-                ? 'في حال قيام مقدم الخدمة بفصل الخدمة الكهربائية عن أي عداد بعدم الالتزام بالضوابط والإجراءات المعتمدة، أو في الأوقات والحالات المحظورة، أو قبل التاريخ المحدد، أو عن أي عداد غير مستحق للفصل'
-                : 'If service provider disconnects electricity from any meter without complying with approved controls and procedures, or at prohibited times and cases, or before specified date, or from any meter not due for disconnection',
-            period: isRTL ? 'إعادة الخدمة فوراً' : 'Restore service immediately',
-            compensation: isRTL ? '500 ريال' : 'SAR 500',
-            notes: isRTL
-                ? 'من الأوقات المحظورة لفصل الخدمة لعدم السداد: شهر رمضان ووقت اختبارات التعليم العام للاستهلاك السكني، بعد الساعة 12 ظهراً، خارج أوقات عمل مقدم الخدمة، في حال كان في المنشأة أحد المسجلين بخدمة ذوي الاحتياجات الماسة للكهرباء'
-                : 'Prohibited times for disconnection due to non-payment include: Ramadan and general education exam period for residential consumption, after 12 PM, outside service provider working hours, if premises has registered person with critical electricity needs',
-            color: '#00623B',
-            category: 'violation',
-        },
-        {
-            id: 9,
-            icon: DocumentText24Regular,
-            title: isRTL
-                ? 'مدة معالجة شكوى الفواتير'
-                : 'Period for Processing Invoice Complaints',
-            description: isRTL
-                ? 'معالجة مقدم الخدمة للشكاوى المتعلقة بالفواتير، وتقديم رد تفصيلي للمستهلك عن نتيجة معالجة شكواه'
-                : 'Service provider processing of invoice-related complaints and providing detailed response to consumer about complaint processing result',
-            conditions: isRTL
-                ? 'تقديم شكوى لمزود الخدمة متعلقة بالفاتورة'
-                : 'Submit invoice-related complaint to service provider',
-            period: isRTL ? '5 أيام عمل' : '5 working days',
-            compensation: isRTL ? '100 ريال' : 'SAR 100',
-            additionalCompensation: isRTL
-                ? '50 ريال عن كل يوم عمل إضافي أو جزء منه'
-                : 'SAR 50 per additional working day or part thereof',
-            notes: isRTL
-                ? 'يتم حساب المدة من يوم العمل التالي ليوم تقديم الشكوى'
-                : 'Period calculated from working day following complaint submission day',
-            color: '#00623B',
-            category: 'complaint',
-        },
-    ];
+    // Get compensation standards from i18n
+    const compensationStandardsData = t('compensationStandards.standards', { returnObjects: true });
+    const compensationStandards = Array.isArray(compensationStandardsData)
+        ? compensationStandardsData.map(item => {
+            // Map category to appropriate icon
+            let icon;
+            switch (item.category) {
+                case 'service':
+                    icon = Power24Regular;
+                    break;
+                case 'restoration':
+                    icon = Clock24Regular;
+                    break;
+                case 'notification':
+                case 'complaint':
+                    icon = Alert24Regular;
+                    break;
+                case 'emergency':
+                    icon = Power24Regular;
+                    break;
+                case 'violation':
+                    icon = Alert24Regular;
+                    break;
+                default:
+                    icon = DocumentText24Regular;
+            }
+            return {
+                ...item,
+                icon,
+                color: '#00623B',
+            };
+        })
+        : [];
 
+
+    // Get translations from i18n
     const translations = {
-        title: isRTL ? 'معايير التعويضات' : 'Compensation Standards',
-        subtitle: isRTL
-            ? 'حقوقك كمستهلك للكهرباء'
-            : 'Your Rights as Electricity Consumer',
-        description: isRTL
-            ? 'وصف المعيار'
-            : 'Standard Description',
-        conditions: isRTL ? 'شرط الاستحقاق' : 'Eligibility Condition',
-        period: isRTL ? 'الفترة الزمنية' : 'Time Period',
-        compensation: isRTL ? 'مبلغ التعويض عند التقصير' : 'Compensation Amount for Non-Compliance',
-        additionalCompensation: isRTL
-            ? 'الاستمرار في التقصير "التعويض الإضافي"'
-            : 'Continued Non-Compliance "Additional Compensation"',
-        notes: isRTL ? 'توضيحات إضافية' : 'Additional Notes',
-        mainDescription: isRTL
-            ? 'تعرف على حقوقك في التعويض عند عدم التزام مقدم الخدمة بالمعايير المحددة من قبل الهيئة السعودية لتنظيم الكهرباء.'
-            : 'Learn about your compensation rights when service providers fail to meet the standards set by the Saudi Electricity Regulatory Authority.',
+        title: t('compensationStandards.screen.title'),
+        subtitle: t('compensationStandards.screen.subtitle'),
+        description: t('compensationStandards.screen.description'),
+        conditions: t('compensationStandards.screen.conditions'),
+        period: t('compensationStandards.screen.period'),
+        compensation: t('compensationStandards.screen.compensation'),
+        additionalCompensation: t('compensationStandards.screen.additionalCompensation'),
+        notes: t('compensationStandards.screen.notes'),
+        mainDescription: t('compensationStandards.screen.mainDescription'),
+        downloadGuide: t('compensationStandards.screen.downloadGuide'),
         categories: {
-            service: isRTL ? 'خدمات الكهرباء' : 'Electricity Services',
-            restoration: isRTL ? 'استعادة الخدمة' : 'Service Restoration',
-            notification: isRTL ? 'الإشعارات' : 'Notifications',
-            emergency: isRTL ? 'الطوارئ' : 'Emergency',
-            violation: isRTL ? 'المخالفات' : 'Violations',
-            complaint: isRTL ? 'الشكاوى' : 'Complaints',
+            service: t('compensationStandards.screen.categories.service'),
+            restoration: t('compensationStandards.screen.categories.restoration'),
+            notification: t('compensationStandards.screen.categories.notification'),
+            emergency: t('compensationStandards.screen.categories.emergency'),
+            violation: t('compensationStandards.screen.categories.violation'),
+            complaint: t('compensationStandards.screen.categories.complaint'),
         },
         quickStats: {
-            totalStandards: isRTL ? 'المعايير المتاحة' : 'Available Standards',
-            avgCompensation: isRTL ? 'متوسط التعويض' : 'Average Compensation',
-            maxCompensation: isRTL ? 'أعلى تعويض' : 'Highest Compensation',
+            totalStandards: t('compensationStandards.screen.quickStats.totalStandards'),
+            avgCompensation: t('compensationStandards.screen.quickStats.avgCompensation'),
+            maxCompensation: t('compensationStandards.screen.quickStats.maxCompensation'),
         },
-        downloadGuide: isRTL ? 'تحميل الدليل المبسط' : 'Download Simplified Guide',
     };
 
     const handleGoBack = () => {

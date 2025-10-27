@@ -1,7 +1,9 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import supabaseI18nService from '../services/supabaseService';
 
-const resources = {
+// Static fallback translations (used if Supabase is unavailable)
+const staticResources = {
   en: {
     translation: {
       common: {
@@ -194,6 +196,79 @@ const resources = {
             yesterday: 'Yesterday',
             threeDaysAgo: '3 days ago',
           },
+          seraUpdates: {
+            title: 'Latest SERA Updates',
+            seeAll: 'See All',
+            new: 'New',
+            items: [
+              {
+                id: 1,
+                type: 'announcement',
+                title: 'Important: Electricity Systems Update',
+                description: 'National electricity grid systems updated for improved service',
+                time: '1 hour ago',
+                isNew: true,
+              },
+              {
+                id: 2,
+                type: 'news',
+                title: 'News: Renewable Energy Project Launch',
+                description: 'New solar energy projects implementation begins in the Kingdom',
+                time: '3 hours ago',
+                isNew: false,
+              },
+              {
+                id: 3,
+                type: 'regulation',
+                title: 'Regulation: New Electricity License Rules',
+                description: 'Updated rules for electricity activity licenses issued',
+                time: 'Yesterday',
+                isNew: false,
+              },
+            ],
+          },
+          compensation: {
+            title: 'Compensation Standards',
+            subtitle: 'Your Rights as Electricity Consumer',
+            viewAll: 'View All Standards',
+            period: 'Required Period',
+            compensation: 'Compensation',
+            additionalCompensation: 'Additional Compensation',
+            standards: [
+              {
+                id: 1,
+                category: 'registration',
+                title: 'Register/Cancel Electricity Service',
+                period: 'Within 3 working days',
+                compensation: 'SAR 100',
+                additionalCompensation: 'SAR 20 per additional working day',
+              },
+              {
+                id: 2,
+                category: 'service',
+                title: 'Service Delivery/Modification After Payment',
+                period: '20 days (low voltage) - 60 days (medium voltage)',
+                compensation: 'SAR 400',
+                additionalCompensation: 'SAR 20 per additional working day',
+              },
+              {
+                id: 3,
+                category: 'restoration',
+                title: 'Service Restoration After Payment',
+                period: 'Within 2 hours of payment notification',
+                compensation: 'SAR 100',
+                additionalCompensation: 'SAR 100 per additional hour',
+              },
+              {
+                id: 4,
+                category: 'notification',
+                title: 'Prior Notice for Planned Outage',
+                period: 'At least 2 days before',
+                compensation: 'SAR 100',
+                additionalCompensation: 'No additional compensation',
+              },
+            ],
+          },
         },
       },
       services: {
@@ -305,6 +380,130 @@ const resources = {
           title: 'Additional Information',
           content: 'For more detailed information about electricity tariffs, eligibility criteria, and application procedures, please visit the official SERA website or contact our customer service team.',
         },
+      },
+      compensationStandards: {
+        screen: {
+          title: 'Compensation Standards',
+          subtitle: 'Your Rights as Electricity Consumer',
+          description: 'Standard Description',
+          conditions: 'Eligibility Condition',
+          period: 'Time Period',
+          compensation: 'Compensation Amount for Non-Compliance',
+          additionalCompensation: 'Continued Non-Compliance "Additional Compensation"',
+          notes: 'Additional Notes',
+          mainDescription: 'Learn about your compensation rights when service providers fail to meet the standards set by the Saudi Electricity Regulatory Authority.',
+          downloadGuide: 'Download Simplified Guide',
+          categories: {
+            service: 'Electricity Services',
+            restoration: 'Service Restoration',
+            notification: 'Notifications',
+            emergency: 'Emergency',
+            violation: 'Violations',
+            complaint: 'Complaints',
+          },
+          quickStats: {
+            totalStandards: 'Available Standards',
+            avgCompensation: 'Average Compensation',
+            maxCompensation: 'Highest Compensation',
+          },
+        },
+        standards: [
+          {
+            id: 1,
+            category: 'service',
+            title: 'Meter Registration Period in Consumer Name',
+            description: 'Request to register the meter in the name of property owner or tenant, or cancel registration',
+            conditions: 'Attach all required documents',
+            period: '3 working days',
+            compensation: 'SAR 100',
+            additionalCompensation: 'SAR 20 per additional working day or part thereof',
+            notes: 'Period starts from the working day following the request submission',
+          },
+          {
+            id: 2,
+            category: 'service',
+            title: 'Period for Electricity Service Connection or Modification After Payment',
+            description: 'Submit request for electricity service connection, request modification to existing electrical service (addition, strengthening, division, or consolidation), submit temporary connection request for construction purposes',
+            conditions: 'Payment of connection amount or actual costs',
+            period: '20 working days (low voltage), 60 working days (medium voltage or work on medium voltage)',
+            compensation: 'SAR 400',
+            additionalCompensation: 'SAR 20 per additional working day or part thereof',
+            notes: 'Period starts from the working day following payment day',
+          },
+          {
+            id: 3,
+            category: 'restoration',
+            title: 'Period for Restoring Electricity Service After Payment',
+            description: 'Restore electricity service after disconnection due to non-payment of due invoice',
+            conditions: 'Payment of required amount',
+            period: '2 hours',
+            compensation: 'SAR 100',
+            additionalCompensation: 'SAR 100 per additional hour or part thereof',
+            notes: 'Period is calculated from time of notifying service provider of payment',
+          },
+          {
+            id: 4,
+            category: 'notification',
+            title: 'Notice of Planned Electricity Service Outage',
+            description: 'Notify consumer of planned electricity service outage',
+            conditions: 'No prior notice received',
+            period: 'At least 2 days before outage',
+            compensation: 'SAR 100',
+            additionalCompensation: 'Not applicable',
+            notes: 'If service provider does not notify of outage 48 hours in advance, consumer is entitled to compensation',
+          },
+          {
+            id: 5,
+            category: 'restoration',
+            title: 'Period for Restoring Electricity Service After Planned Outage',
+            description: 'Restore electricity service to consumer after planned outage',
+            period: 'As soon as possible not exceeding 6 hours',
+            compensation: 'SAR 200',
+            additionalCompensation: 'SAR 50 per additional hour or part thereof',
+            notes: 'Period calculated from start of actual planned outage time. Consumer entitled to compensation for both standards 4 and 5 if affected by both',
+          },
+          {
+            id: 6,
+            category: 'emergency',
+            title: 'Period for Restoring Electricity Service After Emergency (Unplanned) Outage',
+            description: 'Emergency electricity service outage to consumer due to fault for example',
+            period: 'As soon as possible not exceeding 3 hours',
+            compensation: 'SAR 50',
+            additionalCompensation: 'SAR 50 per additional hour or part thereof',
+            notes: 'Period calculated from start of emergency unplanned outage',
+          },
+          {
+            id: 7,
+            category: 'emergency',
+            title: 'Period for Restoring Electricity Service After Total Blackout',
+            description: 'Total blackout of electrical system in any city or province without restoration within 6 hours for entire city/province',
+            conditions: 'Total blackout of city or province for more than 6 hours',
+            period: 'Exceeding 6 hours for total blackout',
+            compensation: 'Up to SAR 1,000',
+            additionalCompensation: 'Total compensation shall not exceed SAR 200 million per city/province',
+            notes: 'Period calculated from start of total blackout. If blackout affects multiple cities/provinces, each is treated independently for compensation cap. Every consumer entitled to this compensation is also compensated under standard 6',
+          },
+          {
+            id: 8,
+            category: 'violation',
+            title: 'Disconnection of Electricity Service at Prohibited Times and Cases',
+            description: 'If service provider disconnects electricity from any meter without complying with approved controls and procedures, or at prohibited times and cases, or before specified date, or from any meter not due for disconnection',
+            period: 'Restore service immediately',
+            compensation: 'SAR 500',
+            notes: 'Prohibited times for disconnection due to non-payment include: Ramadan and general education exam period for residential consumption, after 12 PM, outside service provider working hours, if premises has registered person with critical electricity needs',
+          },
+          {
+            id: 9,
+            category: 'complaint',
+            title: 'Period for Processing Invoice Complaints',
+            description: 'Service provider processing of invoice-related complaints and providing detailed response to consumer about complaint processing result',
+            conditions: 'Submit invoice-related complaint to service provider',
+            period: '5 working days',
+            compensation: 'SAR 100',
+            additionalCompensation: 'SAR 50 per additional working day or part thereof',
+            notes: 'Period calculated from working day following complaint submission day',
+          },
+        ],
       },
       more: {
         title: 'More',
@@ -1833,6 +2032,79 @@ const resources = {
             yesterday: 'أمس',
             threeDaysAgo: 'منذ 3 أيام',
           },
+          seraUpdates: {
+            title: 'آخر التحديثات من الهيئة',
+            seeAll: 'عرض الكل',
+            new: 'جديد',
+            items: [
+              {
+                id: 1,
+                type: 'announcement',
+                title: 'إعلان هام: تحديث أنظمة الكهرباء',
+                description: 'تم تحديث أنظمة شبكة الكهرباء الوطنية لتحسين الخدمة',
+                time: 'منذ ساعة',
+                isNew: true,
+              },
+              {
+                id: 2,
+                type: 'news',
+                title: 'أخبار: انطلاق مشروع الطاقة المتجددة',
+                description: 'بدء تنفيذ مشاريع جديدة للطاقة الشمسية في المملكة',
+                time: 'منذ 3 ساعات',
+                isNew: false,
+              },
+              {
+                id: 3,
+                type: 'regulation',
+                title: 'تنظيم: قواعد جديدة لتراخيص الكهرباء',
+                description: 'صدور قواعد محدثة لإصدار تراخيص مزاولة أنشطة الكهرباء',
+                time: 'أمس',
+                isNew: false,
+              },
+            ],
+          },
+          compensation: {
+            title: 'المعايير المضمونة ',
+            subtitle: 'حقوقك كمستهلك للكهرباء',
+            viewAll: 'عرض جميع المعايير',
+            period: 'المدة المطلوبة',
+            compensation: 'التعويض',
+            additionalCompensation: 'التعويض الإضافي',
+            standards: [
+              {
+                id: 1,
+                category: 'registration',
+                title: 'تسجيل أو إلغاء خدمة الكهرباء',
+                period: 'خلال 3 أيام عمل',
+                compensation: '100 ريال',
+                additionalCompensation: '20 ريال لكل يوم عمل إضافي',
+              },
+              {
+                id: 2,
+                category: 'service',
+                title: 'توصيل أو تعديل الخدمة بعد الدفع',
+                period: '20 يوم (جهد منخفض) - 60 يوم (جهد متوسط)',
+                compensation: '400 ريال',
+                additionalCompensation: '20 ريال لكل يوم عمل إضافي',
+              },
+              {
+                id: 3,
+                category: 'restoration',
+                title: 'استعادة الخدمة بعد الدفع',
+                period: 'خلال ساعتين من إشعار الدفع',
+                compensation: '100 ريال',
+                additionalCompensation: '100 ريال لكل ساعة إضافية',
+              },
+              {
+                id: 4,
+                category: 'notification',
+                title: 'الإشعار المسبق للانقطاع المخطط',
+                period: 'قبل يومين على الأقل',
+                compensation: '100 ريال',
+                additionalCompensation: 'لا يوجد تعويض إضافي',
+              },
+            ],
+          },
         },
       },
       services: {
@@ -1941,6 +2213,130 @@ const resources = {
           content: 'يصل التعويض للمستهلك دون حاجة لتقديم شكوى أو مطالبة، يضاف كرصيد في الفاتورة خلال 10 أيام عمل من انتهاء الحالة، ويمكن طلب تحويل الرصيد إلى الحساب البنكي',
         },
       },
+      compensationStandards: {
+        screen: {
+          title: 'المعايير المضمونة',
+          subtitle: 'حقوقك كمستهلك للكهرباء',
+          description: 'وصف المعيار',
+          conditions: 'شرط الاستحقاق',
+          period: 'الفترة الزمنية',
+          compensation: 'مبلغ التعويض عند التقصير',
+          additionalCompensation: 'الاستمرار في التقصير "التعويض الإضافي"',
+          notes: 'توضيحات إضافية',
+          mainDescription: 'تعرف على حقوقك في التعويض عند عدم التزام مقدم الخدمة بالمعايير المحددة من قبل الهيئة السعودية لتنظيم الكهرباء.',
+          downloadGuide: 'تحميل الدليل المبسط',
+          categories: {
+            service: 'خدمات الكهرباء',
+            restoration: 'استعادة الخدمة',
+            notification: 'الإشعارات',
+            emergency: 'الطوارئ',
+            violation: 'المخالفات',
+            complaint: 'الشكاوى',
+          },
+          quickStats: {
+            totalStandards: 'المعايير المتاحة',
+            avgCompensation: 'متوسط التعويض',
+            maxCompensation: 'أعلى تعويض',
+          },
+        },
+        standards: [
+          {
+            id: 1,
+            category: 'service',
+            title: 'مدة تسجيل العداد باسم المستهلك',
+            description: 'طلب تسجيل العداد باسم مالك المنشأة أو المستأجر، أو إلغاء التسجيل',
+            conditions: 'إرفاق كافة المستندات المطلوبة',
+            period: '3 أيام عمل',
+            compensation: '100 ريال',
+            additionalCompensation: '20 ريال عن كل يوم عمل إضافي أو جزء منه',
+            notes: 'يتم حساب بداية المدة من يوم العمل التالي لتقديم الطلب',
+          },
+          {
+            id: 2,
+            category: 'service',
+            title: 'مدة إيصال الخدمة الكهربائية أو التعديل عليها بعد السداد',
+            description: 'تقديم طلب إيصال الخدمة الكهربائية، طلب التعديل على الخدمة الكهربائية القائمة بـ إضافة، تقوية، تجزئة، أو تجميع، تقديم طلب إيصال مؤقت لأغراض الإنشاءات',
+            conditions: 'سداد مبلغ الإيصال أو التكاليف الفعلية',
+            period: '20 يوم عمل (جهد منخفض)، 60 يوم عمل (جهد متوسط أو أعمال على الجهد المتوسط)',
+            compensation: '400 ريال',
+            additionalCompensation: '20 ريال عن كل يوم عمل إضافي أو جزء منه',
+            notes: 'يتم حساب بداية المدة من يوم العمل التالي ليوم السداد',
+          },
+          {
+            id: 3,
+            category: 'restoration',
+            title: 'مدة إعادة الخدمة الكهربائية بعد السداد',
+            description: 'إعادة الخدمة الكهربائية بعد فصلها عن المستهلك بسبب عدم سداده للفاتورة المستحقة',
+            conditions: 'سداد المبلغ المطلوب',
+            period: 'ساعتان',
+            compensation: '100 ريال',
+            additionalCompensation: '100 ريال عن كل ساعة إضافية أو جزء منها',
+            notes: 'يتم حساب المدة من وقت إشعار مقدم الخدمة بالسداد',
+          },
+          {
+            id: 4,
+            category: 'notification',
+            title: 'الإشعار عن الانقطاع المخطط للخدمة الكهربائية',
+            description: 'إشعار المستهلك بالانقطاع المخطط للخدمة الكهربائية',
+            conditions: 'عدم وصول الإشعار المسبق',
+            period: 'يومين قبل الانقطاع على الأقل',
+            compensation: '100 ريال',
+            additionalCompensation: 'لا ينطبق',
+            notes: 'إذا لم يلتزم مقدم الخدمة بالإشعار بالانقطاع قبل 48 ساعة، يستحق المستهلك التعويض',
+          },
+          {
+            id: 5,
+            category: 'restoration',
+            title: 'مدة إعادة الخدمة الكهربائية بعد الانقطاع المخطط',
+            description: 'إعادة الخدمة الكهربائية للمستهلك بعد الانقطاع المخطط',
+            period: 'في أسرع وقت وبما لا يتجاوز 6 ساعات',
+            compensation: '200 ريال',
+            additionalCompensation: '50 ريال عن كل ساعة إضافية أو جزء منها',
+            notes: 'تحسب المدة من بداية وقت الانقطاع الفعلي المخطط. يستحق المستهلك تعويض على المعيار الرابع والخامس إذا تأثر بهما معاً',
+          },
+          {
+            id: 6,
+            category: 'emergency',
+            title: 'مدة إعادة الخدمة الكهربائية بعد الانقطاع الطارئ (غير المخطط)',
+            description: 'انقطاع الخدمة الكهربائية عن المستهلك انقطاعاً طارئاً نتيجة عطل مثلاً',
+            period: 'في أسرع وقت وبما لا يتجاوز 3 ساعات',
+            compensation: '50 ريال',
+            additionalCompensation: '50 ريال عن كل ساعة إضافية أو جزء منها',
+            notes: 'يتم حساب المدة من بداية وقت الانقطاع الطارئ غير المخطط',
+          },
+          {
+            id: 7,
+            category: 'emergency',
+            title: 'مدة إعادة الخدمة الكهربائية بعد الانطفاء الشامل',
+            description: 'حدوث انطفاء شامل للنظام الكهربائي عن أي مدينة أو محافظة، دون عودة الخدمة الكهربائية خلال 6 ساعات لكامل تلك المدينة / المحافظة',
+            conditions: 'انطفاء شامل للمدينة أو المحافظة لأكثر من 6 ساعات',
+            period: 'بما يتجاوز 6 ساعات للانطفاء الشامل',
+            compensation: 'بما يصل إلى 1000 ريال',
+            additionalCompensation: 'لا يتجاوز مجموع مبالغ التعويض 200 مليون ريال لكل مدينة/محافظة',
+            notes: 'تحسب المدة من بداية وقت الانطفاء الشامل. في حال كان الانطفاء الشامل على أكثر من مدينة/محافظة، فيتم التعامل مع كل مدينة أو محافظة بشكل مستقل من حيث حساب سقف التعويض. كل مستهلك مستحق لهذا التعويض، يتم تعويضه أيضاً عن المعيار السادس',
+          },
+          {
+            id: 8,
+            category: 'violation',
+            title: 'فصل الخدمة الكهربائية في الأوقات والحالات المحظورة',
+            description: 'في حال قيام مقدم الخدمة بفصل الخدمة الكهربائية عن أي عداد بعدم الالتزام بالضوابط والإجراءات المعتمدة، أو في الأوقات والحالات المحظورة، أو قبل التاريخ المحدد، أو عن أي عداد غير مستحق للفصل',
+            period: 'إعادة الخدمة فوراً',
+            compensation: '500 ريال',
+            notes: 'من الأوقات المحظورة لفصل الخدمة لعدم السداد: شهر رمضان ووقت اختبارات التعليم العام للاستهلاك السكني، بعد الساعة 12 ظهراً، خارج أوقات عمل مقدم الخدمة، في حال كان في المنشأة أحد المسجلين بخدمة ذوي الاحتياجات الماسة للكهرباء',
+          },
+          {
+            id: 9,
+            category: 'complaint',
+            title: 'مدة معالجة شكوى الفواتير',
+            description: 'معالجة مقدم الخدمة للشكاوى المتعلقة بالفواتير، وتقديم رد تفصيلي للمستهلك عن نتيجة معالجة شكواه',
+            conditions: 'تقديم شكوى لمزود الخدمة متعلقة بالفاتورة',
+            period: '5 أيام عمل',
+            compensation: '100 ريال',
+            additionalCompensation: '50 ريال عن كل يوم عمل إضافي أو جزء منه',
+            notes: 'يتم حساب المدة من يوم العمل التالي ليوم تقديم الشكوى',
+          },
+        ],
+      },
       more: {
         title: 'المزيد',
         language: 'عر',
@@ -1987,8 +2383,8 @@ const resources = {
           description: 'تقديم ومتابعة الشكاوى الخاصة بك بسهولة',
         },
         compensationStandards: {
-          title: 'معايير التعويضات',
-          description: 'تعرف على حقوقك كمستهلك ومعايير التعويض',
+          title: 'المعايير المضمونة',
+          description: 'تعرف على معايير مستوى الخدمة الكهربائية',
         },
         consumptionTariff: {
           title: 'تعرفة الاستهلاك',
@@ -3269,13 +3665,90 @@ const resources = {
   },
 };
 
-i18n.use(initReactI18next).init({
-  resources,
-  lng: 'ar', // default language
-  fallbackLng: 'en',
-  interpolation: {
-    escapeValue: false,
-  },
-});
+// Initialize i18n with Supabase integration
+let isInitializing = false;
+let isInitialized = false;
+
+const initI18n = async () => {
+  if (isInitializing || isInitialized) {
+    console.log('🔄 i18n already initializing or initialized');
+    return;
+  }
+
+  isInitializing = true;
+
+  try {
+    console.log('🌐 Initializing i18n with Supabase...');
+
+    // Load translations from Supabase (with cache and fallback to static)
+    const finalResources = await supabaseI18nService.loadTranslations(
+      staticResources,
+    );
+
+    // Initialize i18next with the loaded resources
+    await i18n.use(initReactI18next).init({
+      resources: finalResources,
+      lng: 'ar', // default language
+      fallbackLng: 'en',
+      interpolation: {
+        escapeValue: false,
+      },
+    });
+
+    isInitialized = true;
+    console.log('✅ i18n initialized successfully with Supabase support');
+  } catch (error) {
+    console.error('❌ Error initializing i18n:', error);
+
+    // Fallback: Initialize with static resources only
+    console.log('⚠️ Falling back to static translations only');
+    await i18n.use(initReactI18next).init({
+      resources: staticResources,
+      lng: 'ar',
+      fallbackLng: 'en',
+      interpolation: {
+        escapeValue: false,
+      },
+    });
+
+    isInitialized = true;
+  } finally {
+    isInitializing = false;
+  }
+};
+
+// Start initialization immediately
+initI18n();
+
+// Export helper function to refresh translations on demand
+export const refreshI18nTranslations = async () => {
+  try {
+    console.log('🔄 Refreshing i18n translations...');
+
+    // Clear cache and reload from Supabase
+    await supabaseI18nService.clearCache();
+
+    const freshResources = await supabaseI18nService.loadTranslations(
+      staticResources,
+    );
+
+    // Update i18n resources
+    Object.keys(freshResources).forEach(lang => {
+      i18n.addResourceBundle(
+        lang,
+        'translation',
+        freshResources[lang].translation,
+        true, // deep merge
+        true, // overwrite
+      );
+    });
+
+    console.log('✅ i18n translations refreshed successfully');
+    return true;
+  } catch (error) {
+    console.error('❌ Error refreshing i18n translations:', error);
+    return false;
+  }
+};
 
 export default i18n;

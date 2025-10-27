@@ -68,176 +68,88 @@ export default function HomeScreenNew({ navigation }) {
         : 'US', // First two letters of English names for avatar
   };
 
-  // Hardcoded translations for now
+  // Use translations from i18n
   const translations = {
-    lastVisit: isRTL ? 'آخر زيارة' : 'Last visit',
-    accountVerified: isRTL ? 'الحساب موثق' : 'Account Verified',
+    lastVisit: t('home.homeNew.lastVisit'),
+    accountVerified: t('home.homeNew.accountVerified'),
     stats: {
-      activeComplaints: isRTL ? 'نشطة' : 'Active',
-      completed: isRTL ? 'منجزة' : 'Completed',
-      pending: isRTL ? 'قيد المراجعة' : 'Pending',
+      activeComplaints: t('home.homeNew.stats.activeComplaints'),
+      completed: t('home.homeNew.stats.completed'),
+      pending: t('home.homeNew.stats.pending'),
     },
-    quickActionsTitle: isRTL ? 'الإجراءات السريعة' : 'Quick Actions',
+    quickActionsTitle: t('home.homeNew.quickActionsTitle'),
     quickActions: {
-      newComplaint: isRTL ? 'شكوى جديدة' : 'New Complaint',
-      newPermit: isRTL ? 'تصريح جديد' : 'New Permit',
-      contactUs: isRTL ? 'تواصل معنا' : 'Contact Us',
-      shareData: isRTL ? 'مشاركة البيانات' : 'Share Data',
+      newComplaint: t('home.homeNew.quickActions.newComplaint'),
+      newPermit: t('home.homeNew.quickActions.newPermit'),
+      contactUs: t('home.homeNew.quickActions.contactUs'),
+      shareData: t('home.homeNew.quickActions.shareData'),
     },
-    recentActivityTitle: isRTL ? 'النشاط الأخير' : 'Recent Activity',
+    recentActivityTitle: t('home.homeNew.recentActivityTitle'),
     activities: {
-      complaintReply: isRTL
-        ? 'تم الرد على شكواك'
-        : 'Your complaint received a reply',
-      permitReceived: isRTL
-        ? 'تم استلام طلب التصريح'
-        : 'Permit request received',
-      newUpdate: isRTL ? 'تحديث جديد متاح' : 'New update available',
-      twoHoursAgo: isRTL ? 'منذ ساعتين' : '2 hours ago',
-      yesterday: isRTL ? 'أمس' : 'Yesterday',
-      threeDaysAgo: isRTL ? 'منذ 3 أيام' : '3 days ago',
+      complaintReply: t('home.homeNew.activities.complaintReply'),
+      permitReceived: t('home.homeNew.activities.permitReceived'),
+      newUpdate: t('home.homeNew.activities.newUpdate'),
+      twoHoursAgo: t('home.homeNew.activities.twoHoursAgo'),
+      yesterday: t('home.homeNew.activities.yesterday'),
+      threeDaysAgo: t('home.homeNew.activities.threeDaysAgo'),
     },
     comingSoon: {
-      title: isRTL ? 'قريباً' : 'Coming Soon',
-      message: isRTL
-        ? 'هذه الميزة قادمة قريباً. ترقبوا التحديثات!'
-        : 'This feature is coming soon. Stay tuned for updates!',
-      okButton: isRTL ? 'حسناً' : 'OK',
+      title: t('home.homeNew.comingSoon.title'),
+      message: t('home.homeNew.comingSoon.message'),
+      okButton: t('home.homeNew.comingSoon.okButton'),
     },
     tabs: {
-      main: isRTL ? 'الرئيسية' : 'Main',
-      services: isRTL ? 'الخدمات' : 'Services',
-      chat: isRTL ? 'المحادثة' : 'Chat',
-      more: isRTL ? 'المزيد' : 'More',
+      main: t('home.homeNew.tabs.main'),
+      services: t('home.homeNew.tabs.services'),
+      chat: t('home.homeNew.tabs.chat'),
+      more: t('home.homeNew.tabs.more'),
     },
     seraUpdates: {
-      title: isRTL ? 'آخر التحديثات من الهيئة' : 'Latest SERA Updates',
-      seeAll: isRTL ? 'عرض الكل' : 'See All',
-      new: isRTL ? 'جديد' : 'New',
+      title: t('home.homeNew.seraUpdates.title'),
+      seeAll: t('home.homeNew.seraUpdates.seeAll'),
+      new: t('home.homeNew.seraUpdates.new'),
     },
     profile: {
-      viewProfile: isRTL ? 'عرض الملف الشخصي' : 'View Profile',
+      viewProfile: t('home.homeNew.profile.viewProfile'),
     },
     compensation: {
-      title: isRTL ? 'معايير التعويضات ' : 'Compensation Standards',
-      subtitle: isRTL
-        ? 'حقوقك كمستهلك للكهرباء'
-        : 'Your Rights as Electricity Consumer',
-      viewAll: isRTL ? 'عرض جميع المعايير' : 'View All Standards',
-      period: isRTL ? 'المدة المطلوبة' : 'Required Period',
-      compensation: isRTL ? 'التعويض' : 'Compensation',
-      additionalCompensation: isRTL
-        ? 'التعويض الإضافي'
-        : 'Additional Compensation',
+      title: t('home.homeNew.compensation.title'),
+      subtitle: t('home.homeNew.compensation.subtitle'),
+      viewAll: t('home.homeNew.compensation.viewAll'),
+      period: t('home.homeNew.compensation.period'),
+      compensation: t('home.homeNew.compensation.compensation'),
+      additionalCompensation: t('home.homeNew.compensation.additionalCompensation'),
     },
   };
 
-  // Mock SERA activities and announcements
-  const seraUpdates = [
-    {
-      id: 1,
-      type: 'announcement',
-      icon: Megaphone24Regular,
-      title: isRTL
-        ? 'إعلان هام: تحديث أنظمة الكهرباء'
-        : 'Important: Electricity Systems Update',
-      description: isRTL
-        ? 'تم تحديث أنظمة شبكة الكهرباء الوطنية لتحسين الخدمة'
-        : 'National electricity grid systems updated for improved service',
-      time: isRTL ? 'منذ ساعة' : '1 hour ago',
-      isNew: true,
-    },
-    {
-      id: 2,
-      type: 'news',
-      icon: News24Regular,
-      title: isRTL
-        ? 'أخبار: انطلاق مشروع الطاقة المتجددة'
-        : 'News: Renewable Energy Project Launch',
-      description: isRTL
-        ? 'بدء تنفيذ مشاريع جديدة للطاقة الشمسية في المملكة'
-        : 'New solar energy projects implementation begins in the Kingdom',
-      time: isRTL ? 'منذ 3 ساعات' : '3 hours ago',
-      isNew: false,
-    },
-    {
-      id: 3,
-      type: 'regulation',
-      icon: DocumentText24Regular,
-      title: isRTL
-        ? 'تنظيم: قواعد جديدة لتراخيص الكهرباء'
-        : 'Regulation: New Electricity License Rules',
-      description: isRTL
-        ? 'صدور قواعد محدثة لإصدار تراخيص مزاولة أنشطة الكهرباء'
-        : 'Updated rules for electricity activity licenses issued',
-      time: isRTL ? 'أمس' : 'Yesterday',
-      isNew: false,
-    },
-  ];
+  // Get SERA updates from i18n
+  const seraUpdatesData = t('home.homeNew.seraUpdates.items', { returnObjects: true });
+  const seraUpdates = Array.isArray(seraUpdatesData)
+    ? seraUpdatesData.map(item => ({
+      ...item,
+      icon: item.type === 'announcement'
+        ? Megaphone24Regular
+        : item.type === 'news'
+          ? News24Regular
+          : DocumentText24Regular,
+    }))
+    : [];
 
-  // Consumer Compensation Standards Data from SERA
-  const compensationStandards = [
-    {
-      id: 1,
-      icon: DocumentText24Regular,
-      title: isRTL
-        ? 'تسجيل أو إلغاء خدمة الكهرباء'
-        : 'Register/Cancel Electricity Service',
-      period: isRTL ? 'خلال 3 أيام عمل' : 'Within 3 working days',
-      compensation: isRTL ? '100 ريال' : 'SAR 100',
-      additionalCompensation: isRTL
-        ? '20 ريال لكل يوم عمل إضافي'
-        : 'SAR 20 per additional working day',
+  // Get compensation standards from i18n
+  const compensationStandardsData = t('home.homeNew.compensation.standards', { returnObjects: true });
+  const compensationStandards = Array.isArray(compensationStandardsData)
+    ? compensationStandardsData.map(item => ({
+      ...item,
+      icon: item.category === 'registration' || item.category === 'notification'
+        ? DocumentText24Regular
+        : item.category === 'service'
+          ? Money24Regular
+          : item.category === 'restoration'
+            ? Clock24Regular
+            : Alert24Regular,
       color: '#00623B',
-      category: 'registration',
-    },
-    {
-      id: 2,
-      icon: Money24Regular,
-      title: isRTL
-        ? 'توصيل أو تعديل الخدمة بعد الدفع'
-        : 'Service Delivery/Modification After Payment',
-      period: isRTL
-        ? '20 يوم (جهد منخفض) - 60 يوم (جهد متوسط)'
-        : '20 days (low voltage) - 60 days (medium voltage)',
-      compensation: isRTL ? '400 ريال' : 'SAR 400',
-      additionalCompensation: isRTL
-        ? '20 ريال لكل يوم عمل إضافي'
-        : 'SAR 20 per additional working day',
-      color: '#00623B',
-      category: 'service',
-    },
-    {
-      id: 3,
-      icon: Clock24Regular,
-      title: isRTL
-        ? 'استعادة الخدمة بعد الدفع'
-        : 'Service Restoration After Payment',
-      period: isRTL
-        ? 'خلال ساعتين من إشعار الدفع'
-        : 'Within 2 hours of payment notification',
-      compensation: isRTL ? '100 ريال' : 'SAR 100',
-      additionalCompensation: isRTL
-        ? '100 ريال لكل ساعة إضافية'
-        : 'SAR 100 per additional hour',
-      color: '#00623B',
-      category: 'restoration',
-    },
-    {
-      id: 4,
-      icon: Alert24Regular,
-      title: isRTL
-        ? 'الإشعار المسبق للانقطاع المخطط'
-        : 'Prior Notice for Planned Outage',
-      period: isRTL ? 'قبل يومين على الأقل' : 'At least 2 days before',
-      compensation: isRTL ? '100 ريال' : 'SAR 100',
-      additionalCompensation: isRTL
-        ? 'لا يوجد تعويض إضافي'
-        : 'No additional compensation',
-      color: '#00623B',
-      category: 'notification',
-    },
-  ];
+    }))
+    : [];
 
   // Get time-based greeting from i18n
   const getGreeting = () => {

@@ -9,7 +9,7 @@ import { Platform } from 'react-native';
 class VersionService {
     constructor() {
         // API endpoint to check minimum required version
-        this.versionCheckURL = 'https://sera.gov.sa/api/app/version-check';
+        this.versionCheckURL = 'https://api.sera.gov.sa/esb/external-app/v1/version-check';
 
         // Fallback minimum version if API fails
         this.fallbackMinVersion = '1.3.30';
@@ -83,15 +83,17 @@ class VersionService {
 
             // Use fallback minimum version
             return this.processVersionCheck(currentVersion, {
+                success: true,
                 minVersion: this.fallbackMinVersion,
                 message: {
                     en: 'Please update to the latest version to continue using the app.',
                     ar: 'يرجى التحديث إلى أحدث إصدار للاستمرار في استخدام التطبيق.'
                 },
                 updateUrl: {
-                    ios: 'https://apps.apple.com/sa/app/sera-%D8%B3%D9%8A%D8%B1%D8%A7/id6747636946', // 
-                    android: 'https://play.google.com/store/apps/details?id=com.sera.seraapp' // 
-                }
+                    ios: 'https://apps.apple.com/sa/app/sera-%D8%B3%D9%8A%D8%B1%D8%A7/id6747636946',
+                    android: 'https://play.google.com/store/apps/details?id=com.sera.seraapp'
+                },
+                isOptional: false
             });
         }
     }
@@ -114,10 +116,10 @@ class VersionService {
                 ar: 'يرجى التحديث إلى أحدث إصدار للاستمرار في استخدام التطبيق.'
             },
             updateUrl: data.updateUrl || {
-                ios: 'https://apps.apple.com/app/sera/id1234567890',
-                android: 'https://play.google.com/store/apps/details?id=sa.gov.sera.mobile'
+                ios: 'https://apps.apple.com/sa/app/sera-%D8%B3%D9%8A%D8%B1%D8%A7/id6747636946',
+                android: 'https://play.google.com/store/apps/details?id=com.sera.seraapp'
             },
-            isOptional: data.isOptional || false // If true, allow user to skip
+            isOptional: data.isOptional !== undefined ? data.isOptional : false // If true, allow user to skip
         };
     }
 
