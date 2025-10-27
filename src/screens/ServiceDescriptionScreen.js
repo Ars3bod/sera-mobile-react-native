@@ -184,8 +184,23 @@ const ServiceDescriptionScreen = ({ navigation, route }) => {
             showLoginPrompt();
             return;
         }
-        // Navigate to ComplaintsScreen if authenticated
-        navigation.navigate('Complaints');
+
+        // Navigate to appropriate screen based on service type
+        switch (serviceData.id) {
+            case 'complaints':
+                navigation.navigate('Complaints');
+                break;
+            case 'dataSharing':
+                navigation.navigate('DataShare');
+                break;
+            case 'freedomOfInformation':
+                navigation.navigate('FOI');
+                break;
+            default:
+                // Fallback to Complaints for unknown service types
+                navigation.navigate('Complaints');
+                break;
+        }
     };
 
     const InfoRow = ({ icon: IconComponent, label, value, onPress }) => (

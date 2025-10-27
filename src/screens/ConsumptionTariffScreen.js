@@ -420,7 +420,7 @@ const ConsumptionTariffScreen = ({ navigation }) => {
                 </View>
 
                 {/* Additional Information */}
-                <View style={[styles.additionalInfo, { backgroundColor: safeTheme.colors.surface }]}>
+                {/* <View style={[styles.additionalInfo, { backgroundColor: safeTheme.colors.surface }]}>
                     <Text style={[styles.additionalInfoTitle, {
                         color: safeTheme.colors.text,
                         textAlign: isRTL ? 'right' : 'left'
@@ -433,7 +433,7 @@ const ConsumptionTariffScreen = ({ navigation }) => {
                     }]}>
                         {t('consumptionTariff.additionalInfo.content')}
                     </Text>
-                </View>
+                </View> */}
             </ScrollView>
         </SafeAreaView>
     );

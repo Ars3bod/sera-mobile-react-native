@@ -9,10 +9,13 @@ import {
   StatusBar,
   Switch,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useUser } from '../context/UserContext';
 import biometricService from '../services/biometricService';
+import supabaseI18nService from '../services/supabaseService';
+import { refreshI18nTranslations } from '../localization/i18n';
 import ActionToast from '../components/ActionToast';
 import Toast from '../components/Toast';
 import SafeContainer from '../components/SafeContainer';
@@ -201,11 +204,49 @@ const SettingsScreen = ({ navigation }) => {
     showActionToast(
       t('settings.clearCache.confirmTitle'),
       t('settings.clearCache.confirmMessage'),
-      () => {
+      async () => {
         hideActionToast();
-        // Add actual cache clearing logic here
-        console.log('Cache cleared');
-        showToast(t('settings.clearCache.success'), 'success');
+        try {
+          console.log('🗑️ Starting cache clear...');
+
+          // 1. Clear Supabase i18n translation cache
+          await supabaseI18nService.clearCache();
+          console.log('✅ Supabase i18n cache cleared');
+
+          // 2. Clear any other AsyncStorage cached data (optional - add more keys as needed)
+          // You can add more cache keys here if you have other cached data
+          const keysToPreserve = [
+            '@sera_biometric_enabled', // Preserve biometric settings
+            '@sera_user_credentials',   // Preserve user credentials for biometric login
+            // Add other keys you want to preserve
+          ];
+
+          // Get all keys from AsyncStorage
+          const allKeys = await AsyncStorage.getAllKeys();
+
+          // Filter out keys to preserve
+          const keysToRemove = allKeys.filter(key => !keysToPreserve.includes(key));
+
+          // Remove cache keys (but not user settings/credentials)
+          if (keysToRemove.length > 0) {
+            await AsyncStorage.multiRemove(keysToRemove);
+            console.log(`✅ Cleared ${keysToRemove.length} AsyncStorage cache entries`);
+          }
+
+          // 3. Force refresh i18n translations from Supabase
+          console.log('🔄 Reloading translations from Supabase...');
+          await refreshI18nTranslations();
+          console.log('✅ Translations reloaded from Supabase');
+
+          showToast(t('settings.clearCache.success'), 'success');
+          console.log('🎉 Cache clear completed successfully');
+        } catch (error) {
+          console.error('❌ Error clearing cache:', error);
+          showToast(
+            t('common.error') + ': ' + (error.message || t('settings.clearCache.error')),
+            'error'
+          );
+        }
       },
       () => {
         hideActionToast();

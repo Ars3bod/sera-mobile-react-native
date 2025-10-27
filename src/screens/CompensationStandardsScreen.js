@@ -448,7 +448,7 @@ const CompensationStandardsScreen = ({ navigation }) => {
                 contentContainerStyle={styles.scrollContent}>
 
                 {/* Quick Stats */}
-                <QuickStatsCard />
+                {/* <QuickStatsCard /> */}
 
                 {/* Download Guide Button */}
                 <TouchableOpacity

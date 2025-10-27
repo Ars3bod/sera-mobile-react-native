@@ -213,7 +213,7 @@ const ChatOptionsModal = ({ visible, onClose, onSelectChatbot, onSelectLiveChat 
                         {/* Content */}
                         <View style={dynamicStyles.content}>
                             {/* Chatbot Option */}
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 style={dynamicStyles.optionCard}
                                 onPress={onSelectChatbot}
                                 activeOpacity={0.7}>
@@ -239,7 +239,7 @@ const ChatOptionsModal = ({ visible, onClose, onSelectChatbot, onSelectLiveChat 
                                     </Text>
                                 </View>
                                 <ChevronRight24Regular style={dynamicStyles.chevronIcon} />
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
 
                             {/* Live Chat Option */}
                             <TouchableOpacity
