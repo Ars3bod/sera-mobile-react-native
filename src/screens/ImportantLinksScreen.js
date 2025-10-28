@@ -65,10 +65,10 @@ const ImportantLinksScreen = ({ navigation }) => {
           labelKey: 'importantLinks.services.sec',
           url: 'https://www.se.com.sa',
         },
-        {
-          labelKey: 'importantLinks.services.waterElectricity',
-          url: 'https://www.mewa.gov.sa',
-        },
+        // {
+        //   labelKey: 'importantLinks.services.waterElectricity',
+        //   url: 'https://www.mewa.gov.sa',
+        // },
         {
           labelKey: 'importantLinks.services.energyEfficiency',
           url: 'https://www.seec.gov.sa',
@@ -136,7 +136,7 @@ const ImportantLinksScreen = ({ navigation }) => {
             ]}>
             {t(link.labelKey)}
           </Text>
-          <Text
+          {/* <Text
             style={[
               styles.linkUrl,
               {
@@ -145,7 +145,7 @@ const ImportantLinksScreen = ({ navigation }) => {
               },
             ]}>
             {link.url}
-          </Text>
+          </Text> */}
         </View>
         <ChevronRight24Regular
           style={[
@@ -289,7 +289,7 @@ const ImportantLinksScreen = ({ navigation }) => {
         {linkCategories.map(renderCategory)}
 
         {/* Disclaimer */}
-        <View
+        {/* <View
           style={[styles.disclaimerCard, { backgroundColor: theme.colors.card }]}>
           <Text
             style={[
@@ -313,7 +313,7 @@ const ImportantLinksScreen = ({ navigation }) => {
               ? 'هذه الروابط تؤدي إلى مواقع خارجية. الهيئة السعودية لتنظيم الكهرباء غير مسؤولة عن محتوى هذه المواقع.'
               : 'These links lead to external websites. SERA is not responsible for the content of these websites.'}
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </SafeContainer>
   );

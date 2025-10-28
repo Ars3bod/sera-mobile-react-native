@@ -266,7 +266,11 @@ const FAQScreen = ({ navigation }) => {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoriesContent}>
+          contentContainerStyle={[
+            styles.categoriesContent,
+            { flexDirection: isRTL ? 'row-reverse' : 'row' }
+          ]}
+          style={{ flexDirection: isRTL ? 'row-reverse' : 'row' }}>
           {categories.map(renderCategoryButton)}
         </ScrollView>
       </View>
