@@ -1,4 +1,4 @@
-import {StyleSheet, I18nManager} from 'react-native';
+import { StyleSheet, I18nManager } from 'react-native';
 
 class StyleManager {
   static instance = null;
@@ -34,7 +34,7 @@ class StyleManager {
       },
     };
 
-    // Typography
+    // Typography - Using system fonts for React Native CLI
     this.typography = {
       fontFamily: {
         regular: 'System',

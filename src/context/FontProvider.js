@@ -1,14 +1,13 @@
-import React, {createContext, useContext} from 'react';
+import React, { createContext, useContext } from 'react';
 
 const FontContext = createContext();
 
-export const FontProvider = ({children}) => {
-  // بدلاً من تحميل خطوط مخصصة، سنستخدم خطوط النظام المحسنة
+export const FontProvider = ({ children }) => {
+  // Font configuration - System fonts for consistent rendering
+  // Note: Using system fonts (iOS: San Francisco, Android: Roboto) for React Native CLI projects
   const fontConfig = {
     fontsLoaded: true,
     fontFamily: {
-      // iOS يستخدم San Francisco مع دعم عربي ممتاز
-      // Android يستخدم Roboto مع دعم عربي جيد
       regular: 'System',
       medium: 'System',
       semiBold: 'System',
