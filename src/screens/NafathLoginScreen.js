@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,8 @@ import {
   Dimensions,
   ScrollView,
   Image,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +36,10 @@ export default function NafathLoginScreen({ navigation, route }) {
   const [loading, setLoading] = useState(false);
   const [inputError, setInputError] = useState('');
 
+  // Refs for keyboard handling
+  const scrollViewRef = useRef(null);
+  const inputRef = useRef(null);
+
   const { fromModal } = route.params || {};
 
   const handleGoBack = () => {
@@ -44,6 +50,18 @@ export default function NafathLoginScreen({ navigation, route }) {
       // Default behavior - go back to previous screen
       navigation.goBack();
     }
+  };
+
+  // Handle input focus - scroll to make input visible above keyboard
+  const handleInputFocus = () => {
+    setTimeout(() => {
+      inputRef.current?.measure((x, y, width, height, pageX, pageY) => {
+        scrollViewRef.current?.scrollTo({
+          y: pageY - 100, // Scroll to position with 100px padding from top
+          animated: true,
+        });
+      });
+    }, 100); // Small delay to let keyboard animation start
   };
 
   // Input validation handler to ensure only English digits (0-9) are entered
@@ -310,101 +328,112 @@ export default function NafathLoginScreen({ navigation, route }) {
         </Text>
       </View>
 
-      <ScrollView
+      <KeyboardAvoidingView
         style={styles.flex}
-        contentContainerStyle={dynamicStyles.scrollContent}
-        showsVerticalScrollIndicator={false}>
-        {/* Logo Section */}
-        <View style={dynamicStyles.logoSection}>
-          <Text style={dynamicStyles.nafathTitle}>
-            {t('nafathLogin.title')}
-          </Text>
-          <Text style={dynamicStyles.nafathSubtitle}>
-            {t('nafathLogin.subtitle')}
-          </Text>
-        </View>
-
-        {/* Main Login Card */}
-        <View style={dynamicStyles.mainCard}>
-          <Text style={dynamicStyles.sectionTitle}>
-            {t('nafathLogin.sectionTitle')}
-          </Text>
-          <Text style={dynamicStyles.sectionDescription}>
-            {t('nafathLogin.sectionDescription')}
-          </Text>
-
-          <Text style={dynamicStyles.inputLabel}>
-            {t('nafathLogin.inputLabel')}
-          </Text>
-
-          <View style={[
-            dynamicStyles.inputContainer,
-            inputError && { borderColor: '#FF3B30' }
-          ]}>
-            <Person24Regular style={dynamicStyles.inputIcon} />
-            <TextInput
-              style={dynamicStyles.textInput}
-              placeholder={t('nafathLogin.inputPlaceholder')}
-              placeholderTextColor={theme.colors.textSecondary}
-              value={nationalId}
-              onChangeText={handleNationalIdChange}
-              keyboardType="numeric"
-              maxLength={10}
-              autoFocus={true}
-            />
-          </View>
-
-          {/* Inline Error Message */}
-          {inputError ? (
-            <View style={dynamicStyles.errorContainer}>
-              <Text style={dynamicStyles.errorText}>{inputError}</Text>
-            </View>
-          ) : null}
-
-          {loading ? (
-            <View style={dynamicStyles.loadingContainer}>
-              <LoadingSpinner
-                type="rotating"
-                size={40}
-                color={theme.colors.primary}
-                duration={1000}
-              />
-              <Text
-                style={[
-                  dynamicStyles.sectionDescription,
-                  { textAlign: 'center', marginTop: 12 },
-                ]}>
-                {t('nafathLogin.connecting')}
-              </Text>
-            </View>
-          ) : (
-            <TouchableOpacity
-              style={[
-                dynamicStyles.continueButton,
-                isButtonDisabled && dynamicStyles.disabledButton,
-              ]}
-              onPress={handleContinue}
-              disabled={isButtonDisabled}
-              activeOpacity={0.8}>
-              <Text
-                style={[
-                  dynamicStyles.buttonText,
-                  isButtonDisabled && dynamicStyles.disabledButtonText,
-                ]}>
-                {t('nafathLogin.continueButton')}
-              </Text>
-            </TouchableOpacity>
-          )}
-
-          {/* Info Section */}
-          <View style={dynamicStyles.infoSection}>
-            <Info24Regular style={dynamicStyles.infoIcon} />
-            <Text style={dynamicStyles.infoText}>
-              {t('nafathLogin.infoMessage')}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.flex}
+          contentContainerStyle={dynamicStyles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
+          {/* Logo Section */}
+          <View style={dynamicStyles.logoSection}>
+            <Text style={dynamicStyles.nafathTitle}>
+              {t('nafathLogin.title')}
+            </Text>
+            <Text style={dynamicStyles.nafathSubtitle}>
+              {t('nafathLogin.subtitle')}
             </Text>
           </View>
-        </View>
-      </ScrollView>
+
+          {/* Main Login Card */}
+          <View style={dynamicStyles.mainCard}>
+            <Text style={dynamicStyles.sectionTitle}>
+              {t('nafathLogin.sectionTitle')}
+            </Text>
+            <Text style={dynamicStyles.sectionDescription}>
+              {t('nafathLogin.sectionDescription')}
+            </Text>
+
+            <Text style={dynamicStyles.inputLabel}>
+              {t('nafathLogin.inputLabel')}
+            </Text>
+
+            <View
+              ref={inputRef}
+              style={[
+                dynamicStyles.inputContainer,
+                inputError && { borderColor: '#FF3B30' }
+              ]}>
+              <Person24Regular style={dynamicStyles.inputIcon} />
+              <TextInput
+                style={dynamicStyles.textInput}
+                placeholder={t('nafathLogin.inputPlaceholder')}
+                placeholderTextColor={theme.colors.textSecondary}
+                value={nationalId}
+                onChangeText={handleNationalIdChange}
+                onFocus={handleInputFocus}
+                keyboardType="numeric"
+                maxLength={10}
+                autoFocus={true}
+                returnKeyType="done"
+              />
+            </View>
+
+            {/* Inline Error Message */}
+            {inputError ? (
+              <View style={dynamicStyles.errorContainer}>
+                <Text style={dynamicStyles.errorText}>{inputError}</Text>
+              </View>
+            ) : null}
+
+            {loading ? (
+              <View style={dynamicStyles.loadingContainer}>
+                <LoadingSpinner
+                  type="rotating"
+                  size={40}
+                  color={theme.colors.primary}
+                  duration={1000}
+                />
+                <Text
+                  style={[
+                    dynamicStyles.sectionDescription,
+                    { textAlign: 'center', marginTop: 12 },
+                  ]}>
+                  {t('nafathLogin.connecting')}
+                </Text>
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={[
+                  dynamicStyles.continueButton,
+                  isButtonDisabled && dynamicStyles.disabledButton,
+                ]}
+                onPress={handleContinue}
+                disabled={isButtonDisabled}
+                activeOpacity={0.8}>
+                <Text
+                  style={[
+                    dynamicStyles.buttonText,
+                    isButtonDisabled && dynamicStyles.disabledButtonText,
+                  ]}>
+                  {t('nafathLogin.continueButton')}
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {/* Info Section */}
+            <View style={dynamicStyles.infoSection}>
+              <Info24Regular style={dynamicStyles.infoIcon} />
+              <Text style={dynamicStyles.infoText}>
+                {t('nafathLogin.infoMessage')}
+              </Text>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
