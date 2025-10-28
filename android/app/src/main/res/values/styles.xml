@@ -6,10 +6,10 @@
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
         <!-- Set the launch screen as window background for instant display -->
         <item name="android:windowBackground">@drawable/launch_screen</item>
-        <!-- Optional: Hide the status bar during launch -->
-        <item name="android:windowFullscreen">false</item>
-        <!-- Ensure consistent status bar -->
-        <item name="android:statusBarColor">@color/sera_primary_green</item>
+        <!-- Hide status bar during launch -->
+        <item name="android:windowFullscreen">true</item>
+        <!-- Black status bar to match splash -->
+        <item name="android:statusBarColor">@color/sera_black</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
 

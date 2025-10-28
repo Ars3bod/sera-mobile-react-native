@@ -127,9 +127,9 @@ export default function NafathVerificationScreen({ route, navigation }) {
           // Handle specific error types
           if (e.message === 'Verification expired or rejected') {
             console.log('Verification expired or rejected - allowing user to resend');
-            setError(isArabic ? 'انتهت صلاحية التحقق أو تم رفضه' : 'Verification expired or rejected');
+            setError(t('nafathVerification.errors.expiredOrRejected'));
           } else {
-            setError(isArabic ? 'فشل في التحقق' : 'Verification failed');
+            setError(t('nafathVerification.errors.failed'));
           }
           setLoading(false);
           setCanResend(true);
@@ -186,12 +186,12 @@ export default function NafathVerificationScreen({ route, navigation }) {
     if (remaining <= 0) {
       console.log('Timer expired, stopping polling');
       pollingRef.current = false; // Stop polling when timer expires
-      setError(isArabic ? 'انتهت المهلة الزمنية' : 'Time expired');
+      setError(t('nafathVerification.errors.timeExpired'));
       setLoading(false);
       setCanResend(true);
       clearInterval(timerRef.current);
     }
-  }, [remaining, isArabic]);
+  }, [remaining, t]);
 
   // Resend Request logic
   const handleResend = async () => {
@@ -219,7 +219,7 @@ export default function NafathVerificationScreen({ route, navigation }) {
       }, 1000);
     } catch (e) {
       console.error('Resend error:', e);
-      setError(isArabic ? 'فشل في إعادة الإرسال' : 'Resend failed');
+      setError(t('nafathVerification.errors.resendFailed'));
       setCanResend(true);
     } finally {
       setLoading(false);
@@ -253,12 +253,12 @@ export default function NafathVerificationScreen({ route, navigation }) {
 
   const getStatusMessage = () => {
     if (loading) {
-      return isArabic ? 'في انتظار التحقق...' : 'Waiting for verification...';
+      return t('nafathVerification.status.waiting');
     }
     if (error) {
       return error;
     }
-    return isArabic ? 'جاري المعالجة...' : 'Processing...';
+    return t('nafathVerification.status.processing');
   };
 
   const dynamicStyles = StyleSheet.create({
@@ -518,7 +518,7 @@ export default function NafathVerificationScreen({ route, navigation }) {
           <ArrowLeft24Regular style={dynamicStyles.backIcon} />
         </TouchableOpacity>
         <Text style={dynamicStyles.headerTitle}>
-          {isArabic ? 'التحقق من الهوية' : 'Identity Verification'}
+          {t('nafathVerification.header')}
         </Text>
       </View>
 
@@ -542,28 +542,22 @@ export default function NafathVerificationScreen({ route, navigation }) {
           <View style={dynamicStyles.stepIndicator}>
             <Shield24Regular style={dynamicStyles.stepIcon} />
             <Text style={dynamicStyles.stepText}>
-              {isArabic
-                ? 'الخطوة 2: التحقق من الهوية'
-                : 'Step 2: Identity Verification'}
+              {t('nafathVerification.stepIndicator')}
             </Text>
           </View>
 
           <Text style={dynamicStyles.verificationTitle}>
-            {isArabic
-              ? 'اكمل التحقق في تطبيق نفاذ'
-              : 'Complete verification in Nafath app'}
+            {t('nafathVerification.verificationTitle')}
           </Text>
 
           <Text style={dynamicStyles.verificationDescription}>
-            {isArabic
-              ? 'افتح تطبيق نفاذ على هاتفك وأدخل الرقم التالي للمتابعة'
-              : 'Open Nafath app on your phone and enter the following number to continue'}
+            {t('nafathVerification.verificationDescription')}
           </Text>
 
           {/* Random Code Section */}
           <View style={dynamicStyles.randomCodeSection}>
             <Text style={dynamicStyles.randomCodeLabel}>
-              {isArabic ? 'رقم التحقق' : 'Verification Number'}
+              {t('nafathVerification.codeLabel')}
             </Text>
             <View style={dynamicStyles.randomCodeBox}>
               <Text style={dynamicStyles.randomCodeText}>{random}</Text>
@@ -574,7 +568,7 @@ export default function NafathVerificationScreen({ route, navigation }) {
           <View style={dynamicStyles.timerSection}>
             <Clock24Regular style={dynamicStyles.timerIcon} />
             <Text style={dynamicStyles.timerText}>
-              {isArabic ? 'الوقت المتبقي: ' : 'Time remaining: '}
+              {t('nafathVerification.timeRemaining')}
               {formatTime(remaining)}
             </Text>
           </View>
@@ -605,7 +599,7 @@ export default function NafathVerificationScreen({ route, navigation }) {
                 activeOpacity={0.7}>
                 <Refresh24Regular style={dynamicStyles.resendIcon} />
                 <Text style={dynamicStyles.resendText}>
-                  {isArabic ? 'إعادة الإرسال' : 'Resend Request'}
+                  {t('nafathVerification.resendButton')}
                 </Text>
               </TouchableOpacity>
             )}
@@ -615,9 +609,7 @@ export default function NafathVerificationScreen({ route, navigation }) {
           <View style={dynamicStyles.infoSection}>
             <Info24Regular style={dynamicStyles.infoIcon} />
             <Text style={dynamicStyles.infoText}>
-              {isArabic
-                ? 'تأكد من أن تطبيق نفاذ مثبت ومُفعل على هاتفك المحمول'
-                : 'Make sure Nafath app is installed and activated on your mobile device'}
+              {t('nafathVerification.infoMessage')}
             </Text>
           </View>
         </View>
@@ -629,7 +621,7 @@ export default function NafathVerificationScreen({ route, navigation }) {
           activeOpacity={0.8}>
           <Phone24Regular style={dynamicStyles.openAppIcon} />
           <Text style={dynamicStyles.openAppText}>
-            {isArabic ? 'فتح تطبيق نفاذ' : 'Open Nafath App'}
+            {t('nafathVerification.openAppButton')}
           </Text>
         </TouchableOpacity>
       </ScrollView>

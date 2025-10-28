@@ -24,7 +24,7 @@ export default function SplashScreen({ navigation }) {
   useEffect(() => {
     // Animate logo appearance
     logoOpacity.value = withDelay(
-      500, // Wait 500ms after video starts
+      200, // Wait 500ms after video starts
       withTiming(1, {
         duration: 800,
         easing: Easing.out(Easing.cubic),
@@ -58,7 +58,7 @@ export default function SplashScreen({ navigation }) {
         setVersionCheckComplete(true);
 
         // Step 3: Wait for splash animation (2 seconds)
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
         // Step 4: Fade out animation
         logoOpacity.value = withTiming(0, {

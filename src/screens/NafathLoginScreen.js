@@ -53,11 +53,7 @@ export default function NafathLoginScreen({ navigation, route }) {
 
     if (hasNonEnglishDigits) {
       // Show error message for non-English digits
-      setInputError(
-        isArabic
-          ? 'يرجى استخدام الأرقام الإنجليزية فقط (0-9)'
-          : 'Please use English digits only (0-9)'
-      );
+      setInputError(t('nafathLogin.errors.englishDigitsOnly'));
 
       // Clear error after 3 seconds
       setTimeout(() => setInputError(''), 3000);
@@ -78,20 +74,16 @@ export default function NafathLoginScreen({ navigation, route }) {
 
     if (!nationalId) {
       Alert.alert(
-        isArabic ? 'خطأ' : 'Error',
-        isArabic
-          ? 'يرجى إدخال رقم الهوية الوطنية'
-          : 'Please enter your National ID',
+        t('common.error'),
+        t('nafathLogin.errors.nationalIdRequired'),
       );
       return;
     }
 
     if (nationalId.length !== 10) {
       Alert.alert(
-        isArabic ? 'خطأ' : 'Error',
-        isArabic
-          ? 'رقم الهوية يجب أن يكون 10 أرقام'
-          : 'National ID must be 10 digits',
+        t('common.error'),
+        t('nafathLogin.errors.nationalIdLength'),
       );
       return;
     }
@@ -99,10 +91,8 @@ export default function NafathLoginScreen({ navigation, route }) {
     // Additional validation: ensure all characters are English digits
     if (!/^\d{10}$/.test(nationalId)) {
       Alert.alert(
-        isArabic ? 'خطأ' : 'Error',
-        isArabic
-          ? 'رقم الهوية يجب أن يحتوي على أرقام إنجليزية فقط'
-          : 'National ID must contain only English digits',
+        t('common.error'),
+        t('nafathLogin.errors.nationalIdEnglishOnly'),
       );
       return;
     }
@@ -117,10 +107,8 @@ export default function NafathLoginScreen({ navigation, route }) {
       });
     } catch (e) {
       Alert.alert(
-        isArabic ? 'خطأ في الاتصال' : 'Connection Error',
-        isArabic
-          ? 'فشل في الاتصال بخدمة نفاذ'
-          : 'Failed to connect to Nafath service',
+        t('nafathLogin.errors.connectionTitle'),
+        t('nafathLogin.errors.connectionMessage'),
       );
     } finally {
       setLoading(false);
@@ -318,7 +306,7 @@ export default function NafathLoginScreen({ navigation, route }) {
           <ArrowLeft24Regular style={dynamicStyles.backIcon} />
         </TouchableOpacity>
         <Text style={dynamicStyles.headerTitle}>
-          {isArabic ? 'تسجيل الدخول' : 'Login'}
+          {t('nafathLogin.header')}
         </Text>
       </View>
 
@@ -329,28 +317,24 @@ export default function NafathLoginScreen({ navigation, route }) {
         {/* Logo Section */}
         <View style={dynamicStyles.logoSection}>
           <Text style={dynamicStyles.nafathTitle}>
-            {isArabic ? 'نفاذ' : 'Nafath'}
+            {t('nafathLogin.title')}
           </Text>
           <Text style={dynamicStyles.nafathSubtitle}>
-            {isArabic
-              ? 'البوابة الرقمية الموحدة للخدمات الحكومية'
-              : 'Unified Digital Gateway for Government Services'}
+            {t('nafathLogin.subtitle')}
           </Text>
         </View>
 
         {/* Main Login Card */}
         <View style={dynamicStyles.mainCard}>
           <Text style={dynamicStyles.sectionTitle}>
-            {isArabic ? 'تسجيل الدخول بنفاذ' : 'Login with Nafath'}
+            {t('nafathLogin.sectionTitle')}
           </Text>
           <Text style={dynamicStyles.sectionDescription}>
-            {isArabic
-              ? 'أدخل رقم الهوية الوطنية للمتابعة بأمان'
-              : 'Enter your National ID to continue securely'}
+            {t('nafathLogin.sectionDescription')}
           </Text>
 
           <Text style={dynamicStyles.inputLabel}>
-            {isArabic ? 'رقم الهوية الوطنية' : 'National ID Number'}
+            {t('nafathLogin.inputLabel')}
           </Text>
 
           <View style={[
@@ -360,9 +344,7 @@ export default function NafathLoginScreen({ navigation, route }) {
             <Person24Regular style={dynamicStyles.inputIcon} />
             <TextInput
               style={dynamicStyles.textInput}
-              placeholder={
-                isArabic ? 'أدخل رقم الهوية (10 أرقام)' : 'Enter ID (10 digits)'
-              }
+              placeholder={t('nafathLogin.inputPlaceholder')}
               placeholderTextColor={theme.colors.textSecondary}
               value={nationalId}
               onChangeText={handleNationalIdChange}
@@ -392,7 +374,7 @@ export default function NafathLoginScreen({ navigation, route }) {
                   dynamicStyles.sectionDescription,
                   { textAlign: 'center', marginTop: 12 },
                 ]}>
-                {isArabic ? 'جاري الاتصال بنفاذ...' : 'Connecting to Nafath...'}
+                {t('nafathLogin.connecting')}
               </Text>
             </View>
           ) : (
@@ -409,7 +391,7 @@ export default function NafathLoginScreen({ navigation, route }) {
                   dynamicStyles.buttonText,
                   isButtonDisabled && dynamicStyles.disabledButtonText,
                 ]}>
-                {isArabic ? 'متابعة' : 'Continue'}
+                {t('nafathLogin.continueButton')}
               </Text>
             </TouchableOpacity>
           )}
@@ -418,9 +400,7 @@ export default function NafathLoginScreen({ navigation, route }) {
           <View style={dynamicStyles.infoSection}>
             <Info24Regular style={dynamicStyles.infoIcon} />
             <Text style={dynamicStyles.infoText}>
-              {isArabic
-                ? 'ستحتاج إلى تطبيق نفاذ على هاتفك المحمول لإتمام عملية التحقق'
-                : 'You will need the Nafath app on your mobile device to complete verification'}
+              {t('nafathLogin.infoMessage')}
             </Text>
           </View>
         </View>

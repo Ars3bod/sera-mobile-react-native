@@ -356,7 +356,7 @@ export default function LoginScreen({ navigation }) {
               onPress={toggleLanguage}>
               <Globe24Regular style={dynamicStyles.langIcon} />
               <Text style={dynamicStyles.langText}>
-                {isArabic ? 'English' : 'العربية'}
+                {isArabic ? t('loginScreen.languageToggle.switchToEnglish') : t('loginScreen.languageToggle.switchToArabic')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -372,12 +372,10 @@ export default function LoginScreen({ navigation }) {
                 { alignItems: isArabic ? 'flex-end' : 'flex-start' },
               ]}>
               <Text style={dynamicStyles.welcomeTitle}>
-                {isArabic ? 'مرحباً بك' : 'Welcome'}
+                {t('loginScreen.welcome')}
               </Text>
               <Text style={dynamicStyles.welcomeSubtitle}>
-                {isArabic
-                  ? 'هيئة السعودية لتنظيم الكهرباء'
-                  : 'Electricity & Cogeneration Regulatory Authority'}
+                {t('loginScreen.organizationName')}
               </Text>
             </View>
           </View>
@@ -390,9 +388,7 @@ export default function LoginScreen({ navigation }) {
             ]}>
             <Text style={dynamicStyles.loginTitle}>{t('login')}</Text>
             <Text style={dynamicStyles.loginSubtitle}>
-              {isArabic
-                ? 'استخدم نفاذ الوطني الموحد للدخول بأمان إلى حسابك'
-                : 'Use Nafath National Single Sign-On to securely access your account'}
+              {t('loginScreen.nafathDescription')}
             </Text>
 
             <TouchableOpacity
@@ -410,7 +406,7 @@ export default function LoginScreen({ navigation }) {
               onPress={handleGuestLogin}
               activeOpacity={0.8}>
               <Text style={dynamicStyles.guestButtonText}>
-                {isArabic ? 'متابعة كضيف' : 'Continue as Guest'}
+                {t('loginScreen.guestButton')}
               </Text>
             </TouchableOpacity>
 
@@ -418,9 +414,7 @@ export default function LoginScreen({ navigation }) {
             <View style={dynamicStyles.securityBadge}>
               <Shield24Regular style={dynamicStyles.securityIcon} />
               <Text style={dynamicStyles.securityText}>
-                {isArabic
-                  ? 'محمي بتقنية التشفير المتقدمة'
-                  : 'Secured with advanced encryption'}
+                {t('loginScreen.securityBadge')}
               </Text>
             </View>
           </View>
@@ -428,9 +422,7 @@ export default function LoginScreen({ navigation }) {
           {/* Footer */}
           <View style={dynamicStyles.footer}>
             <Text style={dynamicStyles.footerText}>
-              {isArabic
-                ? '© 2025 هيئة تنظيم الكهرباء\nالمملكة العربية السعودية'
-                : '© 2025 Electricity & Cogeneration Regulatory Authority\nKingdom of Saudi Arabia'}
+              {t('loginScreen.copyright')}
             </Text>
           </View>
         </ScrollView>

@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Simple black background to match SplashScreen.js -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- SERA Primary Green Background -->
-    <item android:drawable="@color/sera_primary_green"/>
-    
-    <!-- Centered SERA Text -->
+    <!-- Black Background -->
     <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@mipmap/ic_launcher"/>
+        <shape android:shape="rectangle">
+            <solid android:color="#000000"/>
+        </shape>
     </item>
 </layer-list>
-
