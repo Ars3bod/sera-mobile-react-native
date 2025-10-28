@@ -1956,13 +1956,13 @@ const staticResources = {
           liveChat: 'يرجى تحديث LIVE_CHAT_URL في LiveChatScreen.js برابط خدمة المحادثة المباشرة الفعلي.',
         },
         connecting: 'جاري الاتصال بالمحادثة...',
-        typing: 'الوكيل يكتب...',
+        typing: 'موظف خدمة العملاء يكتب...',
         input: {
           placeholder: 'اكتب رسالتك...',
         },
         messages: {
           userJoined: 'انضممت للمحادثة',
-          agentJoined: 'انضم الوكيل للمحادثة',
+          agentJoined: 'انضم موظف خدمة العملاء للمحادثة',
         },
         error: {
           title: 'خطأ في المحادثة',

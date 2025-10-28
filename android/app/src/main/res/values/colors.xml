@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SERA Brand Colors -->
+    <color name="sera_primary_green">#00623B</color>
+    <color name="sera_white">#FFFFFF</color>
+    <color name="sera_background_light">#f8f9fa</color>
+</resources>
+

@@ -972,7 +972,7 @@ const CreateComplaintScreen = ({ navigation }) => {
             duration={1000}
           />
           <Text style={[styles.loadingText, { color: theme.colors.text }]}>
-            Loading form data...
+            {t('complaints.create.loadingFormData')}
           </Text>
         </View>
       </SafeContainer>
