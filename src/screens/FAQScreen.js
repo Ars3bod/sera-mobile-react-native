@@ -266,9 +266,14 @@ const FAQScreen = ({ navigation }) => {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
+          directionalLockEnabled={true}
           contentContainerStyle={[
             styles.categoriesContent,
-            { flexDirection: isRTL ? 'row-reverse' : 'row' }
+            {
+              flexDirection: isRTL ? 'row-reverse' : 'row',
+              paddingRight: 5, // Extra padding on trailing edge for LTR
+              paddingLeft: 2, // Standard padding on leading edge
+            }
           ]}
           style={{ flexDirection: isRTL ? 'row-reverse' : 'row' }}>
           {categories.map(renderCategoryButton)}
@@ -337,7 +342,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   categoriesContent: {
-    paddingHorizontal: 20,
     gap: 12,
   },
   categoryButton: {
