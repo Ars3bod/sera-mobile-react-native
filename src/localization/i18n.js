@@ -709,7 +709,7 @@ const staticResources = {
         },
         website: {
           title: 'Website',
-          url: 'www.ecra.gov.sa',
+          url: 'www.sera.gov.sa',
         },
         workingHours: {
           title: 'Working Hours',
@@ -988,6 +988,23 @@ const staticResources = {
           regulations: 'Regulations & Laws',
           reports: 'Annual Reports',
           statistics: 'Statistics',
+        },
+        // URLs for the important links (used by ImportantLinksScreen)
+        urls: {
+          government: {
+            saudiGov: 'https://dga.gov.sa',
+            vision2030: 'https://www.vision2030.gov.sa',
+            nationalPortal: 'https://www.my.gov.sa',
+          },
+          services: {
+            sec: 'https://www.se.com.sa',
+            energyEfficiency: 'https://www.seec.gov.sa',
+          },
+          resources: {
+            regulations: 'https://sera.gov.sa/ar/systems-and-regulations/systems-and-regulations',
+            reports: 'https://sera.gov.sa/ar/media-center/agency-publications',
+            statistics: 'https://sera.gov.sa/ar/knowledge-center/data-and-statistics',
+          },
         },
       },
       retry: 'Retry',
@@ -2859,6 +2876,23 @@ const staticResources = {
           regulations: 'التنظيمات والقوانين',
           reports: 'تقارير السنوية',
           statistics: 'الإحصائيات',
+        },
+        // عناوين الروابط المستخدمة في شاشة الروابط المهمة
+        urls: {
+          government: {
+            saudiGov: 'https://dga.gov.sa',
+            vision2030: 'https://www.vision2030.gov.sa',
+            nationalPortal: 'https://www.my.gov.sa',
+          },
+          services: {
+            sec: 'https://www.se.com.sa',
+            energyEfficiency: 'https://www.seec.gov.sa',
+          },
+          resources: {
+            regulations: 'https://sera.gov.sa/ar/systems-and-regulations/systems-and-regulations',
+            reports: 'https://sera.gov.sa/ar/media-center/agency-publications',
+            statistics: 'https://sera.gov.sa/ar/knowledge-center/data-and-statistics',
+          },
         },
       },
       retry: 'إعادة المحاولة',

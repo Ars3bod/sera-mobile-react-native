@@ -44,15 +44,15 @@ const ImportantLinksScreen = ({ navigation }) => {
       links: [
         {
           labelKey: 'importantLinks.government.saudiGov',
-          url: 'https://dga.gov.sa',
+          url: t('importantLinks.urls.government.saudiGov'),
         },
         {
           labelKey: 'importantLinks.government.vision2030',
-          url: 'https://www.vision2030.gov.sa',
+          url: t('importantLinks.urls.government.vision2030'),
         },
         {
           labelKey: 'importantLinks.government.nationalPortal',
-          url: 'https://www.my.gov.sa',
+          url: t('importantLinks.urls.government.nationalPortal'),
         },
       ],
     },
@@ -63,7 +63,7 @@ const ImportantLinksScreen = ({ navigation }) => {
       links: [
         {
           labelKey: 'importantLinks.services.sec',
-          url: 'https://www.se.com.sa',
+          url: t('importantLinks.urls.services.sec'),
         },
         // {
         //   labelKey: 'importantLinks.services.waterElectricity',
@@ -71,7 +71,7 @@ const ImportantLinksScreen = ({ navigation }) => {
         // },
         {
           labelKey: 'importantLinks.services.energyEfficiency',
-          url: 'https://www.seec.gov.sa',
+          url: t('importantLinks.urls.services.energyEfficiency'),
         },
       ],
     },
@@ -82,15 +82,15 @@ const ImportantLinksScreen = ({ navigation }) => {
       links: [
         {
           labelKey: 'importantLinks.resources.regulations',
-          url: 'https://sera.gov.sa/ar/systems-and-regulations/systems-and-regulations',
+          url: t('importantLinks.urls.resources.regulations'),
         },
         {
           labelKey: 'importantLinks.resources.reports',
-          url: 'https://sera.gov.sa/ar/media-center/agency-publications',
+          url: t('importantLinks.urls.resources.reports'),
         },
         {
           labelKey: 'importantLinks.resources.statistics',
-          url: 'https://sera.gov.sa/ar/knowledge-center/data-and-statistics',
+          url: t('importantLinks.urls.resources.statistics'),
         },
       ],
     },

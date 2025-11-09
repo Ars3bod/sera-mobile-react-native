@@ -166,7 +166,7 @@ export default function SplashScreen({ navigation }) {
       <View style={styles.logoContainer}>
         <Animated.View style={logoAnimatedStyle}>
           <Image
-            source={require('../assets/images/sera-white-logo.png')}
+            source={require('../../assets/images/sera-white-full-lockup.png')}
             style={styles.logo}
             resizeMode="contain"
           />

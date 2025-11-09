@@ -22,7 +22,7 @@ import {
   Sparkle24Regular,
 } from '@fluentui/react-native-icons';
 
-const logo = require('../assets/images/sera_logo.png');
+const logo = require('../../assets/images/sera-primary-logo.png');
 const { width, height } = Dimensions.get('window');
 
 export default function LoginScreen({ navigation }) {
